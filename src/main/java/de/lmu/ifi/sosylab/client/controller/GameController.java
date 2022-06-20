@@ -16,7 +16,7 @@ public class GameController {
 
 
     public void dispose() {
-      //model.dispose();
+      model.dispose();
     }
   }
 

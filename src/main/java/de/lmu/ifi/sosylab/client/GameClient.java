@@ -2,6 +2,7 @@ package de.lmu.ifi.sosylab.client;
 
 import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.controller.GameController;
+import de.lmu.ifi.sosylab.client.view.GameFrame;
 
 /**
  * Starts the chat-client.
@@ -15,12 +16,9 @@ public class GameClient {
 
     GameModel model = new GameModel();
     GameController controller = new GameController(model);
+    GameFrame GameFrame = new GameFrame(controller, model);
 
-    //View frame instanziieren
-    //ChatFrame chatFrame = new ChatFrame(controller, model);
-
-    //ChangeListener fürs Frame
-    //model.addPropertyChangeListener(chatFrame);
+    //model.addPropertyChangeListener(GameFrame);
 
     //ClientNetworkConnection connection = new ClientNetworkConnection(model);
     //model.setConnection(connection);
