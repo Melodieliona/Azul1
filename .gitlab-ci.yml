@@ -1,0 +1,44 @@
+image: registry.gitlab.com/sosy-lab/teaching/sep-template-group-project:latest
+
+variables:
+  OUTPUT_PATH: "out"
+
+stages:
+  - build
+  - test
+  - execute
+
+build:
+  stage: build
+  script:
+    - find -name "*.java" > sources.txt
+    - cat sources.txt
+    - mkdir $OUTPUT_PATH
+    - javac -d $OUTPUT_PATH -Xlint:all -Werror -g -cp $CLASSPATH @sources.txt
+  artifacts:
+    paths:
+    # Keep compiled java files and list of files
+      - $OUTPUT_PATH
+      - sources.txt
+
+spotbugs:
+  stage: test
+  script:
+    - spotbugs -auxclasspath $JAVAFX_PATH -auxclasspath $JUNIT5_PATH -textui -longBugCodes -effort:max -exitcode $OUTPUT_PATH
+
+checkstyle:
+  stage: test
+  script:
+    - java -jar /opt/checkstyle-10.3-all.jar -c /opt/google_checks.xml @sources.txt
+
+unit-tests:
+  stage: test
+  script:
+    - java -jar $JUNIT5_PATH --class-path $OUTPUT_PATH --scan-class-path
+
+execute:
+  stage: execute
+  script:
+    # SEP Teams: adjust the next line for your project
+    - cd $OUTPUT_PATH && java de.lmu.ifi.sosylab.HelloWorld
+
