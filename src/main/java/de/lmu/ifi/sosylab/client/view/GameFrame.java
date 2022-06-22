@@ -8,24 +8,27 @@ import java.awt.CardLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 /**
  * The main view of the chat user interface. It provides and connects all graphical elements
  * that are necessary for a chat application. It provides a user a screen for logging in, and
- * in case of success shows afterwards the necessary elements for writing and reading chat messages.
+ * in case of success shows afterwards the necessary elements for playing the game.
  */
 public class GameFrame extends JFrame implements PropertyChangeListener {
 
   private final GameModel model;
   private final GameController controller;
-
   private CardLayout layout;
+  private static final String LOGIN_CARD = "login";
+  private JTextField nickName;
 
 
   /**
-   * Create a new graphical view that contains all necessary elements for chatting with .
+   * Create a new graphical view that contains all necessary elements for playing the game.
    *
    * @param model      The {@link GameModel} that handles the logic of the game.
    * @param controller The {@link GameController} that validates and forwards any user input.
@@ -38,9 +41,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    //initializeWidgets();
+    initializeWidgets();
     //addEventListeners();
-    //createView();
+    createView();
 
     pack();
   }
@@ -51,6 +54,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private void initializeWidgets() {
     // CardLayout ist nur Platzhalter
     layout = new CardLayout();
+    nickName = new JTextField(20);
 
   }
 
@@ -60,6 +64,16 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private void createView() {
     JPanel panel = new JPanel(layout);
     setContentPane(panel);
+
+    // Panel for the login view
+    JPanel login = new JPanel();
+    add(login, LOGIN_CARD);
+    layout.show(panel, LOGIN_CARD);
+
+
+
+    login.add(new JLabel("Login with your nick name:"));
+    login.add(nickName);
 
 
 
@@ -98,7 +112,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private void handleModelUpdate(PropertyChangeEvent event) {
     Object newValue = event.getNewValue();
 
-    /**
+    /*
      *
      *  Das ist vom Chat, um zwischen den Ansichten (Login / Chat) zu wechseln. Könnten wir ja so
      *  irgendwie auch benutzten (?)

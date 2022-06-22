@@ -1,7 +1,7 @@
 package de.lmu.ifi.sosylab.client;
 
-import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.controller.GameController;
+import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.view.GameFrame;
 
 /**
@@ -16,16 +16,16 @@ public class GameClient {
 
     GameModel model = new GameModel();
     GameController controller = new GameController(model);
-    GameFrame GameFrame = new GameFrame(controller, model);
+    GameFrame gameFrame = new GameFrame(controller, model);
 
-    //model.addPropertyChangeListener(GameFrame);
+    model.addPropertyChangeListener(gameFrame);
 
     //ClientNetworkConnection connection = new ClientNetworkConnection(model);
     //model.setConnection(connection);
     //connection.start();
 
     //Frame sichtbar machen
-    //chatFrame.setVisible(true);
+    gameFrame.setVisible(true);
   }
 
 }
