@@ -4,7 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
-import java.awt.CardLayout;
+
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JFrame;
@@ -40,6 +41,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     this.model = requireNonNull(model);
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    //this.setPreferredSize(new Dimension(400, 300));
 
     initializeWidgets();
     //addEventListeners();
@@ -67,6 +69,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     // Panel for the login view
     JPanel login = new JPanel();
+    login.setBackground(Color.CYAN);
+    login.setPreferredSize(new Dimension(400, 100));
     add(login, LOGIN_CARD);
     layout.show(panel, LOGIN_CARD);
 
