@@ -40,5 +40,5 @@ execute:
   stage: execute
   script:
     # SEP Teams: adjust the next line for your project
-    - cd $OUTPUT_PATH && java de.lmu.ifi.sosylab.HelloWorld
+    - cd $OUTPUT_PATH && java de.lmu.ifi.sosylab.GameClient
 
