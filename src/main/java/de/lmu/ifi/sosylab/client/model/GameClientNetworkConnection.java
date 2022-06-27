@@ -84,7 +84,7 @@ public class GameClientNetworkConnection {
                 }
 
                 JSONObject object = new JSONObject(line);
-                handleMessage(object);
+                handleGameEvent(object);
             } catch (IOException e) {
                 closeSocket();
                 break;
@@ -97,7 +97,7 @@ public class GameClientNetworkConnection {
         System.out.println("Input loop ended.");
     }
 
-    public void handleMessage(JSONObject object) {
+    public void handleGameEvent(JSONObject object) {
         switch (JsonMessage.typeOf(object)) {
             case LOGIN_SUCCESS:
                 model.loggedIn();
@@ -111,8 +111,8 @@ public class GameClientNetworkConnection {
             case USER_LEFT:
                 handleUserLeft(object);
                 break;
-            case MESSAGE:
-                handleUserTextMessage(object);
+            case TILE_SELECTION:
+                handleTileSelection(object);
                 break;
             default:
                 throw new AssertionError("Unhandled message: " + object);
@@ -133,15 +133,8 @@ public class GameClientNetworkConnection {
         }
     }
 
-    private void handleUserTextMessage(JSONObject object) {
-        if (!model.isLoggedIn()) {
-            return;
-        }
+    private void handleTileSelection(JSONObject object) {
 
-        String nick = JsonMessage.getNickname(object);
-        Date time = JsonMessage.getTime(object);
-        String content = JsonMessage.getContent(object);
-        model.addTextMessage(nick, time, content);
     }
 
 
@@ -184,9 +177,8 @@ public class GameClientNetworkConnection {
      *
      * @param chatMessage The {@link UserTextMessage} containing the message of the user.
      */
-    public void sendMessage(UserTextMessage chatMessage) {
-        JSONObject message = JsonMessage.postMessage(chatMessage.getContent());
-        send(message);
+    public void sendMove() {
+
     }
 
     private synchronized void send(JSONObject message) {

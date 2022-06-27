@@ -12,7 +12,9 @@ import org.json.JSONObject;
 public enum JsonMessage {
 
   LOGIN("login"), LOGIN_SUCCESS("login success"), LOGIN_FAILED("login failed"),
-  USER_JOINED("user joined"), POST_MESSAGE("post message"), MESSAGE("message"),
+  USER_JOINED("user joined"), GAME_MODE("game mode"), TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
+  POINTS("points"), NEXT_TURN("next turn") , ALLOWED_EVENT("Allowed event"),
+  MOVE_ALLOWED("move allowed"), BOARD_STATE("board state"),
   USER_LEFT("user left");
 
   public static final String TYPE_FIELD = "type";
@@ -20,8 +22,6 @@ public enum JsonMessage {
   public static final String NICK_FIELD = "nick";
 
   public static final String CONTENT_FIELD = "content";
-
-  public static final String TIME_FIELD = "time";
 
   private final String jsonName;
 
@@ -84,9 +84,9 @@ public enum JsonMessage {
     }
   }
 
-  public static JSONObject postMessage(String content) {
+  public static JSONObject selectTile(String content) {
     try {
-      JSONObject message = createMessageOfType(POST_MESSAGE);
+      JSONObject message = createMessageOfType(TILE_SELECTION);
       message.put(CONTENT_FIELD, content);
 
       return message;
@@ -95,17 +95,8 @@ public enum JsonMessage {
     }
   }
 
-  public static JSONObject message(String nickname, Date time, String content) {
-    try {
-      JSONObject message = createMessageOfType(MESSAGE);
-      message.put(CONTENT_FIELD, content);
-      message.put(NICK_FIELD, nickname);
-      message.put(TIME_FIELD, convertDateToString(time));
-
-      return message;
-    } catch (JSONException e) {
-      throw new IllegalArgumentException("Failed to create a json object.", e);
-    }
+  public static JSONObject boardState() {
+   return null;
   }
 
   private static JSONObject createMessageOfType(JsonMessage type) throws JSONException {
@@ -120,16 +111,6 @@ public enum JsonMessage {
     }
   }
 
-  public static Date getTime(JSONObject object) {
-    try {
-      String date = object.getString(TIME_FIELD);
-      return convertStringToDate(date);
-    } catch (ParseException e) {
-      throw new IllegalArgumentException("Failed to parse the date from a json object.", e);
-    } catch (JSONException e) {
-      throw new IllegalArgumentException("Failed to read a json object.", e);
-    }
-  }
 
   public static String getContent(JSONObject object) {
     try {
@@ -137,16 +118,6 @@ public enum JsonMessage {
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
-  }
-
-  private static String convertDateToString(Date date) {
-    return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.GERMANY)
-        .format(date);
-  }
-
-  private static Date convertStringToDate(String date) throws ParseException {
-    return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.GERMANY)
-        .parse(date);
   }
 
   public String getJsonName() {
