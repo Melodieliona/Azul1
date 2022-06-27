@@ -27,7 +27,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private static final long serialVersionUID = 1L;
 
   private final GameModel model;
-  private final GameController controller;
+  private transient GameController controller;
   private CardLayout layout;
   private static final String LOGIN_CARD = "login";
   private JTextField nickName;
