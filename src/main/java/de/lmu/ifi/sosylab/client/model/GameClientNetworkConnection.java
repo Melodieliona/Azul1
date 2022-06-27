@@ -1,6 +1,5 @@
 package de.lmu.ifi.sosylab.client.model;
 
-import java.net.UnknownHostException;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,9 +9,9 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 
 public class GameClientNetworkConnection {
@@ -69,10 +68,10 @@ public class GameClientNetworkConnection {
     private synchronized void setupConnection(Socket socket) throws IOException {
         this.socket = socket;
         writer = new BufferedWriter(
-            new OutputStreamWriter(this.socket.getOutputStream(), StandardCharsets.UTF_8));
+                new OutputStreamWriter(this.socket.getOutputStream(), StandardCharsets.UTF_8));
         reader =
-            new BufferedReader(
-                new InputStreamReader(this.socket.getInputStream(), StandardCharsets.UTF_8));
+                new BufferedReader(
+                        new InputStreamReader(this.socket.getInputStream(), StandardCharsets.UTF_8));
     }
 
     private void doInputLoop() {
@@ -114,6 +113,8 @@ public class GameClientNetworkConnection {
             case TILE_SELECTION:
                 handleTileSelection(object);
                 break;
+            case TILE_PLACEMENT:
+                handleTilePlacement(object);
             default:
                 throw new AssertionError("Unhandled message: " + object);
         }
@@ -134,6 +135,10 @@ public class GameClientNetworkConnection {
     }
 
     private void handleTileSelection(JSONObject object) {
+
+    }
+
+    private void handleTilePlacement(JSONObject object) {
 
     }
 

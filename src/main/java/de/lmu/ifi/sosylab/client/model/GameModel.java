@@ -18,7 +18,6 @@ public class GameModel {
   private static final int MAX_LENGTH = 100;
 
   private final PropertyChangeSupport support;
-  private final List<GameEvents> messages;
 
   private GameClientNetworkConnection connection;
   private String nickname;
@@ -26,7 +25,6 @@ public class GameModel {
 
 
   public GameModel() {
-    messages = Collections.synchronizedList(new ArrayList<>());
     loggedIn = false;
 
     support = new PropertyChangeSupport(this);
