@@ -1,4 +1,4 @@
-package de.lmu.ifi.sosylab.client.model.LocalServer;
+package de.lmu.ifi.sosylab.client.model.localserver;
 
 import java.io.OutputStreamWriter;
 

@@ -1,4 +1,4 @@
-package de.lmu.ifi.sosylab.client.view.chatview;
+package de.lmu.ifi.sosylab.client.view.boardview;
 
 public class UserPieceSelection extends GameMove {
 }
