@@ -1,9 +1,14 @@
 package de.lmu.ifi.sosylab.client.model;
 
+import de.lmu.ifi.sosylab.client.model.events.GameEvents;
+import org.json.JSONObject;
+
 import static java.util.Objects.requireNonNull;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 
 public class GameModel {
@@ -15,8 +20,8 @@ public class GameModel {
   public GameModel() {
     support = new PropertyChangeSupport(this);
 
-
   }
+
 
 
 
@@ -33,4 +38,12 @@ public class GameModel {
   public void dispose() {
     //...
   }
+
+  //Brainstorming Sara and Petra
+  private void notifyListeners(GameEvents event) {
+    support.firePropertyChange(event.getName(), null, event);
+  }
+
+
+
 }
