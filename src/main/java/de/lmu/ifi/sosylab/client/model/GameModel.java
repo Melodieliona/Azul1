@@ -1,16 +1,14 @@
 package de.lmu.ifi.sosylab.client.model;
 
 import de.lmu.ifi.sosylab.client.model.events.GameEvents;
-import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
+import org.json.JSONObject;
 
 import static java.util.Objects.requireNonNull;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 
 public class GameModel {
@@ -25,17 +23,13 @@ public class GameModel {
 
 
   public GameModel() {
-    loggedIn = false;
-
     support = new PropertyChangeSupport(this);
+
   }
 
-  /**
-   * Add a {@link PropertyChangeListener} to the model to get notified about any changes that the
-   * the model publishes.
-   *
-   * @param listener the view that subscribes itself to the model.
-   */
+
+
+
   public void addPropertyChangeListener(PropertyChangeListener listener) {
     requireNonNull(listener);
     support.addPropertyChangeListener(listener);
@@ -140,4 +134,12 @@ public class GameModel {
   public void dispose() {
     getConnection().stop();
   }
+
+  //Brainstorming Sara and Petra
+  private void notifyListeners(GameEvents event) {
+    support.firePropertyChange(event.getName(), null, event);
+  }
+
+
+
 }

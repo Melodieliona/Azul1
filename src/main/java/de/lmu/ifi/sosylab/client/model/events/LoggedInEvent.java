@@ -6,3 +6,4 @@ public class LoggedInEvent extends GameEvents{
         return "LoggedInEvent";
     }
 }
+

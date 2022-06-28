@@ -2,6 +2,7 @@ image: registry.gitlab.com/sosy-lab/teaching/sep-template-group-project:latest
 
 variables:
   OUTPUT_PATH: "out"
+  LIB_PATH: "lib"
 
 stages:
   - build
@@ -11,20 +12,22 @@ stages:
 build:
   stage: build
   script:
+    - find $LIB_PATH -iname "*.jar" | tr '\n' ':' > libraries.txt
     - find -name "*.java" > sources.txt
     - cat sources.txt
     - mkdir $OUTPUT_PATH
-    - javac -d $OUTPUT_PATH -Xlint:all -Werror -g -cp $CLASSPATH @sources.txt
+    - javac -d $OUTPUT_PATH -Xlint:all -Werror -g -cp "$CLASSPATH:$(cat libraries.txt)" @sources.txt
   artifacts:
     paths:
     # Keep compiled java files and list of files
       - $OUTPUT_PATH
       - sources.txt
+      - libraries.txt
 
 spotbugs:
   stage: test
   script:
-    - spotbugs -auxclasspath $JAVAFX_PATH -auxclasspath $JUNIT5_PATH -textui -longBugCodes -effort:max -exitcode $OUTPUT_PATH
+    - spotbugs -auxclasspath "$CLASSPATH:$(cat libraries.txt)" -textui -longBugCodes -effort:max -exitcode $OUTPUT_PATH
 
 checkstyle:
   stage: test
@@ -34,11 +37,11 @@ checkstyle:
 unit-tests:
   stage: test
   script:
-    - java -jar $JUNIT5_PATH --class-path $OUTPUT_PATH --scan-class-path
+    - java -jar $JUNIT5_PATH --class-path "$OUTPUT_PATH:$(cat libraries.txt)" --scan-class-path
 
 execute:
   stage: execute
   script:
-    # SEP Teams: adjust the next line for your project
-    - cd $OUTPUT_PATH && java de.lmu.ifi.sosylab.GameClient
+    -  java -cp "$OUTPUT_PATH:$(cat libraries.txt)" de.lmu.ifi.sosylab.client.GameClient
+    -  java -cp "$OUTPUT_PATH:$(cat libraries.txt)" de.lmu.ifi.sosylab.server.GameServer
 
