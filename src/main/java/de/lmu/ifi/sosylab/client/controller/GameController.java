@@ -4,21 +4,25 @@ import de.lmu.ifi.sosylab.client.model.GameModel;
 
 public class GameController {
 
-  /**
-   * The controller of the chat-UI.
-   */
+    /**
+     * The controller of the chat-UI.
+     */
 
     GameModel model;
 
     public GameController(GameModel model) {
-      this.model = model;
+        this.model = model;
+    }
+
+    public void login(String nickname){
+
     }
 
 
     public void dispose() {
-      model.dispose();
+        model.dispose();
     }
-  }
+}
 
 
 

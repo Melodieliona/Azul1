@@ -9,7 +9,6 @@ import java.io.OutputStreamWriter;
 
 public class User {
   private final String name;
-
   private final int gameNumber;
   private final OutputStreamWriter writer;
 

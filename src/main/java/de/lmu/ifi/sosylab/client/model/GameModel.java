@@ -11,12 +11,13 @@ import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+
 public class GameModel {
 
-  private String gameMode;
-  private String playerName;
+  private static final int MAX_LENGTH = 100;
 
-  private Object[][] patternLines;
+  private String gameMode;
+
   private final PropertyChangeSupport support;
 
   private GameClientNetworkConnection connection;
@@ -61,6 +62,7 @@ public class GameModel {
    players = new Player[numberOfPlayers];
    for(int i=0;i<numberOfPlayers;i++){
      players[i]=new Player(playersName[i]);
+     notifyListeners(new UserJoinedEvent(playersName[i]));
    }
   }
 
@@ -73,11 +75,13 @@ public class GameModel {
    */
   public void placeTiles(String color, int numberOfSelectedTiles, int line) {
     int minuspoints=0;
+    //Hotseat mode missing
     if(gameMode.equals("Multiplayer")){
        minuspoints = players[0].placeTiles(line,color,numberOfSelectedTiles);
-    connection.sendMove();//param: playername, tile color, number of tiles, which line, minuspoints
+       connection.sendMove();
+       //param: playername, tile color, number of tiles, which line, minuspoints
     }
-    notifyListeners(new TilesAddedEvent(color,line,numberOfSelectedTiles,minuspoints));
+       notifyListeners(new TilesAddedEvent(color,line,numberOfSelectedTiles,minuspoints));
   }
 
   /**
@@ -140,7 +144,7 @@ public class GameModel {
   }
 
   /**
-   * Remove a listener from the model. From then on tt will no longer get notified about any events
+   * Remove a listener from the model. It will then no longer get notified about any events
    * fired by the model.
    *
    * @param listener the view that is to be unsubscribed from the model.
@@ -150,13 +154,6 @@ public class GameModel {
     support.removePropertyChangeListener(listener);
   }
 
-  public void setUserName(String name) {
-    this.playerName = name;
-  }
-
-
   public void dispose() {
-    //...
   }
 }
-

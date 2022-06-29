@@ -4,10 +4,12 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
-
-import java.awt.*;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serial;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,8 +23,11 @@ import javax.swing.SwingUtilities;
  */
 public class GameFrame extends JFrame implements PropertyChangeListener {
 
-  private final GameModel model;
-  private final GameController controller;
+  @Serial
+  private static final long serialVersionUID = 1L;
+
+  private transient GameModel model;
+  private transient GameController controller;
   private CardLayout layout;
   private static final String LOGIN_CARD = "login";
   private JTextField nickName;
