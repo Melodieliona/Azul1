@@ -123,14 +123,14 @@ public class GameClientNetworkConnection {
     private void handleUserLeft(JSONObject object) {
         if (model.isLoggedIn()) {
             String nick = JsonMessage.getNickname(object);
-            model.userLeft(nick);
+            //model.userLeft(nick);
         }
     }
 
     private void handleUserJoined(JSONObject object) {
         if (model.isLoggedIn()) {
             String nick = JsonMessage.getNickname(object);
-            model.userJoined(nick);
+            //model.userJoined(nick);
         }
     }
 
@@ -178,7 +178,7 @@ public class GameClientNetworkConnection {
     }
 
     /**
-     * Send a chat message to the server.
+     * Send a move made by the user to the server.
      *
      * @param chatMessage The {@link UserTextMessage} containing the message of the user.
      */

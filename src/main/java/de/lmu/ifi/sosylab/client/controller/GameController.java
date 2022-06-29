@@ -2,6 +2,8 @@ package de.lmu.ifi.sosylab.client.controller;
 
 import de.lmu.ifi.sosylab.client.model.GameModel;
 
+import javax.swing.*;
+
 public class GameController {
 
     /**
@@ -15,6 +17,16 @@ public class GameController {
     }
 
     public void login(String nickname){
+
+        new SwingWorker<Boolean, Void>() {
+
+            @Override
+            protected Boolean doInBackground() {
+                model.logInWithName(nickname);
+                return true;
+            }
+
+        }.execute();
 
     }
 
