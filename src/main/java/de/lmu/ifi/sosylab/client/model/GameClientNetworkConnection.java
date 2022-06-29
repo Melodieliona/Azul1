@@ -74,6 +74,8 @@ public class GameClientNetworkConnection {
                         new InputStreamReader(this.socket.getInputStream(), StandardCharsets.UTF_8));
     }
 
+
+
     private void doInputLoop() {
         while (!Thread.currentThread().isInterrupted()) {
             try {

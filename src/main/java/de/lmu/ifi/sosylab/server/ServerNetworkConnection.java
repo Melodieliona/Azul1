@@ -1,5 +1,7 @@
 package de.lmu.ifi.sosylab.server;
 
+import de.lmu.ifi.sosylab.shared.Tile;
+import de.lmu.ifi.sosylab.shared.JsonMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,15 +20,21 @@ import org.json.JSONObject;
 public class ServerNetworkConnection {
   private static final int port = 8080;
 
+  private final ServerNetworkConnection connection;
+
   List<User> users;
 
-  private int newestGameNumber = 1;
+  List<Game> games;
+
+  private int nextGameNumber = 1;
 
   /**
    * Initializes the User list, which stores all clients that are currently connected.
    */
   public ServerNetworkConnection() {
     users = new ArrayList<User>();
+    games = new ArrayList<Game>();
+    connection = this;
   }
 
   /**
@@ -77,7 +85,6 @@ public class ServerNetworkConnection {
     Thread newConnectionThread = new Thread() {
       String clientNick = "Not initialized.";
 
-      //
       private boolean keepReading = true;
 
       @Override
@@ -103,11 +110,9 @@ public class ServerNetworkConnection {
             }
 
             // Get Info out of the message
-            String messageType = (String) jsonObject.get("type");
-
-            switch (messageType) {
-              case "login":
-                clientNick = (String) jsonObject.get("nick");
+            switch (JsonMessage.typeOf(jsonObject)) {
+              case LOGIN:
+                clientNick = (String) jsonObject.get("NICK_FIELD");
 
                 boolean nickAlreadyUsed = false;
                 for (User user : users) {
@@ -126,7 +131,7 @@ public class ServerNetworkConnection {
                 } else {
                   // Inform other users
                   for (User user : users) {
-                    if (user.getGameNumber() == newestGameNumber) {
+                    if (user.getGameNumber() == nextGameNumber) {
                       JSONObject userJoinedJson = new JSONObject();
                       userJoinedJson.put("type", "user joined");
                       userJoinedJson.put("nick", clientNick);
@@ -139,29 +144,39 @@ public class ServerNetworkConnection {
                   // Inform newly logged in user
                   JSONObject loginSuccessJson = new JSONObject();
                   loginSuccessJson.put("type", "login success");
-                  loginSuccessJson.put("gameNumber", newestGameNumber);
+                  loginSuccessJson.put("gameNumber", nextGameNumber);
 
                   writer.write(loginSuccessJson + System.lineSeparator());
                   writer.flush();
 
                   // Add user to User list
-                  users.add(new User(clientNick, writer, newestGameNumber));
+                  users.add(new User(clientNick, writer, nextGameNumber));
 
                   //
-                  int numberOfUsersInNewestGame = 0;
+                  int numberOfUsersInNextGame = 0;
                   for (User user : users) {
-                    if (user.getGameNumber() == newestGameNumber) {
-                      numberOfUsersInNewestGame++;
+                    if (user.getGameNumber() == nextGameNumber) {
+                      numberOfUsersInNextGame++;
                     }
                   }
 
-                  // Spielzahl erhöhen, wenn ein Spiel voll ist
-                  if (numberOfUsersInNewestGame > 3) {
-                    newestGameNumber++;
+                  // When 4 players are logged in
+                  // Add new game with these players to the game list
+                  // Update the number of the next game
+                  if (numberOfUsersInNextGame > 3) {
+                    List<User> usersInGame = new ArrayList<User>();
+                    for (User user : users) {
+                      if (user.getGameNumber() == nextGameNumber) {
+                        usersInGame.add(user);
+                      }
+                    }
+
+                    games.add(new Game(nextGameNumber, usersInGame, connection));
+                    nextGameNumber++;
                   }
                 }
                 break;
-              case "move":
+              case TILE_SELECTION:
                 String scheibeOderMitte = (String) jsonObject.get("quelle");
 
                 for (User user : users) {
@@ -176,6 +191,11 @@ public class ServerNetworkConnection {
                   user.getWriter().write(postMessageJson + System.lineSeparator());
                   user.getWriter().flush();
                 }
+                break;
+              case TILE_PLACEMENT:
+
+
+
                 break;
               default: break;
             }
@@ -210,6 +230,49 @@ public class ServerNetworkConnection {
 
     newConnectionThread.start();
   }
+
+  public void sendTileSelection(List<User> list, String currentPlayer, int sourceTilePlate, Tile color, int amount) {
+    try {
+      for (User user : list) {
+        JSONObject sendMoveJson = new JSONObject();
+        sendMoveJson.put("type", "tile selection");
+        sendMoveJson.put("nick", currentPlayer);
+        sendMoveJson.put("plate", sourceTilePlate);
+        sendMoveJson.put("color", color.name());
+        sendMoveJson.put("amount", amount);
+
+        user.getWriter().write(sendMoveJson + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void sendTilePlacement(List<User> list, String currentPlayer, Tile color, int amount, int layingRow) {
+    try {
+      for (User user : list) {
+        JSONObject sendMoveJson = new JSONObject();
+        sendMoveJson.put("type", "tile placement");
+        sendMoveJson.put("nick", currentPlayer);
+        sendMoveJson.put("color", color.name());
+        sendMoveJson.put("amount", amount);
+        sendMoveJson.put("row", layingRow);
+
+        user.getWriter().write(sendMoveJson + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+
+
+
+
+
+
 
 
   /**
