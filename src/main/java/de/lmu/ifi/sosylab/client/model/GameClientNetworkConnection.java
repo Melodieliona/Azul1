@@ -123,17 +123,13 @@ public class GameClientNetworkConnection {
     }
 
     private void handleUserLeft(JSONObject object) {
-        if (model.isLoggedIn()) {
             String nick = JsonMessage.getNickname(object);
             model.userLeft(nick);
-        }
     }
 
     private void handleUserJoined(JSONObject object) {
-        if (model.isLoggedIn()) {
             String nick = JsonMessage.getNickname(object);
             model.userJoined(nick);
-        }
     }
 
     private void handleTileSelection(JSONObject object) {

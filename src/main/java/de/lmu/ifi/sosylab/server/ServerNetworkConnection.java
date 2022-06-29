@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -112,7 +113,7 @@ public class ServerNetworkConnection {
             // Get Info out of the message
             switch (JsonMessage.typeOf(jsonObject)) {
               case LOGIN:
-                clientNick = (String) jsonObject.get("NICK_FIELD");
+                clientNick = (String) jsonObject.get("nick");
 
                 boolean nickAlreadyUsed = false;
                 for (User user : users) {
@@ -195,7 +196,6 @@ public class ServerNetworkConnection {
               case TILE_PLACEMENT:
 
 
-
                 break;
               default: break;
             }
@@ -260,6 +260,41 @@ public class ServerNetworkConnection {
         sendMoveJson.put("row", layingRow);
 
         user.getWriter().write(sendMoveJson + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void sendClickableRows(User user, int[] rows) {
+    try {
+      String clickableRows = "";
+      for(int i = 0; i < rows.length; i++) {
+        clickableRows += rows[i];
+        clickableRows += " ";
+      }
+
+      JSONObject sendClickableRowsJson = new JSONObject();
+      sendClickableRowsJson.put("type", "allowed fields");
+      sendClickableRowsJson.put("row", clickableRows);
+
+      user.getWriter().write(sendClickableRowsJson + System.lineSeparator());
+      user.getWriter().flush();
+
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void sendNextPlayer(List<User> userlist , User currentUser){
+    try {
+      for (User user : userlist) {
+        JSONObject sendClickableRowsJson = new JSONObject();
+        sendClickableRowsJson.put("type", "next turn");
+        sendClickableRowsJson.put("nick", currentUser.getName());
+
+        user.getWriter().write(sendClickableRowsJson + System.lineSeparator());
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {

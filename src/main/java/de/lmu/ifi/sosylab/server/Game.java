@@ -71,8 +71,11 @@ public class Game {
     Random rand = new Random();
     currentPlayer = rand.nextInt(userList.size());
 
-
     fillPlates();
+
+    connection.sendNextPlayer(userList, userList.get(currentPlayer));
+    int[] clickableRows = {1,2,3,4,5};
+    connection.sendClickableRows(userList.get(currentPlayer), clickableRows);
   }
 
 
@@ -116,20 +119,22 @@ public class Game {
 
 
   private void sendTileSelection(int tilePlate, Tile color, int amount) {
-    List<User> broadcastList = userList;
     String currentPlayer = userList.get(this.currentPlayer).getName();
 
-    connection.sendTileSelection(broadcastList, currentPlayer, tilePlate, color, amount);
+    connection.sendTileSelection(userList, currentPlayer, tilePlate, color, amount);
   }
 
   private void sendTilePlacement(TileCollection tileSelection, LayingRow layingRow) {
-    List<User> broadcastList = userList;
     String currentPlayer = userList.get(this.currentPlayer).getName();
     Tile color = tileSelection.get(0);
     int amount = tileSelection.size();
 
-    connection.sendTilePlacement(broadcastList, currentPlayer, color, amount, layingRow.getRow());
+    connection.sendTilePlacement(userList, currentPlayer, color, amount, layingRow.getRow());
   }
+
+
+
+
 
 
   /**
@@ -141,6 +146,7 @@ public class Game {
     } else {
       currentPlayer++;
     }
+    connection.sendNextPlayer(userList , userList.get(currentPlayer));
   }
 
   /**
