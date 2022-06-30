@@ -10,6 +10,8 @@ import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.*;
@@ -80,9 +82,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     //TODO: Petras Job (Next line is just for Testing purposes
     public void createGameView(){
-        JPanel game = new JPanel(new GridBagLayout());
+        JPanel game = (JPanel) wholeGame();;
         add(game, GAME_CARD);
-        game.setBackground(Color.PINK);
     }
 
     public void createLoginView() {
@@ -135,6 +136,112 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             }
         });
     }
+
+  /**
+   * @return Layout from game with PlayerBoard.
+   */
+  private Component wholeGame(){
+    JPanel game = new JPanel(new BorderLayout());
+
+    JPanel north = new JPanel();
+    JPanel east = new JPanel();
+    JPanel south = (JPanel) playerBoard();
+    JPanel west = new JPanel();
+    JPanel center = new JPanel();
+
+    north.setBackground(Color.RED);
+    north.setPreferredSize(new Dimension(340, 340 ));
+
+    east.setBackground(Color.GREEN);
+    east.setPreferredSize(new Dimension(340, 340 ));
+
+    west.setBackground(Color.orange);
+    west.setPreferredSize(new Dimension(340, 340 ));
+
+    center.setBackground(Color.yellow);
+    center.setPreferredSize(new Dimension(340, 340 ));
+
+    game.add(north, BorderLayout.NORTH);
+    game.add(east, BorderLayout.EAST);
+    game.add(south, BorderLayout.SOUTH);
+    game.add(west, BorderLayout.WEST);
+    game.add(center, BorderLayout.CENTER);
+
+
+
+    return game;
+  }
+
+  /**
+   * @return PlayerBoard with PointCounter, Name, PatternRows left and right and MouseListener.
+   */
+  private Component playerBoard(){
+    PlayerBoard pb = new PlayerBoard();
+    JPanel board = new JPanel(new BorderLayout());
+
+    JPanel north2 = new JPanel();
+    JPanel east2 = new JPanel();
+    JPanel west2 = new JPanel();
+    JPanel center2 = new JPanel();
+
+    north2.setBackground(Color.RED);
+    north2.add(nameAndPoints());
+    east2.setBackground(Color.GREEN);
+    west2.setBackground(Color.orange);
+    west2.setPreferredSize(new Dimension(340, 280 ));
+    center2.setBackground(Color.yellow);
+
+    board.setPreferredSize(new Dimension(340, 340 ));
+    board.add(north2, BorderLayout.NORTH);
+    board.add(east2, BorderLayout.EAST);
+    board.add(west2, BorderLayout.WEST);
+    board.add(pb, BorderLayout.CENTER);
+    pb.addMouseListener(new MouseAdapter() {
+      /**
+       * {@inheritDoc}
+       *
+       * @param e
+       */
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        Point checkMouseTip = e.getPoint();
+        int mousePointX = checkMouseTip.x / 30;
+        int mousePointY = checkMouseTip.y / 30;
+
+
+        if(mousePointX == 4 && mousePointY == 0){
+          System.out.println("Clicked First Row");
+        }
+        if(mousePointX > 2 && mousePointY == 1){
+          System.out.println("Clicked Second Row");
+        }
+        if(mousePointX > 1 && mousePointY == 2){
+          System.out.println("Clicked Third Row");
+        }
+        if(mousePointX > 0 && mousePointY == 3){
+          System.out.println("Clicked Forth Row");
+        }
+        if(mousePointX < 5 && mousePointY == 4){
+          System.out.println("Clicked Fifth Row");
+        }
+        if(mousePointX<7 && mousePointY ==6){
+          System.out.println("Minus Points");
+        }
+
+      }
+    });
+
+    return board;
+  }
+
+  /**
+   * @return Name and User Points.
+   */
+  private Component nameAndPoints() {
+    JLabel counter = new JLabel("Player: " + "Points: ");
+    return counter;
+  }
 
     @Override
     public void dispose() {
