@@ -1,5 +1,8 @@
 package de.lmu.ifi.sosylab.shared;
 
+/**
+ * One row, that needs to be laid out with tiles in order to place a tile on the wall.
+ * */
 public class LayingRow {
 
   GameBoard board;
@@ -11,6 +14,9 @@ public class LayingRow {
   // Number of laid tiles in this row
   private int count;
 
+  /**
+   * Initializes the row with zero laid tiles.
+   */
   public LayingRow(int number, GameBoard board) {
     this.board = board;
     row = number;
@@ -18,16 +24,48 @@ public class LayingRow {
     count = 0;
   }
 
+  // TODO Maybe remove return value later if unused
+  /**
+   * Adds given tiles to the row.
+   * Returns the updated row.
+   * */
+  public TileCollection layTilesOnRow(TileCollection collection) {
+    if (color == null) {
+      color = collection.get(0);
+    }
+
+    for (Tile tile : collection) {
+      count++;
+    }
+    return getRow();
+  }
 
 
+  public void clearRow() {
+    color = null;
+    count = 0;
+  }
 
+
+  /**
+   * Returns all tiles that are currently laid on this row.
+   */
+  public TileCollection getRow() {
+    TileCollection rowCollection = new TileCollection();
+    for (int i = 0; i < count; i++) {
+      rowCollection.add(color);
+    }
+    return rowCollection;
+  }
 
   /**
    * Determines if it's allowed to lay tiles of a given color in this row.
    * */
   public boolean canAddTilesToLayingRow(Tile color) {
-    boolean[][] tileWall = board.getTileWall();
-    return !(tileWall[row][columnOfColor(color)]) && (this.color == null || this.color == color) && !this.isRowFull();
+    Tile[][] tileWall = board.getTileWall();
+
+    return (tileWall[columnOfColor(color)][row] == null)
+      && (this.color == null || this.color == color) && !this.isRowFull();
   }
 
   /**
@@ -41,7 +79,7 @@ public class LayingRow {
    * Returns the column, the given tile color lays in.
    * */
   private int columnOfColor(Tile color) {
-    return (row + color.ordinal()) % 5;
+    return ((row + color.ordinal()) % 5) + 1;
   }
 
 
@@ -59,7 +97,7 @@ public class LayingRow {
     return discardedTiles;
   }
 
-  public int getRow() {
+  public int getRowNumber() {
     return row;
   }
 }

@@ -1,8 +1,11 @@
 package de.lmu.ifi.sosylab.shared;
 
+/**
+ * A game board containing the score, tile wall and laying rows of one player.
+ * */
 public class GameBoard {
 
-  private boolean[][] tileWall;
+  private Tile[][] tileWall;
 
   private LayingRow[] layingRows;
 
@@ -15,28 +18,35 @@ public class GameBoard {
 
 
 
-
+  /**
+   * Initializes one game board.
+   * */
   public GameBoard(String playerName) {
     this.playerName = playerName;
     currentScore = 0;
 
-    tileWall = new boolean[5][5];
+    tileWall = new Tile[5][5];
 
     layingRows = new LayingRow[5];
     for (int i = 0; i < 5; i++) {
       layingRows[i] = new LayingRow(i, this);
     }
-
-
-
   }
 
 
-  protected boolean[][] getTileWall() {
+
+
+
+
+  protected Tile[][] getTileWall() {
     return tileWall;
   }
 
-  protected String getPlayerName() {
+  public LayingRow getLayingRow(int row) {
+    return layingRows[row];
+  }
+
+  public String getPlayerName() {
     return playerName;
   }
 

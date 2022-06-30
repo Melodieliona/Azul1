@@ -1,7 +1,7 @@
 package de.lmu.ifi.sosylab.server;
 
-import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
+import de.lmu.ifi.sosylab.shared.Tile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,12 +11,11 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- *
+ * Network Layer of the game server.
  * */
 public class ServerNetworkConnection {
   private static final int port = 8080;
@@ -33,8 +32,8 @@ public class ServerNetworkConnection {
    * Initializes the User list, which stores all clients that are currently connected.
    */
   public ServerNetworkConnection() {
-    users = new ArrayList<User>();
-    games = new ArrayList<Game>();
+    users = new ArrayList<>();
+    games = new ArrayList<>();
     connection = this;
   }
 
@@ -52,23 +51,20 @@ public class ServerNetworkConnection {
       return;
     }
 
-    Thread acceptThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        Socket socket;
+    Thread acceptThread = new Thread(() -> {
+      Socket socket;
+      try {
         try {
-          try {
-            while (true) {
-              socket = serverSocket.accept();
-              // Start thread for every new client
-              startHandler(socket);
-            }
-          } finally {
-            serverSocket.close();
+          while (true) {
+            socket = serverSocket.accept();
+            // Start thread for every new client
+            startHandler(socket);
           }
-        } catch (IOException e) {
-          System.out.println(e.getMessage());
+        } finally {
+          serverSocket.close();
         }
+      } catch (IOException e) {
+        System.out.println(e.getMessage());
       }
     });
 
@@ -85,6 +81,7 @@ public class ServerNetworkConnection {
 
     Thread newConnectionThread = new Thread() {
       String clientNick = "Not initialized.";
+      int clientGameNumber = 0;
 
       private boolean keepReading = true;
 
@@ -92,9 +89,9 @@ public class ServerNetworkConnection {
       public void run() {
         try {
           BufferedReader reader = new BufferedReader(
-            new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+              new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
           OutputStreamWriter writer =
-            new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
+              new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
 
 
           while (keepReading) {
@@ -165,7 +162,7 @@ public class ServerNetworkConnection {
                   // Add new game with these players to the game list
                   // Update the number of the next game
                   if (numberOfUsersInNextGame > 3) {
-                    List<User> usersInGame = new ArrayList<User>();
+                    List<User> usersInGame = new ArrayList<>();
                     for (User user : users) {
                       if (user.getGameNumber() == nextGameNumber) {
                         usersInGame.add(user);
@@ -173,29 +170,36 @@ public class ServerNetworkConnection {
                     }
 
                     games.add(new Game(nextGameNumber, usersInGame, connection));
+                    clientGameNumber = nextGameNumber;
                     nextGameNumber++;
                   }
                 }
                 break;
               case TILE_SELECTION:
-                String scheibeOderMitte = (String) jsonObject.get("quelle");
+                // 0 = middle, 1-9 = plates
+                int plateOrMiddle = (int) jsonObject.get("source");
+                Tile tileColor = Tile.getTile((String) jsonObject.get("color"));
+                int tileAmount = (int) jsonObject.get("amount");
 
-                for (User user : users) {
-                  if (user.getName().equals(clientNick)) {
-                    continue;
+                for (Game game : games) {
+                  if (game.getGameNumber() == clientGameNumber) {
+                    game.handleTileSelection(clientNick, plateOrMiddle, tileColor, tileAmount);
+                    break;
                   }
-                  JSONObject postMessageJson = new JSONObject();
-                  postMessageJson.put("type", "move");
-                  postMessageJson.put("nick", clientNick);
-                  postMessageJson.put("content", scheibeOderMitte);
-
-                  user.getWriter().write(postMessageJson + System.lineSeparator());
-                  user.getWriter().flush();
                 }
                 break;
               case TILE_PLACEMENT:
+                // '0' is row 1, '1' is row 2, '2' is row 3, etc...
+                int targetRow = (int) jsonObject.get("target");
+                tileColor = Tile.getTile((String) jsonObject.get("color"));
+                tileAmount = (int) jsonObject.get("amount");
 
-
+                for (Game game : games) {
+                  if (game.getGameNumber() == clientGameNumber) {
+                    game.handleTilePlacement(clientNick, targetRow, tileColor, tileAmount);
+                    break;
+                  }
+                }
                 break;
               default: break;
             }
@@ -231,12 +235,29 @@ public class ServerNetworkConnection {
     newConnectionThread.start();
   }
 
-  public void sendTileSelection(List<User> list, String currentPlayer, int sourceTilePlate, Tile color, int amount) {
+
+
+  protected void sendInvalidSelectionMessage() {
+
+  }
+
+  protected void sendInvalidPlacementMessage() {
+
+  }
+
+
+
+  /**
+   * Sends a successful tile selection to all users (including the sender as confirmation).
+   */
+  public void sendTileSelection(
+      List<User> list, String currentPlayer, int sourceTilePlate, Tile color, int amount) {
     try {
       for (User user : list) {
         JSONObject sendMoveJson = new JSONObject();
         sendMoveJson.put("type", "tile selection");
         sendMoveJson.put("nick", currentPlayer);
+        // sourceTilePlate = 0 means the middle
         sendMoveJson.put("plate", sourceTilePlate);
         sendMoveJson.put("color", color.name());
         sendMoveJson.put("amount", amount);
@@ -249,7 +270,11 @@ public class ServerNetworkConnection {
     }
   }
 
-  public void sendTilePlacement(List<User> list, String currentPlayer, Tile color, int amount, int layingRow) {
+  /**
+   * Sends a successful tile placement to all users (including the sender as confirmation).
+   */
+  public void sendTilePlacement(
+      List<User> list, String currentPlayer, Tile color, int amount, int layingRow) {
     try {
       for (User user : list) {
         JSONObject sendMoveJson = new JSONObject();
@@ -267,12 +292,18 @@ public class ServerNetworkConnection {
     }
   }
 
+  /**
+   * Gets send after a tile selection was made successfully.
+   * Tells the player whose turn it is, which rows he can place selected tile(s) on.
+   * */
   public void sendClickableRows(User user, int[] rows) {
     try {
       String clickableRows = "";
-      for(int i = 0; i < rows.length; i++) {
+      for (int i = 0; i < rows.length; i++) {
         clickableRows += rows[i];
-        clickableRows += " ";
+        if (i != rows.length - 1) {
+          clickableRows += " ";
+        }
       }
 
       JSONObject sendClickableRowsJson = new JSONObject();
@@ -287,7 +318,10 @@ public class ServerNetworkConnection {
     }
   }
 
-  public void sendNextPlayer(List<User> userlist , User currentUser){
+  /**
+   * Tells players whose turn it is now.
+   */
+  public void sendNextPlayer(List<User> userlist, User currentUser) {
     try {
       for (User user : userlist) {
         JSONObject sendClickableRowsJson = new JSONObject();
@@ -302,6 +336,12 @@ public class ServerNetworkConnection {
     }
   }
 
+  public void sendNextRound() {
+
+
+
+
+  }
 
 
 

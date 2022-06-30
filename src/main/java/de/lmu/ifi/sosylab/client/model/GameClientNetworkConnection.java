@@ -123,8 +123,8 @@ public class GameClientNetworkConnection {
     }
 
     private void handleUserLeft(JSONObject object) {
-            String nick = JsonMessage.getNickname(object);
-            model.userLeft(nick);
+        String nick = JsonMessage.getNickname(object);
+        model.userLeft(nick);
     }
 
     private void handleUserJoined(JSONObject object) {
