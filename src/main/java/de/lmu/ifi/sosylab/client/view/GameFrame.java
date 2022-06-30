@@ -23,8 +23,8 @@ import javax.swing.*;
  */
 public class GameFrame extends JFrame implements PropertyChangeListener {
 
-    private final GameModel model;
-    private final GameController controller;
+    private transient GameModel model;
+    private transient GameController controller;
     private CardLayout layout;
     private static final String LOGIN_CARD = "login";
     private static final String GAME_CARD = "game";
@@ -83,7 +83,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     //TODO: Petras Job (Next line is just for Testing purposes
     public void createGameView(){
-        game = (JPanel) wholeGame();;
+        game = (JPanel) wholeGame();
         add(game, GAME_CARD);
     }
 
