@@ -32,6 +32,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private JTextField nickName;
     private JButton hotSeat;
     private JButton multiPlayer;
+    private JPanel game;
 
 
     /**
@@ -82,7 +83,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     //TODO: Petras Job (Next line is just for Testing purposes
     public void createGameView(){
-        JPanel game = (JPanel) wholeGame();;
+        game = (JPanel) wholeGame();;
         add(game, GAME_CARD);
     }
 
@@ -146,7 +147,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     JPanel north = new JPanel();
     JPanel east = new JPanel();
     JPanel south = (JPanel) playerBoard();
-    JPanel west = new JPanel();
+    JPanel west = (JPanel) playerBoard();
     JPanel center = new JPanel();
 
     north.setBackground(Color.RED);
@@ -188,7 +189,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     north2.add(nameAndPoints());
     east2.setBackground(Color.GREEN);
     west2.setBackground(Color.orange);
-    west2.setPreferredSize(new Dimension(340, 280 ));
+    //west2.setPreferredSize(new Dimension(340, 280 ));
     center2.setBackground(Color.yellow);
 
     board.setPreferredSize(new Dimension(340, 340 ));

@@ -52,6 +52,8 @@ public class GameModel {
   }
 
   public void logInMultiplayer(String name){
+    //Testing
+    loggedIn();
     players = new Player[1];
     players[0]=new Player(name);
     connection.sendLogin(name);
