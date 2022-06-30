@@ -128,8 +128,8 @@ public class GameClientNetworkConnection {
     }
 
     private void handleUserJoined(JSONObject object) {
-            String nick = JsonMessage.getNickname(object);
-            model.userJoined(nick);
+        String nick = JsonMessage.getNickname(object);
+        model.userJoined(nick);
     }
 
     private void handleTileSelection(JSONObject object) {
