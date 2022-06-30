@@ -26,7 +26,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private CardLayout layout;
     private static final String LOGIN_CARD = "login";
     private static final String GAME_CARD = "game";
+    private static final String GAMEMODE_CARD = "gameMode";
     private JTextField nickName;
+    private JButton hotSeat;
+    private JButton multiPlayer;
 
 
     /**
@@ -58,17 +61,32 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         // CardLayout ist nur Platzhalter
         layout = new CardLayout();
         nickName = new JTextField(20);
+        hotSeat = new JButton("HOTSEAT");
+        multiPlayer = new JButton("MULTIPLAYER");
 
     }
 
-    /**
-     * Set up the view in a way that is finally shown to the user.
-     */
-    private void createView() {
-        JPanel panel = new JPanel(layout);
-        setContentPane(panel);
+    public void createSetGameModeView() {
 
-        // Panel for the login view
+        JPanel setGameMode = new JPanel();
+        setGameMode.setBackground(Color.GRAY);
+        setGameMode.setPreferredSize(new Dimension(400, 100));
+        setGameMode.add(new JLabel("Chose mode"));
+        setGameMode.add(hotSeat);
+        setGameMode.add(multiPlayer);
+        add(setGameMode, GAMEMODE_CARD);
+
+    }
+
+    //TODO: Petras Job (Next line is just for Testing purposes
+    public void createGameView(){
+        JPanel game = new JPanel(new GridBagLayout());
+        add(game, GAME_CARD);
+        game.setBackground(Color.PINK);
+    }
+
+    public void createLoginView() {
+
         JPanel login = new JPanel();
         login.setBackground(Color.CYAN);
         login.setPreferredSize(new Dimension(400, 100));
@@ -77,23 +95,43 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         login.add(new JLabel("Login with your nick name:"));
         login.add(nickName);
+    }
 
-        JPanel game = new JPanel(new GridBagLayout());
-        add(game, GAME_CARD);
-        game.setBackground(Color.PINK);
-
-
+    /**
+     * Set up the view in a way that is finally shown to the user.
+     */
+    private void createView() {
+        JPanel panel = new JPanel(layout);
+        setContentPane(panel);
+        createSetGameModeView();
+        createLoginView();
+        createGameView();
     }
 
     /**
      * Add event listeners to all widgets wherever needed and let them execute the respective action.
      */
     private void addEventListeners() {
+        multiPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCard(LOGIN_CARD);
+
+            }
+        });
 
         nickName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.login(nickName.getText());
+                controller.logInMultiplayer(nickName.getText());
+            }
+        });
+
+        hotSeat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO: pass in string array with players names
+                //controller.logInHotSeat(nickNames);
             }
         });
     }

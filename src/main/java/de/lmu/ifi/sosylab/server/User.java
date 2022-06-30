@@ -25,12 +25,12 @@ public class User {
     return name;
   }
 
-  public int getGameNumber() { return gameNumber; }
-
-  protected OutputStreamWriter getWriter() {
-    return writer;
+  public int getGameNumber() {
+    return gameNumber;
   }
 
-
+  public OutputStreamWriter getWriter() {
+    return writer;
+  }
 
 }
