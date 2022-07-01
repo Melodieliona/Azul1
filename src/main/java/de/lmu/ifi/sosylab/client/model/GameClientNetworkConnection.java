@@ -192,4 +192,10 @@ public class GameClientNetworkConnection {
             e.printStackTrace();
         }
     }
+
+    public void sendTileSelection(int source, String color, int numberOfTiles) {
+    }
+
+    public void sendTilePlacement(int line, int color, int numberOfTiles) {
+    }
 }
