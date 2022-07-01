@@ -1,7 +1,9 @@
 package de.lmu.ifi.sosylab.server;
 
+import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.Tile;
+import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -293,6 +295,61 @@ public class ServerNetworkConnection {
   }
 
   /**
+   * Sends a message with all tiles that have been added to the floor line
+   * to all other players of that game.
+   * */
+  public void sendFloorLineUpdate(
+      List<User> userlist, User currentUser , TileCollection newFloorLineTiles) {
+    try {
+      for (User user : userlist) {
+        JSONObject sendNewFloorLineTiles = new JSONObject();
+        sendNewFloorLineTiles.put("type", "floorline_placement");
+        sendNewFloorLineTiles.put("nick", currentUser.getName());
+        sendNewFloorLineTiles.put("amount", newFloorLineTiles.size());
+
+        // Formats tiles like this: {.."floortile1": "BLUE", "floortile2": "RED"..}
+        // Index is relative to the newly added tiles ~ floortile1 is not the first tile on the
+        // floor line, but the first tile to be added to it now.
+        // If the starting marker was added, it will be "floortile0"
+        int tileIndex = 0;
+
+        for(Tile tile : newFloorLineTiles) {
+          String tileNumber = "floortile";
+          tileNumber += tileIndex;
+          sendNewFloorLineTiles.put(tileNumber, tile.name());
+          tileIndex++;
+        }
+
+        user.getWriter().write(sendNewFloorLineTiles + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  /**
+   * Sends their updated score to all players of a game before the next round starts.
+   * */
+  public void sendScoreUpdate(int minusPoints) {
+
+    // TODO
+  }
+
+  /**
+   * Send board state to all players at the very beginning and after a round ended.
+   * Contains:
+   * - all tiles on plates, the middle or player boards
+   * - the current score of each player
+   * - whose turn it is next (..?..)
+   * */
+  public void sendBoardState(TileCollection[] tilePlates, GameBoard[] gameBoards) {
+
+    // TODO
+
+  }
+
+  /**
    * Gets send after a tile selection was made successfully.
    * Tells the player whose turn it is, which rows he can place selected tile(s) on.
    * */
@@ -324,11 +381,11 @@ public class ServerNetworkConnection {
   public void sendNextPlayer(List<User> userlist, User currentUser) {
     try {
       for (User user : userlist) {
-        JSONObject sendClickableRowsJson = new JSONObject();
-        sendClickableRowsJson.put("type", "next turn");
-        sendClickableRowsJson.put("nick", currentUser.getName());
+        JSONObject sendNextPlayerJson = new JSONObject();
+        sendNextPlayerJson.put("type", "next turn");
+        sendNextPlayerJson.put("nick", currentUser.getName());
 
-        user.getWriter().write(sendClickableRowsJson + System.lineSeparator());
+        user.getWriter().write(sendNextPlayerJson + System.lineSeparator());
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
