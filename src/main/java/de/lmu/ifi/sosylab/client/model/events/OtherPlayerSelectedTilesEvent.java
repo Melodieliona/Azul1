@@ -3,10 +3,14 @@ package de.lmu.ifi.sosylab.client.model.events;
 public class OtherPlayerSelectedTilesEvent extends GameEvents{
   private String color;
   private int numberOfTiles;
+  private String playerName;
+  private int source;
 
-  public OtherPlayerSelectedTilesEvent(String color, int numberOfTiles){
+  public OtherPlayerSelectedTilesEvent(String color, int numberOfTiles,String playerName, int source){
     this.color = color;
     this.numberOfTiles = numberOfTiles;
+    this.playerName = playerName;
+    this.source = source;
   }
   @Override
   public String getName() {
@@ -19,5 +23,13 @@ public class OtherPlayerSelectedTilesEvent extends GameEvents{
 
   public String getColor() {
     return color;
+  }
+
+  public int getSource() {
+    return source;
+  }
+
+  public String getPlayerName() {
+    return playerName;
   }
 }

@@ -5,7 +5,9 @@ public class OtherPlayerPlacedTilesEvent extends GameEvents{
   private int numberOfTiles;
   private int line;
   private int minuspoints;
- public OtherPlayerPlacedTilesEvent(String color,int numberOfTiles,int line, int minuspoints){
+  private String name;
+ public OtherPlayerPlacedTilesEvent(String name,String color,int numberOfTiles,int line, int minuspoints){
+   this.name = name;
    this.color = color;
    this.numberOfTiles = numberOfTiles;
    this.line = line;
