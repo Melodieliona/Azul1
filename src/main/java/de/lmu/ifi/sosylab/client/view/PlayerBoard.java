@@ -4,11 +4,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 
 public class PlayerBoard extends JPanel {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
   private int tileSize = 30;
 
   public PlayerBoard() {
