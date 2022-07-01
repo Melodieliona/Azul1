@@ -117,6 +117,7 @@ public class GameClientNetworkConnection {
                 break;
             case TILE_PLACEMENT:
                 handleTilePlacement(object);
+                break;
             default:
                 throw new AssertionError("Unhandled message: " + object);
         }
