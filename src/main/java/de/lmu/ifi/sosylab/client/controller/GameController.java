@@ -45,6 +45,9 @@ public class GameController {
         }.execute();
 
     }
+    public void setGameMode(String gameMode){
+        model.setGameMode(gameMode);
+    }
 
 
     public void dispose() {
