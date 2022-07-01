@@ -4,9 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
+import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
 import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
 
+import de.lmu.ifi.sosylab.server.User;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +17,8 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serial;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 
 /**
@@ -37,6 +41,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private JButton hotSeat;
     private JButton multiPlayer;
     private JPanel game;
+    private List<String> playerList;
+    private List<PlayerBoard> boardList;
 
 
     /**
@@ -50,7 +56,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         this.controller = requireNonNull(controller);
         this.model = requireNonNull(model);
-
+        playerList = new ArrayList<>(4); // TODO get correct usercount.
+      playerList.add("Tom");
+      playerList.add("Tom");
+      playerList.add("Tom");
+      playerList.add("Tom");
+      boardList = new ArrayList<>(4);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //this.setPreferredSize(new Dimension(400, 300));
 
@@ -122,7 +133,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showCard(LOGIN_CARD);
-
+                controller.logInMultiplayer("Multiplayer");
             }
         });
 
@@ -137,7 +148,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: pass in string array with players names
-                //controller.logInHotSeat(nickNames);
+                controller.logInHotSeat("nickNames");
             }
         });
     }
@@ -146,30 +157,44 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return Layout from game with PlayerBoard.
    */
   private Component wholeGame(){
+    int playerBoard = 0;
     JPanel game = new JPanel(new BorderLayout());
+    JPanel north = (JPanel) playerBoard(playerBoard);
+    playerBoard++;
+    JPanel south = (JPanel) playerBoard(playerBoard);
+    playerBoard++;
+    if(playerList.size() == 3){
+      JPanel west = (JPanel) playerBoard(playerBoard);
+      playerBoard++;
+      west.setBackground(Color.orange);
+      west.setPreferredSize(new Dimension(340, 340 ));
 
-    JPanel north = new JPanel();
-    JPanel east = new JPanel();
-    JPanel south = (JPanel) playerBoard();
-    JPanel west = (JPanel) playerBoard();
+      game.add(west, BorderLayout.WEST);
+    }
+    if(playerList.size() == 4){
+      JPanel west = (JPanel) playerBoard(playerBoard);
+      playerBoard++;
+
+      JPanel east = (JPanel) playerBoard(playerBoard);
+
+      east.setBackground(Color.GREEN);
+      east.setPreferredSize(new Dimension(340, 340 ));
+      west.setBackground(Color.orange);
+      west.setPreferredSize(new Dimension(340, 340 ));
+
+      game.add(east, BorderLayout.EAST);
+      game.add(west, BorderLayout.WEST);
+    }
     JPanel center = new JPanel();
 
     north.setBackground(Color.RED);
     north.setPreferredSize(new Dimension(340, 340 ));
 
-    east.setBackground(Color.GREEN);
-    east.setPreferredSize(new Dimension(340, 340 ));
-
-    west.setBackground(Color.orange);
-    west.setPreferredSize(new Dimension(340, 340 ));
-
     center.setBackground(Color.yellow);
     center.setPreferredSize(new Dimension(340, 340 ));
 
     game.add(north, BorderLayout.NORTH);
-    game.add(east, BorderLayout.EAST);
     game.add(south, BorderLayout.SOUTH);
-    game.add(west, BorderLayout.WEST);
     game.add(center, BorderLayout.CENTER);
 
 
@@ -180,8 +205,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   /**
    * @return PlayerBoard with PointCounter, Name, PatternRows left and right and MouseListener.
    */
-  private Component playerBoard(){
-    PlayerBoard pb = new PlayerBoard();
+  private Component playerBoard(int playerBoard){
+    PlayerBoard pb = new PlayerBoard(25, controller);
+    boardList.add(pb);
     JPanel board = new JPanel(new BorderLayout());
 
     JPanel north2 = new JPanel();
@@ -193,7 +219,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     north2.add(nameAndPoints());
     east2.setBackground(Color.GREEN);
     west2.setBackground(Color.orange);
-    //west2.setPreferredSize(new Dimension(340, 280 ));
+    if((playerBoard == 0 || playerBoard == 1) && playerList.size() > 2){
+      west2.setPreferredSize(new Dimension(340, 280 ));
+    }
     center2.setBackground(Color.yellow);
 
     board.setPreferredSize(new Dimension(340, 340 ));
@@ -211,20 +239,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
         Point checkMouseTip = e.getPoint();
-        int mousePointX = checkMouseTip.x / 30;
-        int mousePointY = checkMouseTip.y / 30;
+        int mousePointX = checkMouseTip.x / 25;
+        int mousePointY = checkMouseTip.y / 25;
 
 
         if(mousePointX == 4 && mousePointY == 0){
           System.out.println("Clicked First Row");
         }
-        if(mousePointX > 2 && mousePointY == 1){
+        if(mousePointX > 2 && mousePointX < 5 && mousePointY == 1){
           System.out.println("Clicked Second Row");
         }
-        if(mousePointX > 1 && mousePointY == 2){
+        if(mousePointX > 1&& mousePointX < 5 && mousePointY == 2){
           System.out.println("Clicked Third Row");
         }
-        if(mousePointX > 0 && mousePointY == 3){
+        if(mousePointX > 0&& mousePointX < 5 && mousePointY == 3){
           System.out.println("Clicked Forth Row");
         }
         if(mousePointX < 5 && mousePointY == 4){

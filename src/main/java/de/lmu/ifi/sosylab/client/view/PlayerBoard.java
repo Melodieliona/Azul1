@@ -1,5 +1,7 @@
 package de.lmu.ifi.sosylab.client.view;
 
+import de.lmu.ifi.sosylab.client.controller.GameController;
+import de.lmu.ifi.sosylab.shared.GameBoard;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -13,9 +15,12 @@ public class PlayerBoard extends JPanel {
 
   @Serial
   private static final long serialVersionUID = 1L;
-  private int tileSize = 30;
+  private final int tileSize;
+  private final GameController controller;
 
-  public PlayerBoard() {
+  public PlayerBoard(int tileSize, GameController controller) {
+    this.tileSize = tileSize;
+    this.controller = controller;
   }
 
   @Override
@@ -30,7 +35,7 @@ public class PlayerBoard extends JPanel {
   private void drawField(Graphics2D g2D) {
     int chosenColor = 0;
 
-    List<Color> color = new ArrayList<Color>(5);
+    List<Color> color = new ArrayList<>(5);
     color.add(new Color(147, 145, 145));
     color.add(new Color(220, 114, 114));
     color.add(new Color(215, 151, 68));
@@ -91,19 +96,27 @@ public class PlayerBoard extends JPanel {
   }
 
   private void drawTiles(Graphics2D g2D) {
+   // Object[][] pattern = controller.player(0).getPatternLines();
+    //erstes ist reihe
+    //null Farbe
+    //1 anzahl
     //player.getPlaced tales
     //von placeTiles Reihe, Farbe, Anzahl
-    int line = 3;
 
-    for (int row = line; row < line + 1; row++) {
-      //tileRow[line].getColor;
-      int number = 3; //tileRow[line].getNumber;
-      for (int i = 0; i < number; i++) {
+    for (int line = 0; line < 4; line++) {
+     // pattern[line][0] = "red";
+     // String colo = pattern[line][0].toString();
+      int numberOfTiles = 3; //(int) pattern[line][1];
+      for (int i = 0; i < numberOfTiles; i++) {
         int col = 4 - i;
+       /* switch (colo){
+          case "red": g2D.setColor(Color.ORANGE); break;
+          default: break;
+        }*/
         g2D.setColor(Color.ORANGE);
-        g2D.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
+        g2D.fillRect(col * tileSize, line * tileSize, tileSize, tileSize);
         g2D.setColor(Color.WHITE);
-        g2D.drawRect(col * tileSize, row * tileSize, tileSize, tileSize);
+        g2D.drawRect(col * tileSize, line * tileSize, tileSize, tileSize);
       }
     }
     repaint();
