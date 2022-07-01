@@ -117,19 +117,20 @@ public class GameClientNetworkConnection {
                 break;
             case TILE_PLACEMENT:
                 handleTilePlacement(object);
+                break;
             default:
                 throw new AssertionError("Unhandled message: " + object);
         }
     }
 
     private void handleUserLeft(JSONObject object) {
-            String nick = JsonMessage.getNickname(object);
-            model.userLeft(nick);
+        String nick = JsonMessage.getNickname(object);
+        model.userLeft(nick);
     }
 
     private void handleUserJoined(JSONObject object) {
-            String nick = JsonMessage.getNickname(object);
-            model.userJoined(nick);
+        String nick = JsonMessage.getNickname(object);
+        model.userJoined(nick);
     }
 
     private void handleTileSelection(JSONObject object) {
@@ -178,7 +179,6 @@ public class GameClientNetworkConnection {
     /**
      * Send a chat message to the server.
      *
-     * @param chatMessage The {@link UserTextMessage} containing the message of the user.
      */
     public void sendMove() {
 

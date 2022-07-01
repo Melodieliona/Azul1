@@ -2,6 +2,8 @@ package de.lmu.ifi.sosylab.client.controller;
 
 import de.lmu.ifi.sosylab.client.model.GameModel;
 
+import javax.swing.*;
+
 public class GameController {
 
     /**
@@ -14,7 +16,33 @@ public class GameController {
         this.model = model;
     }
 
-    public void login(String nickname){
+    public void logInMultiplayer(String nickname){
+
+        //TODO: get rid of testing sout
+        System.out.println("Login Multoplayer Controller");
+        new SwingWorker<Boolean, Void>() {
+
+            @Override
+            protected Boolean doInBackground() {
+                model.logInMultiplayer(nickname);
+                return true;
+            }
+
+        }.execute();
+
+    }
+    //TODO: pass in string array with players names
+    public void logInHotSeat(String nickname){
+
+        new SwingWorker<Boolean, Void>() {
+
+            @Override
+            protected Boolean doInBackground() {
+               // model.logInHotSeat(nicknames);
+                return true;
+            }
+
+        }.execute();
 
     }
 

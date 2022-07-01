@@ -1,14 +1,19 @@
 package de.lmu.ifi.sosylab.shared;
 
+import java.io.Serial;
 import java.util.ArrayList;
 
 /**
- *
+ * A set of tiles.
+ * Is used for the bag, tile plates, the center area, tile selections and placements etc...
  */
 public class TileCollection extends ArrayList<Tile> {
 
+  @Serial
+  private static final long serialVersionUID = 1L;
+
   /**
-   *
+   * Creates a tile collection.
    * */
   public TileCollection() {
     super();
@@ -22,6 +27,13 @@ public class TileCollection extends ArrayList<Tile> {
     for (int i = 0; i < amount; i++) {
       this.add(color);
     }
+  }
+
+  /**
+   * Adds all tiles form a given collection to this one.
+   * */
+  public void addAllTiles(TileCollection collection) {
+    this.addAll(collection);
   }
 
   /**
