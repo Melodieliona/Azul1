@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosylab.shared;
 
+import java.io.Serial;
 import java.util.ArrayList;
 
 /**
@@ -7,6 +8,9 @@ import java.util.ArrayList;
  * Is used for the bag, tile plates, the center area, tile selections and placements etc...
  */
 public class TileCollection extends ArrayList<Tile> {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
 
   /**
    * Creates a tile collection.
