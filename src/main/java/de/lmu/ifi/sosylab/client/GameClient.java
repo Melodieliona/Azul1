@@ -21,9 +21,6 @@ public class GameClient {
 
     model.addPropertyChangeListener(gameFrame);
 
-    GameClientNetworkConnection connection = new GameClientNetworkConnection(model);
-    model.setConnection(connection);
-    connection.start();
 
     //Frame sichtbar machen
     gameFrame.setVisible(true);
