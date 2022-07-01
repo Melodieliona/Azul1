@@ -9,6 +9,7 @@ import de.lmu.ifi.sosylab.client.model.events.MiddleTilesUpdateEvent;
 import de.lmu.ifi.sosylab.client.model.events.OtherPlayerPlacedTilesEvent;
 import de.lmu.ifi.sosylab.client.model.events.OtherPlayerSelectedTilesEvent;
 import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
+import de.lmu.ifi.sosylab.client.model.events.TilesSelectedEvent;
 import de.lmu.ifi.sosylab.client.model.events.UserJoinedEvent;
 import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
 import java.beans.PropertyChangeListener;
@@ -26,9 +27,10 @@ public class GameModel {
   private GameClientNetworkConnection connection;
 
   private final int maxNumberOfPlayers = 4;
-  private int numberOfPlayersInMultiplayer=0;
+  private int numberOfPlayersInMultiplayer = 0;
 
   private Player[] players;
+  private boolean isLoggedin = false;
 
   public GameModel() {
     support = new PropertyChangeSupport(this);
@@ -73,6 +75,33 @@ public class GameModel {
     }
   }
 
+  /**
+   * Sends a request to the server to select tiles.
+   *
+   * @param color         of tile
+   * @param numberOfTiles that were selected
+   * @param source        source of selected tiles (factory plates)
+   * @param name          name of player
+   */
+  public void selectTilesRequest(int source, String color, int numberOfTiles, String name) {
+    connection.sendTileSelection(source, color, numberOfTiles);
+  }
+
+  /**
+   * Sends a request to the server to place tiles.
+   *
+   * @param color         of tile
+   * @param numberOfTiles that were selected
+   * @param line          desired row/line to place tiles
+   */
+  public void placeTilesRequest(int line, int color, int numberOfTiles) {
+    connection.sendTilePlacement(line, color, numberOfTiles);
+  }
+
+  public void selectTiles(int source, String color, int numberOfTiles) {
+    notifyListeners(new TilesSelectedEvent(source, color, numberOfTiles));
+  }
+
 
   /**
    * Places the selected tiles into the selected pattern line.
@@ -86,8 +115,6 @@ public class GameModel {
     //Hotseat mode missing
     if (gameMode.equals("Multiplayer")) {
       minuspoints = players[0].placeTiles(line, color, numberOfSelectedTiles);
-      connection.sendMove();
-      //param: playername, tile color, number of tiles, which line, minuspoints
     }
     notifyListeners(new TilesAddedEvent(color, line, numberOfSelectedTiles, minuspoints));
   }
@@ -98,8 +125,10 @@ public class GameModel {
    * @param color                 type of tile
    * @param numberOfSelectedTiles number of tiles
    */
-  public void otherPlayerSelectedTiles(String color, int numberOfSelectedTiles) {
-    notifyListeners(new OtherPlayerSelectedTilesEvent(color,numberOfSelectedTiles));
+  public void otherPlayerSelectedTiles(String color, int numberOfSelectedTiles, String playerName,
+      int source) {
+    notifyListeners(
+        new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, playerName, source));
   }
 
   /**
@@ -110,11 +139,12 @@ public class GameModel {
    * @param numberOfTiles number of tiles
    * @param minusPoints   number of minus-points
    */
-  public void otherPlayerPlacedTiles(String color, int line, int numberOfTiles, int minusPoints) {
-    notifyListeners(new OtherPlayerPlacedTilesEvent(color,numberOfTiles,line,minusPoints));
+  public void otherPlayerPlacedTiles(String name, String color, int line, int numberOfTiles,
+      int minusPoints) {
+    notifyListeners(new OtherPlayerPlacedTilesEvent(name, color, numberOfTiles, line, minusPoints));
   }
 
-  public void middleTilesUpdate(){ //collection as parameters
+  public void middleTilesUpdate() { //array of tilecollection as parameters
     notifyListeners(new MiddleTilesUpdateEvent());
   }
 
@@ -133,6 +163,7 @@ public class GameModel {
 
   public void loggedIn() {
     notifyListeners(new LoggedInEvent());
+    isLoggedin = true;
   }
 
   public void loginFailed() {
@@ -175,6 +206,6 @@ public class GameModel {
   }
 
   public boolean isLoggedIn() {
-    return true;
+    return isLoggedin;
   }
 }
