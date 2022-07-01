@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serial;
 import javax.swing.*;
 
 /**
@@ -22,6 +23,9 @@ import javax.swing.*;
  * in case of success shows afterwards the necessary elements for playing the game.
  */
 public class GameFrame extends JFrame implements PropertyChangeListener {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private transient GameModel model;
     private transient GameController controller;

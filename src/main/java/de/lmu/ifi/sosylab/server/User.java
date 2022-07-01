@@ -13,7 +13,7 @@ public class User {
   private final OutputStreamWriter writer;
 
   /**
-   *
+   * Represents a single Player.
    * */
   public User(String name, OutputStreamWriter writer, int gameNumber) {
     this.name = name;
