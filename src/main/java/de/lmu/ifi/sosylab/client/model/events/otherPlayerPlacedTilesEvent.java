@@ -1,0 +1,34 @@
+package de.lmu.ifi.sosylab.client.model.events;
+
+public class otherPlayerPlacedTilesEvent extends GameEvents{
+  private String color;
+  private int numberOfTiles;
+  private int line;
+  private int minuspoints;
+ public otherPlayerPlacedTilesEvent(String color,int numberOfTiles,int line, int minuspoints){
+   this.color = color;
+   this.numberOfTiles = numberOfTiles;
+   this.line = line;
+   this.minuspoints = minuspoints;
+ }
+  @Override
+  public String getName() {
+    return "otherPlayerPlacedTilesEvent";
+  }
+
+  public int getMinuspoints() {
+    return minuspoints;
+  }
+
+  public int getLine() {
+    return line;
+  }
+
+  public int getNumberOfTiles() {
+    return numberOfTiles;
+  }
+
+  public String getColor() {
+    return color;
+  }
+}
