@@ -1,10 +1,10 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
-public class otherPlayerSelectedTilesEvent extends GameEvents{
+public class OtherPlayerSelectedTilesEvent extends GameEvents{
   private String color;
   private int numberOfTiles;
 
-  public otherPlayerSelectedTilesEvent(String color, int numberOfTiles){
+  public OtherPlayerSelectedTilesEvent(String color, int numberOfTiles){
     this.color = color;
     this.numberOfTiles = numberOfTiles;
   }
