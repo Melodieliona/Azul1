@@ -16,7 +16,7 @@ public enum JsonMessage {
   NEXT_TURN("next turn") , ALLOWED_TILES("allowed tiles"),
   MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("board state"), BOARD_UPDATE("game state"),
   USER_LEFT("user left"), FILL_PLATES("fill plates"), POINTS("points"), GAME_ENDED("game ended"),
-  GAME_RESTART("game restart");
+  GAME_RESTART("game restart"), GAME_RESTART_REQUEST("game restart request");
 
   public static final String TYPE_FIELD = "type";
 
@@ -31,6 +31,12 @@ public enum JsonMessage {
   public static final String ROWS_FIELD = "row";
 
   public static final String COLUMNS_FIELD = "columns";
+
+  public static final String PATTERN_ROWS_FIELD = "pattern rows";
+
+  public static final String PATTERN_COLUMNS_FIELD = "pattern columns";
+
+  public static final String SCORES_FIELD = "scores";
 
   private final String jsonName;
 
@@ -207,10 +213,10 @@ public enum JsonMessage {
   }
 
   /**
-   * Gets the tiles to be placed in a given set of fields from a JsonMessage.
+   * Gets the amount of tiles to be placed in a given place in the board from a JsonMessage.
    *
    * @param object JsonMessage
-   * @return tiles as a string
+   * @return amount of tiles as a string
    */
   public static String getTiles(JSONObject object) {
     try {
@@ -247,6 +253,49 @@ public enum JsonMessage {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
   }
+
+  /**
+   * Gets the rows of the pattern fields where tiles should be placed from a JsonMessage.
+   *
+   * @param object JsonMessage
+   * @return rows as a string
+   */
+  public static String getPatternRows(JSONObject object) {
+    try {
+      return object.getString(PATTERN_ROWS_FIELD);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
+  /**
+   * Gets the columns of the pattern fields where tiles should be placed from a JsonMessage.
+   *
+   * @param object JsonMessage
+   * @return columns as a string
+   */
+  public static String getPatternColumns(JSONObject object) {
+    try {
+      return object.getString(PATTERN_COLUMNS_FIELD);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
+  /**
+   * Gets the scores of the players from a JsonMessage.
+   *
+   * @param object JsonMessage
+   * @return scores as a string
+   */
+  public static String getScores(JSONObject object) {
+    try {
+      return object.getString(SCORES_FIELD);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
 
   public String getJsonName() {
     return jsonName;

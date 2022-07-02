@@ -126,13 +126,15 @@ public class GameClientNetworkConnection {
       case MOVE_NOT_ALLOWED:
         handleMoveNotAllowed(object);
       case BOARD_UPDATE:
-        handleGameState(object);
+        handleBoardUpdate(object);
       case FILL_PLATES:
         handleFillPlates(object);
       case POINTS:
         handlePoints(object);
       case GAME_ENDED:
         handleGameEnded(object);
+      case GAME_RESTART_REQUEST:
+        handleGameRestartRequest(object);
       case GAME_RESTART:
         handleGameRestart(object);
       default:
@@ -182,24 +184,41 @@ public class GameClientNetworkConnection {
     //model. the client has just received that there was an attempt to perform an action not valid
   }
 
-  private void handleGameState(JSONObject object) {
-
+  private void handleBoardUpdate(JSONObject object) {
+    String nick = JsonMessage.getNickname(object);
+    String rowsToBeCleared = JsonMessage.getRows(object);
+    String[] patternRow = JsonMessage.getPatternRows(object).trim().split("\\s+");
+    String[] patternColumns = JsonMessage.getPatternColumns(object).trim().split("\\s+");
+    //model. the client has just received an update of the board because the round has ended,
+    // meaning that some rows should be cleared and tiles may need to be placed in the pattern.
   }
 
   private void handleFillPlates(JSONObject object) {
+    String[] colors = JsonMessage.getTileColor(object).split(",");
+    String[] amounts = JsonMessage.getTiles(object).trim().split(",");
+    //model. the client has just received an update of the plates because the round has ended,
+    // meaning that the plates must be filled with more tiles.
 
   }
 
   private void handleGameEnded(JSONObject object) {
+    //model. the client has just received that the game has ended.
+  }
 
+  private void handleGameRestartRequest(JSONObject object) {
+    String nick = JsonMessage.getNickname(object);
+    //model. the client has just received that the player <nick> wants to restart the game
   }
 
   private void handleGameRestart(JSONObject object) {
-
+    //model. the client has just received that the game will be restarted
   }
 
-  private void handlePoints(JSONObject object) {
 
+  private void handlePoints(JSONObject object) {
+    String[] nicks = JsonMessage.getNickname(object).trim().split("\\s+");
+    String[] points = JsonMessage.getScores(object).trim().split("\\s+");
+    //model. the client has just received the actual scores of each player
   }
 
 
@@ -237,13 +256,6 @@ public class GameClientNetworkConnection {
     send(login);
   }
 
-  /**
-   * Send a chat message to the server.
-   */
-  public void sendMove() {
-
-  }
-
   private synchronized void send(JSONObject message) {
     try {
       writer.write(message + System.lineSeparator());
@@ -254,6 +266,7 @@ public class GameClientNetworkConnection {
   }
 
   public void sendTileSelection(int source, String color, int numberOfTiles) {
+
   }
 
   public void sendTilePlacement(int line, int color, int numberOfTiles) {
