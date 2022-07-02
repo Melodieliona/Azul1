@@ -13,7 +13,7 @@ public enum JsonMessage {
 
   LOGIN("login"), LOGIN_SUCCESS("login success"), LOGIN_FAILED("login failed"),
   USER_JOINED("user joined"), TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
-  NEXT_TURN("next turn") , ALLOWED_TILES("Allowed event"),
+  NEXT_TURN("next turn") , ALLOWED_TILES("allowed tiles"),
   MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("board state"), GAME_STATE("game state"),
   USER_LEFT("user left");
 
@@ -24,6 +24,12 @@ public enum JsonMessage {
   public static final String PLATE_FIELD = "plate";
 
   public static final String COLOR_FIELD = "color";
+
+  public static final String TILES_FIELD = "tiles";
+
+  public static final String ROWS_FIELD = "rows";
+
+  public static final String COLUMNS_FIELD = "columns";
 
   private final String jsonName;
 
@@ -148,7 +154,7 @@ public enum JsonMessage {
   }
 
   /**
-   * Creates a message of a specified type
+   * Creates a message of a specified type.
    *
    * @param type of message
    * @return JsonMessage to be sent
@@ -158,7 +164,7 @@ public enum JsonMessage {
   }
 
   /**
-   * Gets the nick of a user that sent a JsonMessage
+   * Gets the nick of a user that sent a JsonMessage.
    *
    * @param object JsonMessage
    * @return nick
@@ -172,7 +178,7 @@ public enum JsonMessage {
   }
 
   /**
-   * Gets the factory palate from a JsonMessage
+   * Gets the factory plate from a JsonMessage.
    *
    * @param object JsonMessage
    * @return factory plate number as a string
@@ -186,7 +192,7 @@ public enum JsonMessage {
   }
 
   /**
-   * Gets the color of a selection of (a) tile(s)
+   * Gets the color of a selection of (a) tile(s) from a JsonMessage.
    *
    * @param object JsonMessage
    * @return color as a string
@@ -194,6 +200,48 @@ public enum JsonMessage {
   public static String getTileColor(JSONObject object) {
     try {
       return object.getString(COLOR_FIELD);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
+  /**
+   * Gets the tiles to be placed in a given set of fields from a JsonMessage.
+   *
+   * @param object JsonMessage
+   * @return tiles as a string
+   */
+  public static String getTiles(JSONObject object) {
+    try {
+      return object.getString(TILES_FIELD);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
+  /**
+   * Gets the rows of the fields where tiles should be placed from a JsonMessage.
+   *
+   * @param object JsonMessage
+   * @return rows as a string
+   */
+  public static String getRows(JSONObject object) {
+    try {
+      return object.getString(ROWS_FIELD);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
+  /**
+   * Gets the columns of the fields where tiles should be placed from a JsonMessage.
+   *
+   * @param object JsonMessage
+   * @return columns as a string
+   */
+  public static String getColumns(JSONObject object) {
+    try {
+      return object.getString(COLUMNS_FIELD);
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }

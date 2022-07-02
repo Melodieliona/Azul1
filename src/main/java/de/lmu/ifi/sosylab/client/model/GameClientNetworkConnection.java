@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -150,7 +151,10 @@ public class GameClientNetworkConnection {
     }
 
     private void handleTilePlacement(JSONObject object) {
+        String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
+        String[] cols = JsonMessage.getColumns(object).trim().split("\\s+");
 
+        //model.otherPlayerPlacedTiles();
     }
 
     private void handleAllowedFields(JSONObject object){
