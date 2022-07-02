@@ -378,9 +378,9 @@ public class ServerNetworkConnection {
   /**
    * Tells players whose turn it is now.
    */
-  public void sendNextPlayer(List<User> userlist, User currentUser) {
+  public void sendNextPlayer(List<User> userList, User currentUser) {
     try {
-      for (User user : userlist) {
+      for (User user : userList) {
         JSONObject sendNextPlayerJson = new JSONObject();
         sendNextPlayerJson.put("type", "next turn");
         sendNextPlayerJson.put("nick", currentUser.getName());
@@ -393,19 +393,39 @@ public class ServerNetworkConnection {
     }
   }
 
+  /**
+   * TODO Template, maybe unused
+   */
   public void sendNextRound() {
-
-
-
 
   }
 
+  /**
+   * Announces the winner of the game to all players and sends them their final score.
+   * */
+  public void announceWinner(List<User> userList, ArrayList<Integer> endScores, String winner) {
+    try {
+      int userCount = 0;
+      for (User user : userList) {
+        JSONObject winnerJson = new JSONObject();
+        winnerJson.put("type", "winner");
+        winnerJson.put("winner", winner);
 
+        JSONObject finalScores = new JSONObject();
+        finalScores.put("type", "points");
+        finalScores.put("points", endScores.get(userCount));
 
+        user.getWriter().write(winnerJson + System.lineSeparator());
+        user.getWriter().flush();
+        user.getWriter().write(finalScores + System.lineSeparator());
+        user.getWriter().flush();
 
-
-
-
+        userCount++;
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
 
   /**
    * Broadcasts that a user has disconnected from the server to all still connected clients.

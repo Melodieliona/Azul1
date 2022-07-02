@@ -1,7 +1,5 @@
 package de.lmu.ifi.sosylab.shared;
 
-import java.util.Collection;
-
 /**
  * One row, that needs to be laid out with tiles in order to place a tile on the wall.
  * */
@@ -33,7 +31,7 @@ public class LayingRow {
    * */
   public TileCollection layTilesOnRow(TileCollection collection) {
     if (color == null) {
-      if(collection.get(0) != Tile.STARTING_MARKER) {
+      if (collection.get(0) != Tile.STARTING_MARKER) {
         color = collection.get(0);
       } else if (collection.size() > 1) {
         color = collection.get(1);
@@ -42,7 +40,7 @@ public class LayingRow {
 
     TileCollection placedTiles = new TileCollection();
     for (Tile tile : collection) {
-      if(isRowFull() || tile.equals(Tile.STARTING_MARKER)) {
+      if (isRowFull() || tile.equals(Tile.STARTING_MARKER)) {
         continue;
       }
       placedTiles.add(tile);

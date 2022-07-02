@@ -55,10 +55,10 @@ public class GameBoard {
    * Adds selected tiles to the floor line. Returns all tiles that didn't fit on the floor line.
    * Updates minus points after new tiles are placed on the floor line.
    * */
-  public TileCollection addToFloorLine (TileCollection minusPointTiles) {
+  public TileCollection addToFloorLine(TileCollection minusPointTiles) {
     TileCollection tilesDidntFit = new TileCollection();
-    for(Tile tile : minusPointTiles) {
-      if(floorLine.size() == 7) {
+    for (Tile tile : minusPointTiles) {
+      if (floorLine.size() == 7) {
         tilesDidntFit.add(tile);
         continue;
       }
@@ -71,37 +71,35 @@ public class GameBoard {
 
   private void updateMinusPoints() {
     switch (floorLine.size()) {
-      case 0: minusPoints = 0;
-      break;
-      case 1: minusPoints = 1;
-        break;
-      case 2: minusPoints = 2;
-        break;
-      case 3: minusPoints = 4;
-        break;
-      case 4: minusPoints = 6;
-        break;
-      case 5: minusPoints = 8;
-        break;
-      case 6: minusPoints = 11;
-        break;
-      case 7: minusPoints = 14;
-        break;
-      default: System.out.println("Error: Floor line size cannot be over 7!");
-        break;
+      case 0 -> minusPoints = 0;
+      case 1 -> minusPoints = 1;
+      case 2 -> minusPoints = 2;
+      case 3 -> minusPoints = 4;
+      case 4 -> minusPoints = 6;
+      case 5 -> minusPoints = 8;
+      case 6 -> minusPoints = 11;
+      case 7 -> minusPoints = 14;
+      default -> System.out.println("Error: There cannot be more than 7 tiles on the floor line!");
     }
-
   }
 
-
+  /**
+   * Returns this game board's tile wall.
+   * */
   protected Tile[][] getTileWall() {
     return tileWall;
   }
 
+  /**
+   * Returns the requested laying row.
+   * */
   public LayingRow getLayingRow(int row) {
-      return layingRows[row];
+    return layingRows[row];
   }
 
+  /**
+   * Returns the name of the player this game board belongs to.
+   */
   public String getPlayerName() {
     return playerName;
   }
