@@ -3,11 +3,11 @@ package de.lmu.ifi.sosylab.server;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Represents a single game of Azul.
@@ -20,7 +20,7 @@ public class Game {
   private final List<User> userList;
 
   private final int gameNumber;
-  private int currentPlayer = -1;
+  private int currentPlayer;
 
   private TileCollection bag;
 
@@ -85,8 +85,6 @@ public class Game {
     connection.sendBoardState(tilePlates, gameBoards);
 
     connection.sendNextPlayer(userList, userList.get(currentPlayer));
-    int[] clickableRows = {1, 2, 3, 4, 5};
-    connection.sendClickableRows(userList.get(currentPlayer), clickableRows);
   }
 
 
@@ -125,7 +123,7 @@ public class Game {
     if (Collections.frequency(tilePlates[source], color) == amount) {
 
       // Add starting marker to selection if it's the first pick out of the middle.
-      if(source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
+      if (source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
         currentSelection.addAll(tilePlates[source].removeTilesOfColor(Tile.STARTING_MARKER));
         hasStartMarker = playerName;
       }
@@ -134,6 +132,8 @@ public class Game {
       currentSelectionSource = source;
 
       sendSuccessfulSelection(source, color, amount);
+      connection.sendClickableRows(
+          getUser(playerName), getClickableRows(getUser(playerName), color));
     } else {
       sendInvalidSelection();
     }
@@ -148,44 +148,44 @@ public class Game {
       return;
     }
 
-    GameBoard gameBoard = null;
-    for (GameBoard board : gameBoards) {
-      if (board.getPlayerName().equals(playerName)) {
-        gameBoard = board;
-        break;
-      }
-    }
+    GameBoard gameBoard = getPlayersGameBoard(playerName);
 
+    // Check if at least one tile of the given color can be added to the row
     if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
       TileCollection placedTiles =
-        gameBoard.getLayingRow(targetRow).layTilesOnRow(currentSelection);
+          gameBoard.getLayingRow(targetRow).layTilesOnRow(currentSelection);
 
-      // Puts tiles in the trash, that don't fit on the floor line
+      // Try to add left over tiles to the floor line
+      // Put tiles in the trash, that don't fit on the floor line
       TileCollection leftOverTiles = currentSelection;
+      leftOverTiles.removeAll(placedTiles);
+
+      TileCollection tilesPlacedOnFloorLine = leftOverTiles;
       if (placedTiles.size() < amount) {
-        leftOverTiles.removeAll(placedTiles);
-        trash.addAll(gameBoard.addToFloorLine(leftOverTiles));
+        TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(leftOverTiles);
+        tilesPlacedOnFloorLine.removeAll(didNotFitOnFloorLine);
+        trash.addAll(didNotFitOnFloorLine);
       }
+
+      moveTilesToMiddle();
 
       currentSelection.clear();
       currentSelectionSource = -1;
 
-      //TODO Wenn currentSelectionSource != 0, nicht ausgewählte Fliesen der Platte in die Mitte schieben
-
       sendSuccessfulPlacement(currentSelection, targetRow);
-      sendFloorLinePlacement(leftOverTiles);
+      sendFloorLinePlacement(tilesPlacedOnFloorLine);
 
       // If at lease one tile is left on plates or the middle, let the next player make a move.
       boolean everythingEmpty = true;
-      for(int i = 0; i < tilePlates.length; i++) {
-        if(!tilePlates[i].isEmpty()) {
+      for (int i = 0; i < tilePlates.length; i++) {
+        if (!tilePlates[i].isEmpty()) {
           everythingEmpty = false;
           setAndSendNextPlayer();
           break;
         }
       }
 
-      if(everythingEmpty) {
+      if (everythingEmpty) {
         endRound();
       }
 
@@ -204,31 +204,35 @@ public class Game {
 
     // Laying tiles on wall, clearing layingRows accordingly and put left over tiles in the trash
     for (GameBoard gameBoard : gameBoards) {
-      for(int row = 1; row <= 5; row++) {
+      for (int row = 1; row <= 5; row++) {
         if (gameBoard.getLayingRow(row).isRowFull()) {
-          gameBoard.layWallTile(row , gameBoard.getLayingRow(row).getColor());
+          gameBoard.layWallTile(row, gameBoard.getLayingRow(row).getColor());
           trash.addAll(gameBoard.getLayingRow(row).clearRow());
 
           // TODO Zusätzliche Punkte nach jedem gelegten Stein berechnen und im Gameboard addieren
-          // TODO Minuspunkte abziehen
-
 
         }
       }
+      // TODO Minuspunkte abziehen
     }
 
     // Neuen Spielstand an alle Spieler schicken
     connection.sendBoardState(tilePlates, gameBoards);
 
-    //TODO Alle Floorlines clearen, Startmarker in die Mitte und hasStartmarker = "";
+    //TODO Alle Floorlines clearen / Steine in den Trash (außer Startmarker - den einfach läschen),
+    // und hasStartmarker = "";
 
 
-    if(!(bag.isEmpty() && trash.isEmpty())) {
+    if (!(bag.isEmpty() && trash.isEmpty())) {
       startNewRound();
     } else {
 
+      String winner = "";
+      ArrayList<Integer> endscores = new ArrayList<>();
       // TODO Sonderpunkte berechnen und in Gameboards addieren
-      // TODO Sieger verkünden
+      // TODO Sieger errechnen und verkünden (Endpunktestände mitschicken)
+
+      connection.announceWinner(userList, endscores, winner);
 
     }
   }
@@ -238,19 +242,19 @@ public class Game {
     fillPlates();
 
     // Nächsten Spieler anhand Startmarker ermitteln, setzen und benachrichtigen.
-    for(User user : userList) {
-      if(user.getName().equals(hasStartMarker)) {
+    for (User user : userList) {
+      if (user.getName().equals(hasStartMarker)) {
         currentPlayer = userList.indexOf(user) + 1;
-        sendNextPlayer();
         break;
       }
     }
 
+    // TODO sendNextRound necessary ?
+    connection.sendNextRound();
+
     connection.sendBoardState(tilePlates, gameBoards);
+    sendNextPlayer();
   }
-
-
-
 
   /**
    * Sends an Error message to a user if the made selection was invalid.
@@ -288,14 +292,13 @@ public class Game {
 
   private void sendFloorLinePlacement(TileCollection leftOverTiles) {
     User currentPlayer = userList.get(this.currentPlayer);
-    connection.sendFloorLineUpdate(userList, currentPlayer ,leftOverTiles);
+    connection.sendFloorLineUpdate(userList, currentPlayer, leftOverTiles);
   }
 
 
   /**
    * Sets the player whose turn it is to make a move next.
    * Tells all other players whose turn it is next.
-   * Sends the next player the clickable rows.
    */
   private void setAndSendNextPlayer() {
     if (currentPlayer == userList.size()) {
@@ -304,28 +307,75 @@ public class Game {
       currentPlayer++;
     }
     connection.sendNextPlayer(userList, userList.get(currentPlayer));
-
-    // TODO Calculate clickable rows
-    int[] clickableRows = {1, 2, 3, 4, 5};
-
-
-    connection.sendClickableRows(userList.get(currentPlayer), clickableRows);
   }
 
   /**
    * Tells all other players whose turn it is next, but does not set the currentplayer value.
    * It needs to be set prior to this.
-   * Sends the next player the clickable rows.
    */
   private void sendNextPlayer() {
     connection.sendNextPlayer(userList, userList.get(currentPlayer));
-
-    // TODO Calculate clickable rows
-    int[] clickableRows = {1, 2, 3, 4, 5};
-
-    connection.sendClickableRows(userList.get(currentPlayer), clickableRows);
   }
 
+  /**
+   * Moves tiles, that are left on a plate after a selection was made, to the middle.
+   * */
+  private void moveTilesToMiddle() {
+    if (currentSelectionSource != 0) {
+      int amountOfLeftTiles = tilePlates[currentSelectionSource].size();
+      for (int i = 0; i < amountOfLeftTiles; i++) {
+        tilePlates[0].add(tilePlates[currentSelectionSource].remove(i));
+      }
+    }
+  }
+
+  /**
+   * Returns all laying row indices that can be clicked on a player's board for a selected color.
+   * */
+  private int[] getClickableRows(User user, Tile color) {
+    List<Integer> rowList = new ArrayList<>();
+    GameBoard gameBoard = getPlayersGameBoard(user.getName());
+    for (int i = 1; i < 5; i++) {
+      if (gameBoard.getLayingRow(i).canAddTilesToLayingRow(color)) {
+        rowList.add(i);
+      }
+    }
+
+    int[] clickableRows = new int[rowList.size()];
+    int i = 0;
+    for (int row : rowList) {
+      clickableRows[i] = row;
+      i++;
+    }
+    return clickableRows;
+  }
+
+  /**
+   * Returns the user for a given name.
+   * */
+  private User getUser(String userAsString) {
+    User userAsUser = null;
+    for (User user : userList) {
+      if (user.getName().equals(userAsString)) {
+        userAsUser = user;
+      }
+    }
+    return userAsUser;
+  }
+
+  /**
+   * Returns a players game board.
+   */
+  private GameBoard getPlayersGameBoard(String playerName) {
+    GameBoard gameBoard = null;
+    for (GameBoard board : gameBoards) {
+      if (board.getPlayerName().equals(playerName)) {
+        gameBoard = board;
+        break;
+      }
+    }
+    return gameBoard;
+  }
 
 
   /**
