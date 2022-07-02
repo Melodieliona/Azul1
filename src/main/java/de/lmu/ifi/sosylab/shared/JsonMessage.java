@@ -14,8 +14,9 @@ public enum JsonMessage {
   LOGIN("login"), LOGIN_SUCCESS("login success"), LOGIN_FAILED("login failed"),
   USER_JOINED("user joined"), TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
   NEXT_TURN("next turn") , ALLOWED_TILES("allowed tiles"),
-  MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("board state"), GAME_STATE("game state"),
-  USER_LEFT("user left");
+  MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("board state"), BOARD_UPDATE("game state"),
+  USER_LEFT("user left"), FILL_PLATES("fill plates"), POINTS("points"), GAME_ENDED("game ended"),
+  GAME_RESTART("game restart");
 
   public static final String TYPE_FIELD = "type";
 
@@ -27,7 +28,7 @@ public enum JsonMessage {
 
   public static final String TILES_FIELD = "tiles";
 
-  public static final String ROWS_FIELD = "rows";
+  public static final String ROWS_FIELD = "row";
 
   public static final String COLUMNS_FIELD = "columns";
 
