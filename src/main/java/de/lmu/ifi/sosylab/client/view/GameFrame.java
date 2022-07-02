@@ -4,7 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
-import de.lmu.ifi.sosylab.client.model.TableMiddle;
+import de.lmu.ifi.sosylab.client.model.Pile;
+import de.lmu.ifi.sosylab.client.model.Plate;
 import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
 import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
 import java.awt.BorderLayout;
@@ -42,6 +43,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private static final String LOGIN_CARD = "login";
   private static final String GAME_CARD = "game";
   private static final String GAMEMODE_CARD = "gameMode";
+  private final int tileSize = 27;
   private transient GameModel model;
   private transient GameController controller;
   private CardLayout layout;
@@ -49,9 +51,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JButton hotSeat;
   private JButton multiPlayer;
   private JPanel game;
+  private JPanel middle = new JPanel();
   private List<String> playerList;
   private List<PlayerBoard> boardList;
-  private final int tileSize = 27;
 
 
   /**
@@ -166,7 +168,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return Layout from game with PlayerBoard.
    */
   private Component wholeGame() {
-    TableMiddle tm = new TableMiddle(controller);
+    Plate tm = new Plate(controller);
     int playerBoard = 0;
     JPanel game = new JPanel(new BorderLayout());
     JPanel north = (JPanel) playerBoard(playerBoard);
@@ -195,7 +197,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       game.add(east, BorderLayout.EAST);
       game.add(west, BorderLayout.WEST);
     }
-    JPanel center = tm ;
+    createPlates(9);
+    createPile();
+    JPanel center = middle;
 
     north.setBackground(Color.RED);
     center.setBackground(Color.yellow);
@@ -247,7 +251,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
        */
       @Override
       public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
         Point checkMouseTip = e.getPoint();
         int mousePointX = checkMouseTip.x / tileSize;
         int mousePointY = checkMouseTip.y / tileSize;
@@ -284,6 +287,73 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private Component nameAndPoints(int playerBoard) {
     JLabel counter = new JLabel("Player: " + playerList.get(playerBoard) + " Points: ");
     return counter;
+  }
+
+  /**
+   * Creates all the Plates for the middle.
+   *
+   * @param plateNumber - Number of plates.
+   * @return - middle.
+   */
+  private Component createPlates(int plateNumber) {
+    for (int i = 0; i < plateNumber; i++) {
+      middle.add(createPlate(i));
+    }
+    return middle;
+  }
+
+  /**
+   * Creates a single Plate with Tiles.
+   * Adds Mouselistener so that Tiles can be clicked.
+   *
+   * @param plateNumber - Platenumber so that the model knows wich plate was clicked.
+   * @return - plate.
+   */
+  private Component createPlate(int plateNumber) {
+    Plate tm = new Plate(controller);
+    JPanel plate = tm;
+    plate.setPreferredSize(new Dimension(100, 120));
+
+    plate.addMouseListener(new MouseAdapter() {
+      /**
+       * {@inheritDoc}
+       *
+       * @param e
+       */
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        Point checkMouseTip = e.getPoint();
+        int mousePointX = checkMouseTip.x / 20;
+        int mousePointY = checkMouseTip.y / 20;
+
+
+        if (mousePointX == 1 && mousePointY == 1) {
+          System.out.println("Plate: " + plateNumber + " Tile 1");
+        }
+        if (mousePointX == 2 && mousePointY == 1) {
+          System.out.println("Plate: " + plateNumber + " Tile 2");
+        }
+        if (mousePointX == 1 && mousePointY == 3) {
+          System.out.println("Plate: " + plateNumber + " Tile 3");
+        }
+        if (mousePointX == 2 && mousePointY == 3) {
+          System.out.println("Plate: " + plateNumber + " Tile 4");
+        }
+        if (mousePointX == 3 && mousePointY == 3) {
+          System.out.println("Plate: " + plateNumber + " Tile 5");
+        }
+      }
+    });
+
+    return plate;
+  }
+
+  private Component createPile() {
+    Pile pile = new Pile(controller);
+    middle.add(pile);
+
+    // Für Mouselistener. Checken ob dort Tile liegt. Falls Nein nichts, falls Ja Tile auswählen.
+    return middle;
   }
 
   @Override

@@ -1,7 +1,6 @@
 package de.lmu.ifi.sosylab.client.view;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
-import de.lmu.ifi.sosylab.shared.GameBoard;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -17,10 +16,12 @@ public class PlayerBoard extends JPanel {
   private static final long serialVersionUID = 1L;
   private final int tileSize;
   private final GameController controller;
+  private final int player;
 
-  public PlayerBoard(int tileSize, GameController controller) {
+  public PlayerBoard(int player, int tileSize, GameController controller) {
     this.tileSize = tileSize;
     this.controller = controller;
+    this.player = player;
   }
 
   @Override
@@ -96,16 +97,16 @@ public class PlayerBoard extends JPanel {
   }
 
   private void drawTiles(Graphics2D g2D) {
-   // Object[][] pattern = controller.player(0).getPatternLines();
+    //Object[][] pattern = controller.getPlayer(player).getPatternLines();
     //erstes ist reihe
     //null Farbe
     //1 anzahl
     //player.getPlaced tales
     //von placeTiles Reihe, Farbe, Anzahl
 
-    for (int line = 0; line < 4; line++) {
-     // pattern[line][0] = "red";
-     // String colo = pattern[line][0].toString();
+    for (int line = 3; line < 4; line++) {
+      // pattern[line][0] = "red";
+      // String colo = pattern[line][0].toString();
       int numberOfTiles = 3; //(int) pattern[line][1];
       for (int i = 0; i < numberOfTiles; i++) {
         int col = 4 - i;
