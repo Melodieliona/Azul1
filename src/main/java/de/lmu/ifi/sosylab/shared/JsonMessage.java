@@ -145,10 +145,11 @@ public enum JsonMessage {
    * @param color of the desired tiles
    * @return JsonMessage to be sent
    */
-  public static JSONObject selectTile(String color) {
+  public static JSONObject selectTile(String color, int plate) {
     try {
       JSONObject message = createMessageOfType(TILE_SELECTION);
-      message.put(PLATE_FIELD, color.toUpperCase());
+      message.put(PLATE_FIELD, plate);
+      message.put(COLOR_FIELD, color);
 
       return message;
     } catch (JSONException e) {
@@ -156,9 +157,18 @@ public enum JsonMessage {
     }
   }
 
-  public static JSONObject boardState() {
-   return null;
+  public static JSONObject placeTiles(String color, int row) {
+    try {
+      JSONObject message = createMessageOfType(TILE_SELECTION);
+      message.put(ROWS_FIELD, row);
+      message.put(COLOR_FIELD, color);
+
+      return message;
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to create a json object.", e);
+    }
   }
+
 
   /**
    * Creates a message of a specified type.

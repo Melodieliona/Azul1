@@ -94,7 +94,7 @@ public class GameModel {
    * @param numberOfTiles that were selected
    * @param line          desired row/line to place tiles
    */
-  public void placeTilesRequest(int line, int color, int numberOfTiles) {
+  public void placeTilesRequest(int line, int color, int numberOfTiles) { //color should be string
     connection.sendTilePlacement(line, color, numberOfTiles);
   }
 

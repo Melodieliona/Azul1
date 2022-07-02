@@ -9,7 +9,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -266,9 +265,12 @@ public class GameClientNetworkConnection {
   }
 
   public void sendTileSelection(int source, String color, int numberOfTiles) {
-
+    JSONObject tileSelection = JsonMessage.selectTile(color, source);
+    send(tileSelection);
   }
 
-  public void sendTilePlacement(int line, int color, int numberOfTiles) {
+  public void sendTilePlacement(int line, int color, int numberOfTiles) { //color should be string
+    JSONObject tilePlacement = JsonMessage.placeTiles(color, line);
+    send(tilePlacement);
   }
 }
