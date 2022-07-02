@@ -12,23 +12,36 @@ import org.json.JSONObject;
 public enum JsonMessage {
 
   LOGIN("login"), LOGIN_SUCCESS("login success"), LOGIN_FAILED("login failed"),
-  USER_JOINED("user joined"), GAME_MODE("game mode"), TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
-  POINTS("points"), NEXT_TURN("next turn") , ALLOWED_EVENT("Allowed event"),
-  MOVE_ALLOWED("move allowed"), BOARD_STATE("board state"),
+  USER_JOINED("user joined"), TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
+  NEXT_TURN("next turn") , ALLOWED_TILES("Allowed event"),
+  MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("board state"), GAME_STATE("game state"),
   USER_LEFT("user left");
 
   public static final String TYPE_FIELD = "type";
 
   public static final String NICK_FIELD = "nick";
 
-  public static final String CONTENT_FIELD = "content";
+  public static final String PLATE_FIELD = "plate";
+
+  public static final String COLOR_FIELD = "color";
 
   private final String jsonName;
 
+  /**
+   * Constructor for a JsonMessage.
+   *
+   * @param jsonName the type of JsonMessage
+   */
   JsonMessage(String jsonName) {
     this.jsonName = jsonName;
   }
 
+  /**
+   * Gets the type of JsonMessage.
+   *
+   * @param message the JsonMessage
+   * @return type of JsonMessage
+   */
   public static JsonMessage typeOf(JSONObject message) {
     String typeName;
     try {
@@ -44,6 +57,12 @@ public enum JsonMessage {
         () -> new IllegalArgumentException(String.format("Unknown message type '%s'", typeName)));
   }
 
+  /**
+   * Creates JsonMessage to attempt Login.
+   *
+   * @param nickname nick to be logged in with
+   * @return JsonMessage to be sent
+   */
   public static JSONObject login(String nickname) {
     try {
       return createMessageOfType(LOGIN).put(NICK_FIELD, nickname);
@@ -52,6 +71,11 @@ public enum JsonMessage {
     }
   }
 
+  /**
+   * Creates a message to be sent when a login was successful.
+   *
+   * @return JsonMessage to be sent
+   */
   public static JSONObject loginSuccess() {
     try {
       return createMessageOfType(LOGIN_SUCCESS);
@@ -60,6 +84,12 @@ public enum JsonMessage {
     }
   }
 
+
+  /**
+   * Creates a message to be sent when a login failed.
+   *
+   * @return JsonMessage to be sent
+   */
   public static JSONObject loginFailed() {
     try {
       return createMessageOfType(LOGIN_FAILED);
@@ -68,6 +98,12 @@ public enum JsonMessage {
     }
   }
 
+  /**
+   * Creates a message to be sent when a user joined.
+   *
+   * @param nickname nick of the user
+   * @return JsonMessage to be sent
+   */
   public static JSONObject userJoined(String nickname) {
     try {
       return createMessageOfType(USER_JOINED).put(NICK_FIELD, nickname);
@@ -76,6 +112,12 @@ public enum JsonMessage {
     }
   }
 
+  /**
+   * Creates a message to be sent when a login left.
+   *
+   * @param nickname nick of the user
+   * @return JsonMessage to be sent
+   */
   public static JSONObject userLeft(String nickname) {
     try {
       return createMessageOfType(USER_LEFT).put(NICK_FIELD, nickname);
@@ -84,10 +126,16 @@ public enum JsonMessage {
     }
   }
 
-  public static JSONObject selectTile(String content) {
+  /**
+   * Creates a message to be sent when a tile selection has been made.
+   *
+   * @param color of the desired tiles
+   * @return JsonMessage to be sent
+   */
+  public static JSONObject selectTile(String color) {
     try {
       JSONObject message = createMessageOfType(TILE_SELECTION);
-      message.put(CONTENT_FIELD, content);
+      message.put(PLATE_FIELD, color.toUpperCase());
 
       return message;
     } catch (JSONException e) {
@@ -99,10 +147,22 @@ public enum JsonMessage {
    return null;
   }
 
+  /**
+   * Creates a message of a specified type
+   *
+   * @param type of message
+   * @return JsonMessage to be sent
+   */
   private static JSONObject createMessageOfType(JsonMessage type) throws JSONException {
     return new JSONObject().put(TYPE_FIELD, type.getJsonName());
   }
 
+  /**
+   * Gets the nick of a user that sent a JsonMessage
+   *
+   * @param object JsonMessage
+   * @return nick
+   */
   public static String getNickname(JSONObject object) {
     try {
       return object.getString(NICK_FIELD);
@@ -111,10 +171,29 @@ public enum JsonMessage {
     }
   }
 
-
-  public static String getContent(JSONObject object) {
+  /**
+   * Gets the factory palate from a JsonMessage
+   *
+   * @param object JsonMessage
+   * @return factory plate number as a string
+   */
+  public static String getFactoryPlate(JSONObject object) {
     try {
-      return object.getString(CONTENT_FIELD);
+      return object.getString(PLATE_FIELD);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
+  /**
+   * Gets the color of a selection of (a) tile(s)
+   *
+   * @param object JsonMessage
+   * @return color as a string
+   */
+  public static String getTileColor(JSONObject object) {
+    try {
+      return object.getString(COLOR_FIELD);
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }

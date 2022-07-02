@@ -118,6 +118,16 @@ public class GameClientNetworkConnection {
             case TILE_PLACEMENT:
                 handleTilePlacement(object);
                 break;
+            case ALLOWED_FIELDS:
+                handleAllowedFields(object);
+            case ALLOWED_TILES:
+                handleAllowedTiles(object);
+            case NEXT_TURN:
+                handleNextTurn(object);
+            case MOVE_NOT_ALLOWED:
+                handleMoveNotAllowed(object);
+            case GAME_STATE:
+                handleGameState(object);
             default:
                 throw new AssertionError("Unhandled message: " + object);
         }
@@ -134,10 +144,32 @@ public class GameClientNetworkConnection {
     }
 
     private void handleTileSelection(JSONObject object) {
-
+        String color = JsonMessage.getTileColor(object);
+        String plate = JsonMessage.getFactoryPlate(object);
+        //model.otherPlayerSelectedTiles();
     }
 
     private void handleTilePlacement(JSONObject object) {
+
+    }
+
+    private void handleAllowedFields(JSONObject object){
+
+    }
+
+    private void handleAllowedTiles(JSONObject object) {
+
+    }
+
+    private void handleNextTurn(JSONObject object){
+
+    }
+
+    private void handleMoveNotAllowed(JSONObject object){
+
+    }
+
+    private void handleGameState(JSONObject object){
 
     }
 
