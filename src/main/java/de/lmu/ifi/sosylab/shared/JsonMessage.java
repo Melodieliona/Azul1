@@ -13,7 +13,7 @@ public enum JsonMessage {
 
   LOGIN("login"), LOGIN_SUCCESS("login success"), LOGIN_FAILED("login failed"),
   USER_JOINED("user joined"), TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
-  NEXT_TURN("next turn") , ALLOWED_TILES("allowed tiles"),
+  NEXT_TURN("next turn"), ALLOWED_TILES("allowed tiles"),
   MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("board state"), BOARD_UPDATE("game state"),
   USER_LEFT("user left"), FILL_PLATES("fill plates"), POINTS("points"), GAME_ENDED("game ended"),
   GAME_RESTART("game restart"), GAME_RESTART_REQUEST("game restart request");

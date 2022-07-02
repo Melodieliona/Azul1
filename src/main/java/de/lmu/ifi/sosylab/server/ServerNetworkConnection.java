@@ -299,7 +299,7 @@ public class ServerNetworkConnection {
    * to all other players of that game.
    * */
   public void sendFloorLineUpdate(
-      List<User> userlist, User currentUser , TileCollection newFloorLineTiles) {
+      List<User> userlist, User currentUser, TileCollection newFloorLineTiles) {
     try {
       for (User user : userlist) {
         JSONObject sendNewFloorLineTiles = new JSONObject();
@@ -307,15 +307,14 @@ public class ServerNetworkConnection {
         sendNewFloorLineTiles.put("nick", currentUser.getName());
         sendNewFloorLineTiles.put("amount", newFloorLineTiles.size());
 
-        // Formats tiles like this: {.."floortile1": "BLUE", "floortile2": "RED"..}
-        // Index is relative to the newly added tiles ~ floortile1 is not the first tile on the
+        // Formats tiles like this: {.."floortile0": "BLUE", "floortile1": "RED"..}
+        // Index is relative to the newly added tiles ~ floortile0 is not the first tile on the
         // floor line, but the first tile to be added to it now.
         // If the starting marker was added, it will be "floortile0"
         int tileIndex = 0;
 
-        for(Tile tile : newFloorLineTiles) {
-          String tileNumber = "floortile";
-          tileNumber += tileIndex;
+        for (Tile tile : newFloorLineTiles) {
+          String tileNumber = "floortile" + tileIndex;
           sendNewFloorLineTiles.put(tileNumber, tile.name());
           tileIndex++;
         }
@@ -394,33 +393,42 @@ public class ServerNetworkConnection {
   }
 
   /**
-   * TODO Template, maybe unused
+   * TODO Template, maybe unused.
    */
   public void sendNextRound() {
 
   }
 
   /**
-   * Announces the winner of the game to all players and sends them their final score.
+   * Announces the winner(s) of the game to all players and sends the final scores.
+   * Format winnerJson: {"type": "winner", "amount": int amountOfWinners,
+   *                     "winner0": ... [, winner1": ... [, "winner2": ... [, "winner3": ...]]]}
+   * Format finalScoresJson: {"type": "points", "points0": ..., "points1": ..., "points2": ...,
+   *                                            "points3": ...}
    * */
-  public void announceWinner(List<User> userList, ArrayList<Integer> endScores, String winner) {
+  public void announceWinner(List<User> userList, int[] endScores, ArrayList<String> winners) {
     try {
-      int userCount = 0;
       for (User user : userList) {
         JSONObject winnerJson = new JSONObject();
         winnerJson.put("type", "winner");
-        winnerJson.put("winner", winner);
+        winnerJson.put("amount", winners.size());
+        // winners are 0-indexed
+        for (int i = 0; i < winners.size(); i++) {
+          String winnerIndex = "winner" + i;
+          winnerJson.put(winnerIndex, winners.get(i));
+        }
 
-        JSONObject finalScores = new JSONObject();
-        finalScores.put("type", "points");
-        finalScores.put("points", endScores.get(userCount));
+        JSONObject finalScoresJson = new JSONObject();
+        finalScoresJson.put("type", "points");
+        for (int i = 0; i < endScores.length; i++) {
+          String scoreOfPlayerIndex = "points" + i;
+          finalScoresJson.put(scoreOfPlayerIndex, endScores[i]);
+        }
 
         user.getWriter().write(winnerJson + System.lineSeparator());
         user.getWriter().flush();
-        user.getWriter().write(finalScores + System.lineSeparator());
+        user.getWriter().write(finalScoresJson + System.lineSeparator());
         user.getWriter().flush();
-
-        userCount++;
       }
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());

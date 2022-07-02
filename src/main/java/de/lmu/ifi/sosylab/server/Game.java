@@ -4,7 +4,7 @@ import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -37,7 +37,7 @@ public class Game {
   // Maybe later used to undo a selection
   private int currentSelectionSource = -1;
 
-  private String hasStartMarker;
+  private String startsAtNextRound;
 
 
 
@@ -78,7 +78,7 @@ public class Game {
     Random rand = new Random();
     currentPlayer = rand.nextInt(userList.size()) + 1;
 
-    hasStartMarker = userList.get(currentPlayer).getName();
+    startsAtNextRound = "";
 
     fillPlates();
 
@@ -91,6 +91,7 @@ public class Game {
 
   /**
    * Fill plates with tiles from the bag.
+   * Put start marker in the middle.
    * */
   private void fillPlates() {
     for (int i = 0; i < tilePlates.length; ++i) {
@@ -125,7 +126,7 @@ public class Game {
       // Add starting marker to selection if it's the first pick out of the middle.
       if (source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
         currentSelection.addAll(tilePlates[source].removeTilesOfColor(Tile.STARTING_MARKER));
-        hasStartMarker = playerName;
+        startsAtNextRound = playerName;
       }
 
       currentSelection.addAllTiles(tilePlates[source].removeTilesOfColor(color));
@@ -160,10 +161,9 @@ public class Game {
       TileCollection leftOverTiles = currentSelection;
       leftOverTiles.removeAll(placedTiles);
 
-      TileCollection tilesPlacedOnFloorLine = leftOverTiles;
       if (placedTiles.size() < amount) {
         TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(leftOverTiles);
-        tilesPlacedOnFloorLine.removeAll(didNotFitOnFloorLine);
+        leftOverTiles.removeAll(didNotFitOnFloorLine);
         trash.addAll(didNotFitOnFloorLine);
       }
 
@@ -173,12 +173,12 @@ public class Game {
       currentSelectionSource = -1;
 
       sendSuccessfulPlacement(currentSelection, targetRow);
-      sendFloorLinePlacement(tilesPlacedOnFloorLine);
+      sendFloorLinePlacement(leftOverTiles);
 
       // If at lease one tile is left on plates or the middle, let the next player make a move.
       boolean everythingEmpty = true;
-      for (int i = 0; i < tilePlates.length; i++) {
-        if (!tilePlates[i].isEmpty()) {
+      for (TileCollection tilePlate : tilePlates) {
+        if (!tilePlate.isEmpty()) {
           everythingEmpty = false;
           setAndSendNextPlayer();
           break;
@@ -203,37 +203,55 @@ public class Game {
   private void endRound() {
 
     // Laying tiles on wall, clearing layingRows accordingly and put left over tiles in the trash
+    //
     for (GameBoard gameBoard : gameBoards) {
-      for (int row = 1; row <= 5; row++) {
+      for (int row = 0; row < 5; row++) {
         if (gameBoard.getLayingRow(row).isRowFull()) {
           gameBoard.layWallTile(row, gameBoard.getLayingRow(row).getColor());
           trash.addAll(gameBoard.getLayingRow(row).clearRow());
 
           // TODO Zusätzliche Punkte nach jedem gelegten Stein berechnen und im Gameboard addieren
+          gameBoard.updatePlusPoints();
 
         }
       }
       // TODO Minuspunkte abziehen
+
+      // Clear floor line - delete start marker if present - add cleared tiles to trash
+      // clearFloorLine() also resets the floor line minus points
+      TileCollection floorLineTiles = gameBoard.clearFloorLine();
+
+      floorLineTiles.remove(Tile.STARTING_MARKER);
+
+      trash.addAll(floorLineTiles);
     }
 
     // Neuen Spielstand an alle Spieler schicken
     connection.sendBoardState(tilePlates, gameBoards);
 
-    //TODO Alle Floorlines clearen / Steine in den Trash (außer Startmarker - den einfach läschen),
-    // und hasStartmarker = "";
-
-
-    if (!(bag.isEmpty() && trash.isEmpty())) {
+    if (!hasCompletedWallRow() && !(bag.isEmpty() && trash.isEmpty())) {
       startNewRound();
     } else {
 
-      String winner = "";
-      ArrayList<Integer> endscores = new ArrayList<>();
       // TODO Sonderpunkte berechnen und in Gameboards addieren
-      // TODO Sieger errechnen und verkünden (Endpunktestände mitschicken)
 
-      connection.announceWinner(userList, endscores, winner);
+      // Gather final scores
+      int[] endScores = new int[userList.size()];
+      for (User user : userList) {
+        endScores[userList.indexOf(user)] = getPlayersGameBoard(user.getName()).getCurrentScore();
+      }
 
+      int highestScore = Arrays.stream(endScores).max().getAsInt();
+
+      // Calculate winner(s)
+      ArrayList<String> winners = new ArrayList<>();
+      for (int i = 0; i < endScores.length; i++) {
+        if (endScores[i] == highestScore) {
+          winners.add(userList.get(i).getName());
+        }
+      }
+
+      connection.announceWinner(userList, endScores, winners);
     }
   }
 
@@ -243,8 +261,9 @@ public class Game {
 
     // Nächsten Spieler anhand Startmarker ermitteln, setzen und benachrichtigen.
     for (User user : userList) {
-      if (user.getName().equals(hasStartMarker)) {
+      if (user.getName().equals(startsAtNextRound)) {
         currentPlayer = userList.indexOf(user) + 1;
+        startsAtNextRound = "";
         break;
       }
     }
@@ -327,6 +346,29 @@ public class Game {
         tilePlates[0].add(tilePlates[currentSelectionSource].remove(i));
       }
     }
+  }
+
+  /**
+   * Determines if at least one player has completed a wall row.
+   * */
+  private boolean hasCompletedWallRow() {
+    boolean playerHasFullWallRow = false;
+    for (GameBoard gameBoard : gameBoards) {
+      Tile[][] tileWall = gameBoard.getTileWall();
+      for (int j = 0; j < tileWall.length; j++) {
+        int numberOfTilesOnWallRow = 0;
+        for (int i = 0; i < tileWall[i].length; i++) {
+          if (tileWall[i][j] != null) {
+            numberOfTilesOnWallRow++;
+          }
+        }
+        if (numberOfTilesOnWallRow == 5) {
+          playerHasFullWallRow = true;
+          break;
+        }
+      }
+    }
+    return playerHasFullWallRow;
   }
 
   /**
