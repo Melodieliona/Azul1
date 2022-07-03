@@ -270,7 +270,7 @@ public class GameClientNetworkConnection {
   }
 
   public void sendTilePlacement(int line, int color, int numberOfTiles) { //color should be string
-    JSONObject tilePlacement = JsonMessage.placeTiles(color, line);
-    send(tilePlacement);
+    //JSONObject tilePlacement = JsonMessage.placeTiles(color, line);
+    //send(tilePlacement);
   }
 }

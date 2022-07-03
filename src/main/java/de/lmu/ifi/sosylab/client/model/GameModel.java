@@ -5,11 +5,7 @@ import static java.util.Objects.requireNonNull;
 import de.lmu.ifi.sosylab.client.model.events.GameEvents;
 import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
 import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.MiddleTilesUpdateEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerPlacedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerSelectedTilesEvent;
 import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesSelectedEvent;
 import de.lmu.ifi.sosylab.client.model.events.UserJoinedEvent;
 import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
 import java.beans.PropertyChangeListener;
@@ -26,28 +22,26 @@ public class GameModel {
 
   private GameClientNetworkConnection connection;
 
-  private final int maxNumberOfPlayers = 4;
-  private int numberOfPlayersInMultiplayer = 0;
+  private final int maxNumberOfPlayers=4;
+  private int numberOfPlayers=0;
 
   private Player[] players;
-  private boolean isLoggedin = false;
 
   public GameModel() {
     support = new PropertyChangeSupport(this);
   }
 
-  public void setGameMode(String gMode) {
-    if (gMode.equals("Multiplayer")) {
+  public void setGameMode(String gMode){
+    if(gMode.equals("Multiplayer")){
       gameMode = "Multiplayer";
       GameClientNetworkConnection connection = new GameClientNetworkConnection(this);
       setConnection(connection);
       connection.start();
-    } else {
+    }else {
       gameMode = "Hot seat";
       //Hot seat
     }
   }
-
   /**
    * Add a network connector to this model.
    *
@@ -57,51 +51,23 @@ public class GameModel {
     this.connection = connection;
   }
 
-  public void logInMultiplayer(String name) {
-    //Testing
-    loggedIn();
+  public void logInMultiplayer(String name){
     players = new Player[1];
-    players[0] = new Player(name);
+    players[0]=new Player(name);
     connection.sendLogin(name);
-    numberOfPlayersInMultiplayer++;
-  }
 
-  public void logInHotSeat(String[] playersName) {
-    int numberOfPlayers = playersName.length;
-    players = new Player[numberOfPlayers];
-    for (int i = 0; i < numberOfPlayers; i++) {
-      players[i] = new Player(playersName[i]);
-      notifyListeners(new UserJoinedEvent(playersName[i]));
-    }
+    //TODO: testing
+    loggedIn();
   }
-
-  /**
-   * Sends a request to the server to select tiles.
-   *
-   * @param color         of tile
-   * @param numberOfTiles that were selected
-   * @param source        source of selected tiles (factory plates)
-   * @param name          name of player
-   */
-  public void selectTilesRequest(int source, String color, int numberOfTiles, String name) {
-    connection.sendTileSelection(source, color, numberOfTiles);
+  public void logInHotSeat(String[] playersName){
+   numberOfPlayers = playersName.length;
+   gameMode = "Hot Seat";
+   players = new Player[numberOfPlayers];
+   for(int i=0;i<numberOfPlayers;i++){
+     players[i]=new Player(playersName[i]);
+     notifyListeners(new UserJoinedEvent(playersName[i]));
+   }
   }
-
-  /**
-   * Sends a request to the server to place tiles.
-   *
-   * @param color         of tile
-   * @param numberOfTiles that were selected
-   * @param line          desired row/line to place tiles
-   */
-  public void placeTilesRequest(int line, int color, int numberOfTiles) { //color should be string
-    connection.sendTilePlacement(line, color, numberOfTiles);
-  }
-
-  public void selectTiles(int source, String color, int numberOfTiles) {
-    notifyListeners(new TilesSelectedEvent(source, color, numberOfTiles));
-  }
-
 
   /**
    * Places the selected tiles into the selected pattern line.
@@ -111,41 +77,37 @@ public class GameModel {
    * @param line                  selected to place tiles
    */
   public void placeTiles(String color, int numberOfSelectedTiles, int line) {
-    int minuspoints = 0;
+    int minuspoints=0;
     //Hotseat mode missing
-    if (gameMode.equals("Multiplayer")) {
-      minuspoints = players[0].placeTiles(line, color, numberOfSelectedTiles);
+    if(gameMode.equals("Multiplayer")){
+       minuspoints = players[0].placeTiles(line,color,numberOfSelectedTiles);
+       //TODO sendMove does not exist
+       //connection.sendMove();
+       //param: playername, tile color, number of tiles, which line, minuspoints
     }
-    notifyListeners(new TilesAddedEvent(color, line, numberOfSelectedTiles, minuspoints));
+       notifyListeners(new TilesAddedEvent(color,line,numberOfSelectedTiles,minuspoints));
   }
 
   /**
    * Notifies the subscribed view that another player placed specific tiles
    *
-   * @param color                 type of tile
+   * @param color type of tile
    * @param numberOfSelectedTiles number of tiles
    */
-  public void otherPlayerSelectedTiles(String color, int numberOfSelectedTiles, String playerName,
-      int source) {
-    notifyListeners(
-        new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, playerName, source));
+  public void otherPlayerSelectedTiles(String color, int numberOfSelectedTiles){
+    //notifyListeners(new otherPlayerSelectedTilesEvent(color,numberOfSelectedTiles))
   }
 
   /**
    * Notifies the subscribed view that another player placed specific tiles
    *
-   * @param color         type of tile
-   * @param line          which line the tiles were placed
+   * @param color type of tile
+   * @param line which line the tiles were placed
    * @param numberOfTiles number of tiles
-   * @param minusPoints   number of minus-points
+   * @param minusPoints number of minus-points
    */
-  public void otherPlayerPlacedTiles(String name, String color, int line, int numberOfTiles,
-      int minusPoints) {
-    notifyListeners(new OtherPlayerPlacedTilesEvent(name, color, numberOfTiles, line, minusPoints));
-  }
-
-  public void middleTilesUpdate() { //array of tilecollection as parameters
-    notifyListeners(new MiddleTilesUpdateEvent());
+  public void otherPlayerPlacedTiles(String color,int line, int numberOfTiles, int minusPoints){
+      //notifyListeners(new otherPlayerPlacedTilesEvent(color,numberOfSelectedTiles,line,minusPoints))
   }
 
 
@@ -161,23 +123,17 @@ public class GameModel {
   }
 
 
-  public void loggedIn() {
-    notifyListeners(new LoggedInEvent());
-    isLoggedin = true;
+  public void loggedIn(){
+   notifyListeners(new LoggedInEvent());
   }
-
-  public void loginFailed() {
+  public void loginFailed(){
     notifyListeners(new LoginFailedEvent());
   }
-
-  public void userJoined(String name) {
+  public void userJoined(String name){
     notifyListeners(new UserJoinedEvent(name));
-    numberOfPlayersInMultiplayer++;
   }
-
-  public void userLeft(String name) {
+  public void userLeft(String name){
     notifyListeners(new UserLeftEvent(name));
-    numberOfPlayersInMultiplayer--;
   }
 
   /**
@@ -192,8 +148,8 @@ public class GameModel {
   }
 
   /**
-   * Remove a listener from the model. It will then no longer get notified about any events fired by
-   * the model.
+   * Remove a listener from the model. It will then no longer get notified about any events
+   * fired by the model.
    *
    * @param listener the view that is to be unsubscribed from the model.
    */
@@ -203,9 +159,5 @@ public class GameModel {
   }
 
   public void dispose() {
-  }
-
-  public boolean isLoggedIn() {
-    return isLoggedin;
   }
 }

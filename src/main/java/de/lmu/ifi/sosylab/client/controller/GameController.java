@@ -37,13 +37,14 @@ public class GameController {
   }
 
   //TODO: pass in string array with players names
-  public void logInHotSeat(String nickname) {
+  public void logInHotSeat(List<String> playersName) {
 
     new SwingWorker<Boolean, Void>() {
 
       @Override
       protected Boolean doInBackground() {
-        // model.logInHotSeat(nicknames);
+        String[] namesArray = playersName.toArray(new String[0]);
+        model.logInHotSeat(namesArray);
         return true;
       }
 
@@ -61,6 +62,7 @@ public class GameController {
   }
 
   public List<User> getUserList (){
+    //TODO get User List through Connection, is there a method getUsers in Server?
     return null;
   }
 
