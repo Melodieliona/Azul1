@@ -53,7 +53,7 @@ public class GameModel {
 
   public void logInMultiplayer(String name){
     //TODO: testing
-    loggedIn();
+    //loggedIn();
 
     players = new Player[1];
     players[0]=new Player(name);

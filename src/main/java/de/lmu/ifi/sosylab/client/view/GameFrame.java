@@ -191,7 +191,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         nickName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                model.logInMultiplayer(nickName.getText());
                 controller.logInMultiplayer(nickName.getText());
+                System.out.println("sending log in");
             }
         });
 
