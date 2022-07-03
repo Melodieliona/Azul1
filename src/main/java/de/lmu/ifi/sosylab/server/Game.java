@@ -117,7 +117,7 @@ public class Game {
    * */
   protected void handleTileSelection(String playerName, int source, Tile color, int amount) {
     if (!currentSelection.isEmpty()) {
-      sendInvalidSelection();
+      sendInvalidSelection(playerName);
       return;
     }
 
@@ -136,7 +136,7 @@ public class Game {
       connection.sendClickableRows(
           getUser(playerName), getClickableRows(getUser(playerName), color));
     } else {
-      sendInvalidSelection();
+      sendInvalidSelection(playerName);
     }
   }
 
@@ -145,7 +145,7 @@ public class Game {
    * */
   protected void handleTilePlacement(String playerName, int targetRow, Tile color, int amount) {
     if (currentSelection.isEmpty() || !(Collections.frequency(currentSelection, color) == amount)) {
-      sendInvalidPlacement();
+      sendInvalidPlacement(playerName);
       return;
     }
 
@@ -190,7 +190,7 @@ public class Game {
       }
 
     } else {
-      sendInvalidPlacement();
+      sendInvalidPlacement(playerName);
     }
   }
 
@@ -280,15 +280,15 @@ public class Game {
   /**
    * Sends an Error message to a user if the made selection was invalid.
    * */
-  private void sendInvalidSelection() {
-    connection.sendInvalidSelectionMessage();
+  private void sendInvalidSelection(String user) {
+    connection.sendInvalidSelectionMessage(getUser(user));
   }
 
   /**
    * Sends an Error message to a user if the made placement was invalid.
    * */
-  private void sendInvalidPlacement() {
-    connection.sendInvalidPlacementMessage();
+  private void sendInvalidPlacement(String user) {
+    connection.sendInvalidPlacementMessage(getUser(user));
   }
 
   /**
