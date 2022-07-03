@@ -51,7 +51,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     Integer[] numberOfPlayerOptions = {2, 3, 4};
 
     private final JComboBox<Integer> playerNumberSelection = new JComboBox<>(numberOfPlayerOptions);
-    private List<String> playerNames;
+    private transient List<String> playerNames;
     private JButton hotSeat;
     private JButton multiPlayer;
     private JPanel game;
