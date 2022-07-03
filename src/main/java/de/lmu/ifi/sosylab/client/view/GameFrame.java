@@ -58,7 +58,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private JPanel middle = new JPanel();
     private List<User> playerList;
     private List<PlayerBoard> boardList;
-    private Game gamesettings = null;
+
+    private transient Game gamesettings = null;
 
 
     /**
