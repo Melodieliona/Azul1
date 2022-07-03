@@ -82,7 +82,7 @@ public class Game {
 
     fillPlates();
 
-    connection.sendBoardState(tilePlates, gameBoards);
+    connection.sendBoardState(this.userList, tilePlates, gameBoards);
 
     connection.sendNextPlayer(userList, userList.get(currentPlayer));
   }
@@ -227,7 +227,7 @@ public class Game {
     }
 
     // Neuen Spielstand an alle Spieler schicken
-    connection.sendBoardState(tilePlates, gameBoards);
+    connection.sendBoardState(this.userList, tilePlates, gameBoards);
 
     if (!hasCompletedWallRow() && !(bag.isEmpty() && trash.isEmpty())) {
       startNewRound();
@@ -273,7 +273,7 @@ public class Game {
     // TODO sendNextRound necessary ?
     connection.sendNextRound();
 
-    connection.sendBoardState(tilePlates, gameBoards);
+    connection.sendBoardState(this.userList, tilePlates, gameBoards);
     sendNextPlayer();
   }
 
