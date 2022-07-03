@@ -4,10 +4,14 @@ import de.lmu.ifi.sosylab.client.controller.GameController;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serial;
 import javax.swing.JPanel;
 
 public class Plate extends JPanel {
-  private final GameController controller;
+
+  @Serial
+  private static final long serialVersionUID = 1L;
+  private transient GameController controller;
 
   public Plate(GameController controller) {
     this.controller = controller;

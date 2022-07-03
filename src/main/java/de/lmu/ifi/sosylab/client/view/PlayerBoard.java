@@ -15,7 +15,7 @@ public class PlayerBoard extends JPanel {
   @Serial
   private static final long serialVersionUID = 1L;
   private final int tileSize;
-  private final GameController controller;
+  private transient GameController controller;
   private final int player;
 
   public PlayerBoard(int player, int tileSize, GameController controller) {

@@ -3,10 +3,14 @@ package de.lmu.ifi.sosylab.client.view;
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serial;
 import javax.swing.JPanel;
 
 public class Pile extends JPanel {
-  private final GameController controller;
+
+  @Serial
+  private static final long serialVersionUID = 1L;
+  private transient GameController controller;
 
   public Pile(GameController controller) {
     this.controller = controller;
