@@ -216,36 +216,41 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         JPanel game = new JPanel(new BorderLayout());
 
         JPanel north = (JPanel) playerBoard(playerBoard);
+        north.setBackground(Color.yellow);
         north.setPreferredSize(new Dimension(340, 250));
         game.add(north, BorderLayout.NORTH);
         playerBoard++;
 
         JPanel south = (JPanel) playerBoard(playerBoard);
+        south.setBackground(Color.GREEN);
         game.add(south, BorderLayout.SOUTH);
         playerBoard++;
 
 
         try {
-            if (playerList.size() == 3) {
+            if (playerNames.size() == 2) {
                 JPanel west = (JPanel) playerBoard(playerBoard);
+                west.setBackground(Color.BLUE);
                 playerBoard++;
                 west.setPreferredSize(new Dimension(340, 340));
                 game.add(west, BorderLayout.WEST);
             }
 
-            if (playerList.size() == 4) {
+            if (playerNames.size() == 3) {
                 JPanel west = (JPanel) playerBoard(playerBoard);
                 west.setPreferredSize(new Dimension(340, 340));
+                west.setBackground(Color.cyan);
                 game.add(west, BorderLayout.WEST);
                 playerBoard++;
 
                 JPanel east = (JPanel) playerBoard(playerBoard);
+                east.setBackground(Color.magenta);
                 east.setPreferredSize(new Dimension(340, 340));
                 game.add(east, BorderLayout.EAST);
             }
 
 
-            createPlates(controller.getTilePlates().length);
+            createPlates(5);
             createPile();
         } catch (NullPointerException e) {
             System.out.println("User Liste ist noch leer!");
@@ -253,6 +258,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         JPanel center = middle;
         center.setPreferredSize(new Dimension(600, 340));
+        center.setBackground(Color.PINK);
         game.add(center, BorderLayout.CENTER);
 
         return game;
@@ -272,7 +278,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         try {
             JPanel west = new JPanel();
-            if ((playerBoard == 0 || playerBoard == 1) && playerList.size() > 2) {
+            if ((playerBoard == 0 || playerBoard == 1) && playerNames.size() > 2) {
                 west.setPreferredSize(new Dimension(390, 200));
             }
 
@@ -280,6 +286,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             board.add(north, BorderLayout.NORTH);
             board.add(west, BorderLayout.WEST);
             board.add(pb, BorderLayout.CENTER);
+
         } catch (NullPointerException e) {
             System.out.println("User List is empty!");
         }
@@ -299,27 +306,21 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
                 if (mousePointX == 4 && mousePointY == 0) {
                     System.out.println("Clicked First Row");
-                    controller.setTilesToRow(mousePointY);
                 }
                 if (mousePointX > 2 && mousePointX < 5 && mousePointY == 1) {
                     System.out.println("Clicked Second Row");
-                    controller.setTilesToRow(mousePointY);
                 }
                 if (mousePointX > 1 && mousePointX < 5 && mousePointY == 2) {
                     System.out.println("Clicked Third Row");
-                    controller.setTilesToRow(mousePointY);
                 }
                 if (mousePointX > 0 && mousePointX < 5 && mousePointY == 3) {
                     System.out.println("Clicked Forth Row");
-                    controller.setTilesToRow(mousePointY);
                 }
                 if (mousePointX < 5 && mousePointY == 4) {
                     System.out.println("Clicked Fifth Row");
-                    controller.setTilesToRow(mousePointY);
                 }
                 if (mousePointX < 7 && mousePointY == 6) {
                     System.out.println("Minus Points");
-                    controller.setTilesToRow(mousePointY);
                 }
 
             }
