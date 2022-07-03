@@ -47,6 +47,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private transient GameController controller;
     private CardLayout layout;
     private JTextField nickName;
+    private JTextField nicknameHS;
     Integer[] numberOfPlayerOptions = {2, 3, 4};
 
     private final JComboBox<Integer> playerNumberSelection = new JComboBox<>(numberOfPlayerOptions);
@@ -92,6 +93,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         // CardLayout ist nur Platzhalter
         layout = new CardLayout();
         nickName = new JTextField(20);
+        nicknameHS = new JTextField(50);
         hotSeat = new JButton("HOTSEAT");
         multiPlayer = new JButton("MULTIPLAYER");
 
@@ -147,7 +149,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     public void setPlayerNicknamesHS(int numberOfPlayers) {
 
         JPanel loginNames = new JPanel();
-        loginNames.setBackground(Color.GRAY);
+        loginNames.setBackground(Color.CYAN);
         loginNames.setPreferredSize(new Dimension(400, 100));
         add(loginNames, "loginNames");
         layout.show(getContentPane(), "loginNames");
@@ -155,15 +157,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         for (int i = 0; i < numberOfPlayers; i++) {
 
             loginNames.add(new JLabel("Player " + (i + 1) + ": Login with your nick name:"));
-            JTextField nicknameHS = new JTextField(20);
             loginNames.add(nicknameHS);
-            nicknameHS.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    playerNames.add(nicknameHS.getText());
-                    controller.logInHotSeat(playerNames);
-                }
-            });
 
         }
 
@@ -196,6 +190,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.logInMultiplayer(nickName.getText());
+                controller.setGameMode("Multiplayer");
             }
         });
 
@@ -204,6 +199,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             public void actionPerformed(ActionEvent e) {
                 //TODO: pass in string array with players names
                 showCard(LOGIN_H_CARD);
+            }
+        });
+
+        nicknameHS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                playerNames.add(nicknameHS.getText());
+                controller.logInHotSeat(playerNames);
+                controller.setGameMode("Hot Seat");
             }
         });
     }
