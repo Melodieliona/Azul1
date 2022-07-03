@@ -51,6 +51,7 @@ public class GameClientNetworkConnection {
           continue;
         }
         try {
+          System.out.println("setting up connection");
           setupConnection(socket);
         } catch (IOException e) {
           e.printStackTrace();
@@ -96,9 +97,11 @@ public class GameClientNetworkConnection {
     System.out.println("Input loop ended.");
   }
 
+  //TODO: Get rid of sout's
   public void handleGameEvent(JSONObject object) {
     switch (JsonMessage.typeOf(object)) {
       case LOGIN_SUCCESS:
+        System.out.println("logged in"); //for debugging
         model.loggedIn();
         break;
       case LOGIN_FAILED:
@@ -197,7 +200,6 @@ public class GameClientNetworkConnection {
     String[] amounts = JsonMessage.getTiles(object).trim().split(",");
     //model. the client has just received an update of the plates because the round has ended,
     // meaning that the plates must be filled with more tiles.
-
   }
 
   private void handleGameEnded(JSONObject object) {
@@ -251,6 +253,7 @@ public class GameClientNetworkConnection {
    * @param nickname The name of the user with whom to log in.
    */
   public void sendLogin(String nickname) {
+    System.out.println("login sent");
     JSONObject login = JsonMessage.login(nickname);
     send(login);
   }
@@ -259,6 +262,7 @@ public class GameClientNetworkConnection {
     try {
       writer.write(message + System.lineSeparator());
       writer.flush();
+      System.out.println("message sent");
     } catch (IOException e) {
       e.printStackTrace();
     }

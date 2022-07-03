@@ -87,8 +87,10 @@ public class ServerNetworkConnection {
 
       private boolean keepReading = true;
 
+      //TODO: Get rid of sout's
       @Override
       public void run() {
+
         try {
           BufferedReader reader = new BufferedReader(
               new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -108,10 +110,11 @@ public class ServerNetworkConnection {
               keepReading = false;
               break;
             }
-
+            System.out.println("message received");
             // Get Info out of the message
             switch (JsonMessage.typeOf(jsonObject)) {
               case LOGIN:
+                System.out.println("login request");
                 clientNick = (String) jsonObject.get("nick");
 
                 boolean nickAlreadyUsed = false;
@@ -143,6 +146,7 @@ public class ServerNetworkConnection {
 
                   // Inform newly logged in user
                   JSONObject loginSuccessJson = new JSONObject();
+                  System.out.println("log in"); // for debugging
                   loginSuccessJson.put("type", "login success");
                   loginSuccessJson.put("gameNumber", nextGameNumber);
 
