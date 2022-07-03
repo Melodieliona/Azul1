@@ -61,7 +61,7 @@ public class LayingRow {
     return trashedTiles;
   }
 
-
+  // TODO Maybe delete later if unused
   /**
    * Returns all tiles that are currently laid on this row.
    */
@@ -97,25 +97,18 @@ public class LayingRow {
     return ((row + color.ordinal()) % 5) + 1;
   }
 
-
   /**
-   * Returns the tiles that are discarded at the end of a round.
-   *
-   * @return The discarded tiles
-   */
-  public TileCollection getDiscard() {
-    TileCollection discardedTiles = new TileCollection();
-    // Equal to the row number because one is kept for the wall
-    discardedTiles.addTiles(color, row);
-    this.count = 0;
-    this.color = null;
-    return discardedTiles;
-  }
-
+   * Returns the color of which tiles can be placed on this row.
+   * */
   public Tile getColor() {
     return color;
   }
 
+
+  // TODO Maybe delete later if unused
+  /**
+   * Returns the number of this row.
+   * */
   public int getRowNumber() {
     return row;
   }
