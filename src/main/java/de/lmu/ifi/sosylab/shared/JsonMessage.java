@@ -14,7 +14,7 @@ public enum JsonMessage {
   LOGIN("login"), LOGIN_SUCCESS("login success"), LOGIN_FAILED("login failed"),
   USER_JOINED("user joined"), TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
   NEXT_TURN("next turn"), ALLOWED_TILES("allowed tiles"),
-  MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("allowed fields"), BOARD_UPDATE("game state"),
+  MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("allowed fields"), BOARD_UPDATE("board update"),
   USER_LEFT("user left"), FILL_PLATES("fill plates"), POINTS("points"), GAME_ENDED("game ended"),
   GAME_RESTART("game restart"), GAME_RESTART_REQUEST("game restart request");
 
@@ -30,13 +30,15 @@ public enum JsonMessage {
 
   public static final String ROWS_FIELD = "row";
 
-  public static final String COLUMNS_FIELD = "columns";
+  public static final String COLUMNS_FIELD = "column";
 
   public static final String PATTERN_ROWS_FIELD = "pattern rows";
 
   public static final String PATTERN_COLUMNS_FIELD = "pattern columns";
 
   public static final String SCORES_FIELD = "scores";
+
+  public static final String CONTENT_FIELD = "content";
 
   private final String jsonName;
 
@@ -301,6 +303,20 @@ public enum JsonMessage {
   public static String getScores(JSONObject object) {
     try {
       return object.getString(SCORES_FIELD);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
+  /**
+   * Gets the content from a JsonMessage.
+   *
+   * @param object JsonMessage
+   * @return content as a string
+   */
+  public static String getContent(JSONObject object) {
+    try {
+      return object.getString(CONTENT_FIELD);
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
