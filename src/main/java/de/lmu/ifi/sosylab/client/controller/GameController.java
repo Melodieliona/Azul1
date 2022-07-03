@@ -21,9 +21,6 @@ public class GameController {
   }
 
   public void logInMultiplayer(String nickname) {
-
-    //TODO: get rid of testing sout
-    System.out.println("Login Multoplayer Controller");
     new SwingWorker<Boolean, Void>() {
 
       @Override

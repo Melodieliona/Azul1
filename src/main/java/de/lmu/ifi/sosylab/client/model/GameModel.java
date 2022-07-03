@@ -52,14 +52,18 @@ public class GameModel {
   }
 
   public void logInMultiplayer(String name){
+    //TODO: testing
+    loggedIn();
+
     players = new Player[1];
     players[0]=new Player(name);
     connection.sendLogin(name);
 
-    //TODO: testing
-    loggedIn();
   }
   public void logInHotSeat(String[] playersName){
+    //TODO: testing
+    loggedIn();
+
    numberOfPlayers = playersName.length;
    gameMode = "Hot Seat";
    players = new Player[numberOfPlayers];

@@ -76,7 +76,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         boardList = new ArrayList<>(4);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //this.setPreferredSize(new Dimension(400, 300));
+        this.setPreferredSize(new Dimension(400, 300));
 
         initializeWidgets();
         addEventListeners();
@@ -189,7 +189,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showCard(LOGIN_M_CARD);
-                controller.logInMultiplayer("Multiplayer");
             }
         });
 
@@ -205,8 +204,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             public void actionPerformed(ActionEvent e) {
                 //TODO: pass in string array with players names
                 showCard(LOGIN_H_CARD);
-                controller.logInMultiplayer("Hot Seat");
-
             }
         });
     }
