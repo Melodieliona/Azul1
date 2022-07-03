@@ -117,7 +117,7 @@ public class Game {
    * */
   protected void handleTileSelection(String playerName, int source, Tile color, int amount) {
     if (!currentSelection.isEmpty()) {
-      sendInvalidSelection();
+      sendInvalidSelection(playerName);
       return;
     }
 
@@ -136,7 +136,7 @@ public class Game {
       connection.sendClickableRows(
           getUser(playerName), getClickableRows(getUser(playerName), color));
     } else {
-      sendInvalidSelection();
+      sendInvalidSelection(playerName);
     }
   }
 
@@ -145,7 +145,7 @@ public class Game {
    * */
   protected void handleTilePlacement(String playerName, int targetRow, Tile color, int amount) {
     if (currentSelection.isEmpty() || !(Collections.frequency(currentSelection, color) == amount)) {
-      sendInvalidPlacement();
+      sendInvalidPlacement(playerName);
       return;
     }
 
@@ -190,7 +190,7 @@ public class Game {
       }
 
     } else {
-      sendInvalidPlacement();
+      sendInvalidPlacement(playerName);
     }
   }
 
@@ -207,15 +207,15 @@ public class Game {
     for (GameBoard gameBoard : gameBoards) {
       for (int row = 0; row < 5; row++) {
         if (gameBoard.getLayingRow(row).isRowFull()) {
-          gameBoard.layWallTile(row, gameBoard.getLayingRow(row).getColor());
+          Tile color = gameBoard.getLayingRow(row).getColor();
+
+          gameBoard.layWallTile(row, color);
           trash.addAll(gameBoard.getLayingRow(row).clearRow());
 
-          // TODO Zusätzliche Punkte nach jedem gelegten Stein berechnen und im Gameboard addieren
-          gameBoard.updatePlusPoints();
-
+          // Add plus-points for the added tile
+          gameBoard.updatePlusPoints(row, gameBoard.getLayingRow(row).columnOfColor(color));
         }
       }
-      // TODO Minuspunkte abziehen
 
       // Clear floor line - delete start marker if present - add cleared tiles to trash
       // clearFloorLine() also resets the floor line minus points
@@ -233,17 +233,19 @@ public class Game {
       startNewRound();
     } else {
 
-      // TODO Sonderpunkte berechnen und in Gameboards addieren
-
-      // Gather final scores
-      int[] endScores = new int[userList.size()];
-      for (User user : userList) {
-        endScores[userList.indexOf(user)] = getPlayersGameBoard(user.getName()).getCurrentScore();
+      // Add extra points
+      for (GameBoard gameBoard : gameBoards) {
+        gameBoard.calculateAndAddExtraPoints();
       }
 
-      int highestScore = Arrays.stream(endScores).max().getAsInt();
+      // Calculate and gather final scores
+      int[] endScores = new int[userList.size()];
+      for (User user : userList) {
+        endScores[userList.indexOf(user)] = getPlayersGameBoard(user.getName()).getFinalScore();
+      }
 
       // Calculate winner(s)
+      int highestScore = Arrays.stream(endScores).max().getAsInt();
       ArrayList<String> winners = new ArrayList<>();
       for (int i = 0; i < endScores.length; i++) {
         if (endScores[i] == highestScore) {
@@ -278,15 +280,15 @@ public class Game {
   /**
    * Sends an Error message to a user if the made selection was invalid.
    * */
-  private void sendInvalidSelection() {
-    connection.sendInvalidSelectionMessage();
+  private void sendInvalidSelection(String user) {
+    connection.sendInvalidSelectionMessage(getUser(user));
   }
 
   /**
    * Sends an Error message to a user if the made placement was invalid.
    * */
-  private void sendInvalidPlacement() {
-    connection.sendInvalidPlacementMessage();
+  private void sendInvalidPlacement(String user) {
+    connection.sendInvalidPlacementMessage(getUser(user));
   }
 
   /**

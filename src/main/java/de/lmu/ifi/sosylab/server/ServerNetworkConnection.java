@@ -242,16 +242,30 @@ public class ServerNetworkConnection {
   }
 
 
+  protected void sendInvalidSelectionMessage(User user) {
+    try {
+      JSONObject sendNextPlayerJson = new JSONObject();
+      sendNextPlayerJson.put("type", "tiles not allowed");
 
-  protected void sendInvalidSelectionMessage() {
-
+      user.getWriter().write(sendNextPlayerJson + System.lineSeparator());
+      user.getWriter().flush();
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
   }
 
-  protected void sendInvalidPlacementMessage() {
+  protected void sendInvalidPlacementMessage(User user) {
+    try {
+      JSONObject sendNextPlayerJson = new JSONObject();
+      sendNextPlayerJson.put("type", "move not allowed");
+
+      user.getWriter().write(sendNextPlayerJson + System.lineSeparator());
+      user.getWriter().flush();
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
 
   }
-
-
 
   /**
    * Sends a successful tile selection to all users (including the sender as confirmation).

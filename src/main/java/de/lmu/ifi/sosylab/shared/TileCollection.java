@@ -37,6 +37,18 @@ public class TileCollection extends ArrayList<Tile> {
   }
 
   /**
+   * Adds one tile of each color to the collection.
+   * Used for calculating thx extra points for having 5 wall tiles of the same color.
+   * */
+  public void addOneOfEachColor() {
+    this.add(Tile.BLUE);
+    this.add(Tile.YELLOW);
+    this.add(Tile.RED);
+    this.add(Tile.BLACK);
+    this.add(Tile.WHITE);
+  }
+
+  /**
    * Removes all tiles of the collection.
    *
    * @return The removed tiles

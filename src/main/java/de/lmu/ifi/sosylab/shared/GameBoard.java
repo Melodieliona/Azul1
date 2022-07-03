@@ -16,8 +16,6 @@ public class GameBoard {
 
   private int minusPoints;
 
-  private int currentScore;
-
   private String playerName;
 
 
@@ -26,7 +24,6 @@ public class GameBoard {
    * */
   public GameBoard(String playerName) {
     this.playerName = playerName;
-    currentScore = 0;
     plusPoints = 0;
     minusPoints = 0;
 
@@ -68,8 +65,50 @@ public class GameBoard {
   /**
    * Calculates plus points after every round and adds them to 'pluspoints'.
    * */
-  public void updatePlusPoints() {
+  public void updatePlusPoints(int row, int column) {
 
+    // Check if placed tile is part of a row
+    boolean isPartOfRow = (((column + 1 < 5) && (tileWall[column + 1][row] != null))
+                          || ((column - 1 >= 0) && (tileWall[column - 1][row] != null)));
+
+    //Check if placed tile is part of a column
+    boolean isPartOfColumn = (((row + 1 < 5) && (tileWall[column][row + 1] != null))
+                             || ((row - 1 >= 0) && (tileWall[column][row - 1] != null)));
+
+    if (isPartOfRow) {
+      // Add points for rows
+      int lengthOfRow = 1;
+      int colCounter = column;
+
+      while (((++colCounter) < 5) && (tileWall[colCounter][row] != null)) {
+        lengthOfRow++;
+      }
+      colCounter = column;
+      while (((--colCounter) >= 0) && (tileWall[colCounter][row] != null)) {
+        lengthOfRow++;
+      }
+
+      plusPoints += lengthOfRow;
+
+    } else if (isPartOfColumn) {
+      // Add points for columns
+      int lengthOfColumn = 1;
+
+      int rowCounter = row;
+      while (((++rowCounter) < 5) && (tileWall[column][rowCounter] != null)) {
+        lengthOfColumn++;
+      }
+      rowCounter = row;
+      while (((--rowCounter) >= 0) && (tileWall[column][rowCounter] != null)) {
+        lengthOfColumn++;
+      }
+
+      plusPoints += lengthOfColumn;
+
+    } else {
+      // Add one point for the added wall tile without any points for rows / columns
+      plusPoints++;
+    }
   }
 
   /**
@@ -115,10 +154,77 @@ public class GameBoard {
   }
 
   /**
-   * Returns the score of the player this board belongs to.
+   * Calculates the extra points you get at the end of the game and adds them to the plus-points.
    */
-  public int getCurrentScore() {
-    return currentScore;
+  public void calculateAndAddExtraPoints() {
+
+    int amountOfFullRows = 0;
+    int amountOfFullColumns = 0;
+
+    // Count full rows
+    for (int row = 0; row < 5; row++) {
+
+      int lengthOfRow = 0;
+
+      for (int col = 0; col < 5; col++) {
+        if (tileWall[col][row] != null) {
+          lengthOfRow++;
+        }
+      }
+
+      if (lengthOfRow == 5) {
+        amountOfFullRows++;
+      }
+    }
+
+    // Count full columns
+
+    for (int col = 0; col < 5; col++) {
+
+      int lengthOfColumn = 0;
+
+      for (int row = 0; row < 5; row++) {
+        if (tileWall[col][row] != null) {
+          lengthOfColumn++;
+        }
+      }
+
+      if (lengthOfColumn == 5) {
+        amountOfFullColumns++;
+      }
+    }
+
+    // Check if all wall tiles of one color are set
+
+    TileCollection allColors = new TileCollection();
+    allColors.addOneOfEachColor();
+
+    int completedColors = 0;
+
+    for (Tile color : allColors) {
+      int tilesOfSameColor = 0;
+      for (int row = 0; row < 5; row++) {
+        for (int col = 0; col < 5; col++) {
+          if ((tileWall[col][row] != null) && (tileWall[col][row].equals(color))) {
+            tilesOfSameColor++;
+          }
+        }
+      }
+
+      if (tilesOfSameColor == 5) {
+        completedColors++;
+      }
+    }
+
+    // Add calculated points
+    plusPoints += (amountOfFullColumns * 7) + (amountOfFullRows * 2) + (completedColors * 10);
+  }
+
+  /**
+   * Calculates and returns the final score.
+   * */
+  public int getFinalScore() {
+    return plusPoints - minusPoints;
   }
 
   /**
