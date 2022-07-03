@@ -1,4 +1,4 @@
-package de.lmu.ifi.sosylab.client.model;
+package de.lmu.ifi.sosylab.client.view;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import java.awt.Graphics;
@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 public class Pile extends JPanel {
-  private GameController controller;
+  private final GameController controller;
 
   public Pile(GameController controller) {
     this.controller = controller;

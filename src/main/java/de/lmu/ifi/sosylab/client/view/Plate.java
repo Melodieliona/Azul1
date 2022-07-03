@@ -1,4 +1,4 @@
-package de.lmu.ifi.sosylab.client.model;
+package de.lmu.ifi.sosylab.client.view;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import java.awt.Color;
@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 public class Plate extends JPanel {
-  private final int tileSize = 20;
   private final GameController controller;
 
   public Plate(GameController controller) {
@@ -26,7 +25,9 @@ public class Plate extends JPanel {
     int b = 0;
 
     for (int i = 0; i < 5; i++) {
+      int tileSize = 20;
       if (i < 2) {
+        //TODO Farbe von Controller holen
         g2D.setColor(Color.LIGHT_GRAY);
         g2D.fillRect((tileSize * (i + 1)), 20, tileSize, tileSize);
         g2D.setColor(Color.WHITE);

@@ -4,10 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
-import de.lmu.ifi.sosylab.client.model.Pile;
-import de.lmu.ifi.sosylab.client.model.Plate;
 import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
 import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
+import de.lmu.ifi.sosylab.server.Game;
+import de.lmu.ifi.sosylab.server.User;
+import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -52,8 +53,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JButton multiPlayer;
   private JPanel game;
   private JPanel middle = new JPanel();
-  private List<String> playerList;
+  private List<User> playerList;
   private List<PlayerBoard> boardList;
+  private Game gamesettings = null;
 
 
   /**
@@ -67,11 +69,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     this.controller = requireNonNull(controller);
     this.model = requireNonNull(model);
-    playerList = new ArrayList<>(4); // TODO get correct usercount.
-    playerList.add("Anton");
-    playerList.add("Tom");
-    playerList.add("Heiko");
-    playerList.add("Michael");
+    playerList = controller.getUserList(); // TODO get correct usercount.
     boardList = new ArrayList<>(4);
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     //this.setPreferredSize(new Dimension(400, 300));
@@ -168,50 +166,43 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return Layout from game with PlayerBoard.
    */
   private Component wholeGame() {
-    Plate tm = new Plate(controller);
     int playerBoard = 0;
     JPanel game = new JPanel(new BorderLayout());
+
     JPanel north = (JPanel) playerBoard(playerBoard);
+    north.setPreferredSize(new Dimension(340, 250));
+    game.add(north, BorderLayout.NORTH);
     playerBoard++;
+
     JPanel south = (JPanel) playerBoard(playerBoard);
+    game.add(south, BorderLayout.SOUTH);
     playerBoard++;
+
+
     if (playerList.size() == 3) {
       JPanel west = (JPanel) playerBoard(playerBoard);
       playerBoard++;
-      west.setBackground(Color.orange);
       west.setPreferredSize(new Dimension(340, 340));
-
       game.add(west, BorderLayout.WEST);
     }
+
     if (playerList.size() == 4) {
       JPanel west = (JPanel) playerBoard(playerBoard);
+      west.setPreferredSize(new Dimension(340, 340));
+      game.add(west, BorderLayout.WEST);
       playerBoard++;
 
       JPanel east = (JPanel) playerBoard(playerBoard);
-
-      east.setBackground(Color.GREEN);
       east.setPreferredSize(new Dimension(340, 340));
-      west.setBackground(Color.orange);
-      west.setPreferredSize(new Dimension(340, 340));
-
       game.add(east, BorderLayout.EAST);
-      game.add(west, BorderLayout.WEST);
     }
-    createPlates(9);
+
+    createPlates(controller.getTilePlates().length);
     createPile();
+
     JPanel center = middle;
-
-    north.setBackground(Color.RED);
-    center.setBackground(Color.yellow);
-
-
-    north.setPreferredSize(new Dimension(340, 250));
     center.setPreferredSize(new Dimension(600, 340));
-
-    game.add(north, BorderLayout.NORTH);
-    game.add(south, BorderLayout.SOUTH);
     game.add(center, BorderLayout.CENTER);
-
 
     return game;
   }
@@ -224,25 +215,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     boardList.add(pb);
     JPanel board = new JPanel(new BorderLayout());
 
-    JPanel north2 = new JPanel();
-    JPanel east2 = new JPanel();
-    JPanel west2 = new JPanel();
-    JPanel center2 = new JPanel();
+    JPanel north = new JPanel();
+    north.add(nameAndPoints(playerBoard));
 
-    north2.setBackground(Color.RED);
-    north2.add(nameAndPoints(playerBoard));
-    east2.setBackground(Color.GREEN);
-    west2.setBackground(Color.orange);
+    JPanel west = new JPanel();
     if ((playerBoard == 0 || playerBoard == 1) && playerList.size() > 2) {
-      west2.setPreferredSize(new Dimension(390, 200));
+      west.setPreferredSize(new Dimension(390, 200));
     }
-    center2.setBackground(Color.yellow);
 
     board.setPreferredSize(new Dimension(340, 250));
-    board.add(north2, BorderLayout.NORTH);
-    board.add(east2, BorderLayout.EAST);
-    board.add(west2, BorderLayout.WEST);
+    board.add(north, BorderLayout.NORTH);
+    board.add(west, BorderLayout.WEST);
     board.add(pb, BorderLayout.CENTER);
+
     pb.addMouseListener(new MouseAdapter() {
       /**
        * {@inheritDoc}
@@ -258,21 +243,27 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         if (mousePointX == 4 && mousePointY == 0) {
           System.out.println("Clicked First Row");
+          controller.setTilesToRow(mousePointY);
         }
         if (mousePointX > 2 && mousePointX < 5 && mousePointY == 1) {
           System.out.println("Clicked Second Row");
+          controller.setTilesToRow(mousePointY);
         }
         if (mousePointX > 1 && mousePointX < 5 && mousePointY == 2) {
           System.out.println("Clicked Third Row");
+          controller.setTilesToRow(mousePointY);
         }
         if (mousePointX > 0 && mousePointX < 5 && mousePointY == 3) {
           System.out.println("Clicked Forth Row");
+          controller.setTilesToRow(mousePointY);
         }
         if (mousePointX < 5 && mousePointY == 4) {
           System.out.println("Clicked Fifth Row");
+          controller.setTilesToRow(mousePointY);
         }
         if (mousePointX < 7 && mousePointY == 6) {
           System.out.println("Minus Points");
+          controller.setTilesToRow(mousePointY);
         }
 
       }
@@ -284,8 +275,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   /**
    * @return Name and User Points.
    */
-  private Component nameAndPoints(int playerBoard) {
-    JLabel counter = new JLabel("Player: " + playerList.get(playerBoard) + " Points: ");
+  private Component nameAndPoints(int userNumber) {
+    JLabel counter = new JLabel("Player: " + playerList.get(userNumber).getName() + " Points: " +
+        controller.getCurrentScore(userNumber));
     return counter;
   }
 
@@ -293,13 +285,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates all the Plates for the middle.
    *
    * @param plateNumber - Number of plates.
-   * @return - middle.
    */
-  private Component createPlates(int plateNumber) {
+  private void createPlates(int plateNumber) {
     for (int i = 0; i < plateNumber; i++) {
       middle.add(createPlate(i));
     }
-    return middle;
   }
 
   /**
@@ -310,8 +300,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return - plate.
    */
   private Component createPlate(int plateNumber) {
-    Plate tm = new Plate(controller);
-    JPanel plate = tm;
+    JPanel plate = new Plate(controller);
     plate.setPreferredSize(new Dimension(100, 120));
 
     plate.addMouseListener(new MouseAdapter() {
@@ -329,18 +318,24 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         if (mousePointX == 1 && mousePointY == 1) {
           System.out.println("Plate: " + plateNumber + " Tile 1");
+          controller.selectAllTilesWithColor(
+              controller.getTile(plateNumber, 0)); //TODO Farbe auswählen
         }
         if (mousePointX == 2 && mousePointY == 1) {
           System.out.println("Plate: " + plateNumber + " Tile 2");
+          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 1));
         }
         if (mousePointX == 1 && mousePointY == 3) {
           System.out.println("Plate: " + plateNumber + " Tile 3");
+          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 2));
         }
         if (mousePointX == 2 && mousePointY == 3) {
           System.out.println("Plate: " + plateNumber + " Tile 4");
+          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 3));
         }
         if (mousePointX == 3 && mousePointY == 3) {
           System.out.println("Plate: " + plateNumber + " Tile 5");
+          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 4));
         }
       }
     });
@@ -348,12 +343,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     return plate;
   }
 
-  private Component createPile() {
+  private void createPile() {
     Pile pile = new Pile(controller);
     middle.add(pile);
 
-    // Für Mouselistener. Checken ob dort Tile liegt. Falls Nein nichts, falls Ja Tile auswählen.
-    return middle;
+    // Für Mouselistener.
+    // JFrame Tile mit Listener und Farbe machen.
+    // Checken ob dort Tile liegt. Falls Nein nichts, falls Ja Tile auswählen.
   }
 
   @Override
