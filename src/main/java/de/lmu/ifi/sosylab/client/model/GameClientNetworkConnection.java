@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public class GameClientNetworkConnection {
 
   private static final String HOST = "localhost";
-  private static final int PORT = 8080;
+  private int PORT = 8080;
 
   private final GameModel model;
   private Socket socket;
@@ -31,7 +31,8 @@ public class GameClientNetworkConnection {
   /**
    * Start the network connection.
    */
-  public synchronized void start() {
+  public synchronized void start(int PORT) {
+    this.PORT = PORT;
     thread = new Thread(this::doConnectLoop);
     thread.start();
   }

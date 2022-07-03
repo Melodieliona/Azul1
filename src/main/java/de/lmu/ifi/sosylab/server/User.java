@@ -1,6 +1,5 @@
 package de.lmu.ifi.sosylab.server;
 
-
 import java.io.OutputStreamWriter;
 
 /**
