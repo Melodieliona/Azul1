@@ -5,7 +5,7 @@ package de.lmu.ifi.sosylab.shared;
  * */
 public class GameBoard {
 
-  // rows / columns start with 1
+  // rows / columns start with 0
   private Tile[][] tileWall;
 
   private LayingRow[] layingRows;
@@ -19,8 +19,6 @@ public class GameBoard {
   private int currentScore;
 
   private String playerName;
-
-
 
 
   /**
@@ -42,14 +40,12 @@ public class GameBoard {
     floorLine = new TileCollection();
   }
 
-
-
-
+  /**
+   * Puts a tile of given color at the right spot on a wall row.
+   * */
   public void layWallTile(int row, Tile color) {
     tileWall[getLayingRow(row).columnOfColor(color)][row] = color;
   }
-
-
 
   /**
    * Adds selected tiles to the floor line. Returns all tiles that didn't fit on the floor line.
@@ -69,6 +65,16 @@ public class GameBoard {
     return tilesDidntFit;
   }
 
+  /**
+   * Calculates plus points after every round and adds them to 'pluspoints'.
+   * */
+  public void updatePlusPoints() {
+
+  }
+
+  /**
+   * Sets the minus points for the current amount of tiles on the floor line.
+   * */
   private void updateMinusPoints() {
     switch (floorLine.size()) {
       case 0 -> minusPoints = 0;
@@ -84,9 +90,20 @@ public class GameBoard {
   }
 
   /**
+   * Clears the floor line.
+   *
+   * @return The removed tiles
+   * */
+  public TileCollection clearFloorLine() {
+    TileCollection clearedTiles = floorLine.removeAllTiles();
+    updateMinusPoints();
+    return clearedTiles;
+  }
+
+  /**
    * Returns this game board's tile wall.
    * */
-  protected Tile[][] getTileWall() {
+  public Tile[][] getTileWall() {
     return tileWall;
   }
 
@@ -95,6 +112,13 @@ public class GameBoard {
    * */
   public LayingRow getLayingRow(int row) {
     return layingRows[row];
+  }
+
+  /**
+   * Returns the score of the player this board belongs to.
+   */
+  public int getCurrentScore() {
+    return currentScore;
   }
 
   /**

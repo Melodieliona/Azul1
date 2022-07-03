@@ -37,6 +37,19 @@ public class TileCollection extends ArrayList<Tile> {
   }
 
   /**
+   * Removes all tiles of the collection.
+   *
+   * @return The removed tiles
+   * */
+  public TileCollection removeAllTiles() {
+    TileCollection removedTiles = new TileCollection();
+    for (int i = 0; i < this.size(); i++) {
+      removedTiles.add(this.remove(i));
+    }
+    return removedTiles;
+  }
+
+  /**
    * Removes all tiles of a given color and returns removed Tiles as new collection.
    */
   public TileCollection removeTilesOfColor(Tile color) {
@@ -52,7 +65,7 @@ public class TileCollection extends ArrayList<Tile> {
   /**
    * Take a given amount of random colored tiles from the collection.
    * Can't return more tiles than there are in the collection.
-   * Used for the bag.
+   * Used to fill tile plates with tiles from the bag.
    */
   public TileCollection drawTiles(int amount) {
     TileCollection drawnTiles = new TileCollection();
@@ -67,6 +80,5 @@ public class TileCollection extends ArrayList<Tile> {
 
     return drawnTiles;
   }
-
 
 }
