@@ -360,10 +360,21 @@ public class ServerNetworkConnection {
    * - the current score of each player
    * - whose turn it is next (..?..)
    * */
-  public void sendBoardState(TileCollection[] tilePlates, GameBoard[] gameBoards) {
+  public void sendBoardState(List<User> userList, TileCollection[] tilePlates, GameBoard[] gameBoards) {
 
-    // TODO
+    // TODO Pseudocode
 
+    try {
+      for(User user : userList) {
+        JSONObject sendBoardUpdate = new JSONObject();
+        sendBoardUpdate.put("type", "board update");
+
+        user.getWriter().write(sendBoardUpdate + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   /**
