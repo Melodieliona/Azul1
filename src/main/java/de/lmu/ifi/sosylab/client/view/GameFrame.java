@@ -56,8 +56,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private JButton multiPlayer;
     private JPanel game;
     private JPanel middle = new JPanel();
-    private List<User> playerList;
-    private List<PlayerBoard> boardList;
+    private transient List<User> playerList;
+    private transient List<PlayerBoard> boardList;
 
     private transient Game gamesettings = null;
 
