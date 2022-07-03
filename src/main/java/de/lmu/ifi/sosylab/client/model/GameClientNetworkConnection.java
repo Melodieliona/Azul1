@@ -122,24 +122,34 @@ public class GameClientNetworkConnection {
         break;
       case ALLOWED_FIELDS:
         handleAllowedFields(object);
+        break;
       case ALLOWED_TILES:
         handleAllowedTiles(object);
+        break;
       case NEXT_TURN:
         handleNextTurn(object);
+        break;
       case MOVE_NOT_ALLOWED:
         handleMoveNotAllowed(object);
+        break;
       case BOARD_UPDATE:
         handleBoardUpdate(object);
+        break;
       case FILL_PLATES:
         handleFillPlates(object);
+        break;
       case POINTS:
         handlePoints(object);
+        break;
       case GAME_ENDED:
         handleGameEnded(object);
+        break;
       case GAME_RESTART_REQUEST:
         handleGameRestartRequest(object);
+        break;
       case GAME_RESTART:
         handleGameRestart(object);
+        break;
       default:
         throw new AssertionError("Unhandled message: " + object);
     }
