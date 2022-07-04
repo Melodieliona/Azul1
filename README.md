@@ -1,7 +1,7 @@
 # JSON Messages
 
 Each of the JSON messages must be separated by a single newline character (\n). The messages need to be encoded in UTF-8. The general format of an individual messages is
-{ "type" : "<message-type>", <further fields> }
+{ "type" : "<message-type>", "<further fields>" }
 Names that are surrounded by angle brackets represent placeholder fields. The messages are described below with the corresponding functionality.
 
 Description of JSON messages in chronological order:
