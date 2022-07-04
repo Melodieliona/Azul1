@@ -52,18 +52,11 @@ public class LocalServerConnection {
      * Starts a Thread, which listens for new connection requests.
      */
     public void start() {
-        ServerSocket serverSocket;
-        try {
-            serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
-            System.out.println("Cannot create socket with port " + port + ".");
-            return;
-        }
 
         try {
-            Socket socket = serverSocket.accept();
+            Socket clientSocket = socket.accept();
             // Start a new thread for the hotseat client
-            startHandler(socket);
+            startHandler(clientSocket);
         } catch (IOException e) {
             e.printStackTrace();
         }

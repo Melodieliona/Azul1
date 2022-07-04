@@ -274,7 +274,7 @@ public class GameClientNetworkConnection {
     try {
       writer.write(message + System.lineSeparator());
       writer.flush();
-      System.out.println("message sent");
+      System.out.println("message sent **********");
     } catch (IOException e) {
       e.printStackTrace();
     }
