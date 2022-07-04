@@ -1,17 +1,24 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
-public class TilesAddedEvent extends GameEvents{
+/**
+ * TODO Javadoc
+ * */
+public class TilesAddedEvent extends GameEvents {
   private String color;
   private int line;
   private int numberOfTiles;
   private int minuspoints;
 
-  public TilesAddedEvent(String color,int line, int numberOfTiles, int minuspoints){
+  /**
+   * TODO Javadoc
+   * */
+  public TilesAddedEvent(String color, int line, int numberOfTiles, int minuspoints) {
     this.color = color;
     this.line = line;
     this.numberOfTiles = numberOfTiles;
     this.minuspoints = minuspoints;
   }
+
   @Override
   public String getName() {
     return "TilesAddedEvent";

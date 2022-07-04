@@ -1,13 +1,17 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
+/**
+ * Todo JavaDoc
+ * */
 public class GameEndedEvent extends GameEvents {
   private String[] players;
   private int[] points;
   private String winner;
-
-
-
-  public GameEndedEvent(String[] players, int[] points, String winner){
+  
+  /**
+   * Todo JavaDoc
+   * */
+  public GameEndedEvent(String[] players, int[] points, String winner) {
     this.players = players;
     this.points = points;
     this.winner = winner;
@@ -17,6 +21,7 @@ public class GameEndedEvent extends GameEvents {
   public String getName() {
     return "GameEndedEvent";
   }
+
   public String[] getPlayers() {
     return players;
   }

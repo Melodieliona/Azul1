@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 
+/**
+ * TODO Javadoc
+ * */
 public class PlayerBoard extends JPanel {
 
   @Serial
@@ -18,6 +21,9 @@ public class PlayerBoard extends JPanel {
   private transient GameController controller;
   private final int player;
 
+  /**
+   * TODO Javadoc
+   * */
   public PlayerBoard(int player, int tileSize, GameController controller) {
     this.tileSize = tileSize;
     this.controller = controller;
@@ -42,7 +48,7 @@ public class PlayerBoard extends JPanel {
     color.add(new Color(215, 151, 68));
     color.add(new Color(100, 147, 236));
     color.add(new Color(130, 231, 201));
-//_______________________Left Pattern Row_________________________________________________
+    //_______________________Left Pattern Row_________________________________________________
     for (int row = 0; row < 5; row++) {
       for (int col = 4 - row; col < 5; col++) {
         g2D.setColor(Color.LIGHT_GRAY);
@@ -51,7 +57,7 @@ public class PlayerBoard extends JPanel {
         g2D.drawRect(row * tileSize, col * tileSize, tileSize, tileSize);
       }
     }
-//__________________________Wall__________________________________________________________
+    //__________________________Wall__________________________________________________________
     for (int row = 0; row < 5; row++) {
       for (int col = 0; col < 5; col++) {
 
@@ -110,7 +116,7 @@ public class PlayerBoard extends JPanel {
       int numberOfTiles = 3; //(int) pattern[line][1];
       for (int i = 0; i < numberOfTiles; i++) {
         int col = 4 - i;
-       /* switch (colo){
+        /* switch (colo){
           case "red": g2D.setColor(Color.ORANGE); break;
           default: break;
         }*/

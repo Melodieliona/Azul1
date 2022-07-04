@@ -9,6 +9,9 @@ import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * TODO Javadoc
+ * */
 public enum JsonMessage {
 
   LOGIN("login"), LOGIN_SUCCESS("login success"), LOGIN_FAILED("login failed"),
@@ -159,6 +162,9 @@ public enum JsonMessage {
     }
   }
 
+  /**
+   * TODO Javadoc
+   * */
   public static JSONObject placeTiles(String color, int row) {
     try {
       JSONObject message = createMessageOfType(TILE_SELECTION);

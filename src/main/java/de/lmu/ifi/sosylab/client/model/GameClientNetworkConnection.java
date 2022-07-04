@@ -12,11 +12,13 @@ import java.nio.charset.StandardCharsets;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * Todo JavaDoc
+ * */
 public class GameClientNetworkConnection {
 
   private static final String HOST = "localhost";
-  private int PORT = 8080;
+  private int port = 8080;
 
   private final GameModel model;
   private Socket socket;
@@ -31,8 +33,8 @@ public class GameClientNetworkConnection {
   /**
    * Start the network connection.
    */
-  public synchronized void start(int PORT) {
-    this.PORT = PORT;
+  public synchronized void start(int port) {
+    this.port = port;
     thread = new Thread(this::doConnectLoop);
     thread.start();
   }
@@ -42,7 +44,7 @@ public class GameClientNetworkConnection {
       while (!Thread.interrupted()) {
         Socket socket;
         try {
-          socket = new Socket(HOST, PORT);
+          socket = new Socket(HOST, port);
         } catch (UnknownHostException e) {
           e.printStackTrace();
           break;
@@ -99,6 +101,9 @@ public class GameClientNetworkConnection {
   }
 
   //TODO: Get rid of sout's
+  /**
+   * Todo JavaDoc
+   * */
   public void handleGameEvent(JSONObject object) {
     switch (JsonMessage.typeOf(object)) {
       case LOGIN_SUCCESS:

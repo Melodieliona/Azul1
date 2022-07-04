@@ -1,16 +1,21 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
-public class UserLeftEvent extends GameEvents{
+/**
+ * TODO Javadoc
+ * */
+public class UserLeftEvent extends GameEvents {
+  String userName;
 
-   String userName;
-   public UserLeftEvent(String name){
-      this.userName = name;
-   }
-   @Override
-   public String getName() {
-      return "UserLeftEvent";
-   }
-   public String getUsername(){
-      return userName;
-   }
+  public UserLeftEvent(String name) {
+    this.userName = name;
+  }
+
+  @Override
+  public String getName() {
+    return "UserLeftEvent";
+  }
+
+  public String getUsername() {
+    return userName;
+  }
 }

@@ -1,11 +1,17 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
+/**
+ * TODO Javadoc
+ * */
 public class TilesSelectedEvent extends GameEvents {
 
   private int source;
   private String color;
   private int numberOfTiles;
 
+  /**
+   * TODO Javadoc
+   * */
   public TilesSelectedEvent(int source, String color, int numberOfTiles) {
     this.source = source;
     this.color = color;

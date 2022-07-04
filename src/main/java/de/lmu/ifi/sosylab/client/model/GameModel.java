@@ -21,7 +21,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 
-
+/**
+ * TODO Javadoc
+ * */
 public class GameModel {
 
   private static final int MAX_LENGTH = 100;
@@ -42,8 +44,10 @@ public class GameModel {
   public GameModel() {
     support = new PropertyChangeSupport(this);
   }
+
   /**
    * Sets the game mode according to the value that is passed on by the view.
+   *
    * @param gMode name of the player
    */
   public void setGameMode(String gMode) throws IOException {
@@ -73,6 +77,9 @@ public class GameModel {
     this.connection = connection;
   }
 
+  /**
+   * TODO Javadoc
+   * */
   public void logInMultiplayer(String name) {
     //TODO: testing
     loggedIn();
@@ -83,6 +90,9 @@ public class GameModel {
 
   }
 
+  /**
+   * TODO Javadoc
+   * */
   public void logInHotSeat(String[] playersName) {
     //TODO: testing
     loggedIn();
@@ -221,18 +231,21 @@ public class GameModel {
     notifyListeners(new LoggedInEvent());
     isLoggedin = true;
   }
+
   /**
    * Notifies the subscribed view that the login attempt was not successful.
    */
   public void loginFailed() {
     notifyListeners(new LoginFailedEvent());
   }
+
   /**
    * Notifies the subscribed view that a new player joined the game.
    */
   public void userJoined(String name) {
     notifyListeners(new UserJoinedEvent(name));
   }
+
   /**
    * Notifies the subscribed view that a player left the game.
    */

@@ -2,6 +2,9 @@ package de.lmu.ifi.sosylab.client.model.events;
 
 
 //array of tilecollection . in the middle + on the numbered factory plates tilecollections[0]=middle
+/**
+ * TODO Javadoc
+ * */
 public class MiddleTilesUpdateEvent extends GameEvents {
 
   @Override

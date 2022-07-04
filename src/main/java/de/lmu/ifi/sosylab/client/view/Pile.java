@@ -7,6 +7,9 @@ import java.awt.Graphics2D;
 import java.io.Serial;
 import javax.swing.JPanel;
 
+/**
+ * TODO Javadoc
+ * */
 public class Pile extends JPanel {
 
   @Serial
@@ -15,6 +18,9 @@ public class Pile extends JPanel {
   private transient String color;
   private int tileSize;
 
+  /**
+   * TODO Javadoc
+   * */
   public Pile(int place, String color, int tileSize) {
     this.place = place;
     this.color = color;
@@ -28,7 +34,7 @@ public class Pile extends JPanel {
   }
 
   private void drawTile(Graphics2D g2D) {
-    switch (color){
+    switch (color) {
       case "BLACK":  g2D.setColor(Color.BLACK);
       break;
       case "RED":  g2D.setColor(Color.RED);
@@ -36,9 +42,9 @@ public class Pile extends JPanel {
       default:
         System.out.println("Color not available.");
     }
-    g2D.fillRect(0, 0 , tileSize, tileSize);
+    g2D.fillRect(0, 0, tileSize, tileSize);
     g2D.setColor(Color.WHITE);
-    g2D.drawRect(0,0 , tileSize, tileSize);
+    g2D.drawRect(0, 0, tileSize, tileSize);
   }
 
 
