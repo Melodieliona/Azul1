@@ -42,7 +42,10 @@ public class GameModel {
   public GameModel() {
     support = new PropertyChangeSupport(this);
   }
-
+  /**
+   * Sets the game mode according to the value that is passed on by the view.
+   * @param gMode name of the player
+   */
   public void setGameMode(String gMode) throws IOException {
     if (gMode.equals("Multiplayer")) {
       gameMode = "Multiplayer";
@@ -144,22 +147,26 @@ public class GameModel {
   }
 
   /**
-   * TODO JavaDoc
-   * */
+   * Notifies the subscribed view that the tile selection was not accepted by the server.
+   */
   public void tileSelectionFailed() {
     notifyListeners(new TileSelectionFailedEvent());
   }
 
   /**
-   * TODO JavaDoc
-   * */
+   * Notifies the subscribed view that the tile placement was not accepted by the server.
+   */
   public void tilePlacementFailed() {
     notifyListeners(new TilePlacementFailedEvent());
   }
 
   /**
-   * TODO JavaDoc
-   * */
+   * Notifies the subscribed view that game has ended.
+   *
+   * @param players array of players in game
+   * @param points  array of all players points
+   * @param winner  name of the winner
+   */
   public void gameEnded(String[] players, int[] points, String winner) {
     notifyListeners(new GameEndedEvent(players, points, winner));
   }
@@ -191,8 +198,10 @@ public class GameModel {
   }
 
   /**
-   * TODO JavaDoc
-   * */
+   * Notifies the subscribed view that the tiles in the middle and on the factory plates were
+   * updated by the server. Either because the game just started or because some player made a new
+   * move.
+   */
   public void middleTilesUpdate() { //array of tilecollection as parameters
     notifyListeners(new MiddleTilesUpdateEvent());
   }
@@ -208,20 +217,25 @@ public class GameModel {
     support.firePropertyChange(event.getName(), null, event);
   }
 
-
   public void loggedIn() {
     notifyListeners(new LoggedInEvent());
     isLoggedin = true;
   }
-
+  /**
+   * Notifies the subscribed view that the login attempt was not successful.
+   */
   public void loginFailed() {
     notifyListeners(new LoginFailedEvent());
   }
-
+  /**
+   * Notifies the subscribed view that a new player joined the game.
+   */
   public void userJoined(String name) {
     notifyListeners(new UserJoinedEvent(name));
   }
-
+  /**
+   * Notifies the subscribed view that a player left the game.
+   */
   public void userLeft(String name) {
     notifyListeners(new UserLeftEvent(name));
   }
