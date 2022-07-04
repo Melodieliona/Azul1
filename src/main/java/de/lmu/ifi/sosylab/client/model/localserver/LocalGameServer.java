@@ -6,7 +6,7 @@ import java.io.IOException;
 /**
  *
  */
-public class GameServer {
+public class LocalGameServer {
 
     /**
      * Launch the game server.

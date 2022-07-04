@@ -70,7 +70,6 @@ public class LocalServerConnection {
 
         Thread newConnectionThread = new Thread() {
 
-
             private boolean keepReading = true;
 
             //TODO: Get rid of sout's
@@ -102,6 +101,7 @@ public class LocalServerConnection {
                         switch (JsonMessage.typeOf(jsonObject)) {
                             case LOGIN:
                                 System.out.println("login request");
+                                try {
                                 clientNick = (String) jsonObject.get("nick");
 
                                 boolean nickAlreadyUsed = false;
@@ -113,39 +113,20 @@ public class LocalServerConnection {
                                 }
 
                                 if (nickAlreadyUsed) {
-                                    JSONObject loginFailedJson = new JSONObject();
-                                    loginFailedJson.put("type", "login failed");
-
-                                    writer.write(loginFailedJson + System.lineSeparator());
-                                    writer.flush();
+                                    sendLoginFailed(writer);
+                                    break;
                                 } else {
-                                    // TODO unnecessary to inform other users in hotseat ?
                                     // Inform other users
                                     for (LocalUser user : users) {
-                                        if (user.getGameNumber() == nextGameNumber) {
-                                            JSONObject userJoinedJson = new JSONObject();
-                                            userJoinedJson.put("type", "user joined");
-                                            userJoinedJson.put("nick", clientNick);
-
-                                            user.getWriter().write(userJoinedJson + System.lineSeparator());
-                                            user.getWriter().flush();
-                                        }
+                                        sendUserJoined(clientNick);
                                     }
+                                }
 
                                     // Inform newly logged in user
-                                    JSONObject loginSuccessJson = new JSONObject();
-                                    System.out.println("log in"); // for debugging
-                                    loginSuccessJson.put("type", "login success");
-
-                                    //TODO unnecessary ?
-                                    loginSuccessJson.put("gameNumber", nextGameNumber);
-
-                                    writer.write(loginSuccessJson + System.lineSeparator());
-                                    writer.flush();
+                                    sendLoginSuccess(writer);
 
                                     // Add user to User list
                                     users.add(new LocalUser(clientNick, writer, nextGameNumber));
-
 
                                     // TODO Determine when to start the game
                                     int numberOfUsersInNextGame = 0;
@@ -169,6 +150,8 @@ public class LocalServerConnection {
                                         game = new LocalGame(usersInGame, connection);
                                         nextGameNumber++;
                                     }
+                                } catch (JSONException e) {
+                                    System.out.println(e.getMessage());
                                 }
                                 break;
                             case TILE_SELECTION:
@@ -212,6 +195,58 @@ public class LocalServerConnection {
         newConnectionThread.start();
     }
 
+    /**
+     * Sends a login confirmation.
+     */
+    private void sendLoginSuccess(OutputStreamWriter writer) {
+        try {
+            System.out.println("log in"); // for debugging
+            JSONObject sendLoginSuccessJson = new JSONObject();
+            sendLoginSuccessJson.put("type", "login success");
+
+            // TODO unnecessary ?
+            sendLoginSuccessJson.put("gameNumber", nextGameNumber);
+
+            writer.write(sendLoginSuccessJson + System.lineSeparator());
+            writer.flush();
+        } catch (IOException | JSONException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Sends a login denial.
+     */
+    private void sendLoginFailed(OutputStreamWriter writer) {
+        try {
+            JSONObject sendLoginFailedJson = new JSONObject();
+            sendLoginFailedJson.put("type", "login failed");
+
+            writer.write(sendLoginFailedJson + System.lineSeparator());
+            writer.flush();
+        } catch (IOException | JSONException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    /**
+     * Tells other players that a user joined.
+     * */
+    private void sendUserJoined(String nickname) {
+        for(LocalUser user : users) {
+            try {
+                JSONObject sendUserJoined = new JSONObject();
+                sendUserJoined.put("type", "user joined");
+                sendUserJoined.put("nick", nickname);
+
+                user.getWriter().write(sendUserJoined + System.lineSeparator());
+                user.getWriter().flush();
+            } catch (IOException | JSONException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
     protected void sendInvalidSelectionMessage(LocalUser user) {
         try {
@@ -319,7 +354,7 @@ public class LocalServerConnection {
     /**
      * Sends their updated score to all players of a game before the next round starts.
      * */
-    public void sendScoreUpdate(int minusPoints) {
+    public void sendScoreUpdate(int score) {
 
         // TODO
     }
@@ -336,7 +371,7 @@ public class LocalServerConnection {
         // TODO Pseudocode
 
         try {
-            for(LocalUser user : userList) {
+            for (LocalUser user : userList) {
                 JSONObject sendBoardUpdate = new JSONObject();
                 sendBoardUpdate.put("type", "board update");
 
