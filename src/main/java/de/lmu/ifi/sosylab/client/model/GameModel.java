@@ -9,6 +9,7 @@ import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
 import de.lmu.ifi.sosylab.client.model.events.MiddleTilesUpdateEvent;
 import de.lmu.ifi.sosylab.client.model.events.OtherPlayerPlacedTilesEvent;
 import de.lmu.ifi.sosylab.client.model.events.OtherPlayerSelectedTilesEvent;
+import de.lmu.ifi.sosylab.client.model.events.PointsUpdatedEvent;
 import de.lmu.ifi.sosylab.client.model.events.TilePlacementFailedEvent;
 import de.lmu.ifi.sosylab.client.model.events.TileSelectionFailedEvent;
 import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
@@ -214,6 +215,15 @@ public class GameModel {
    */
   public void middleTilesUpdate() { //array of tilecollection as parameters
     notifyListeners(new MiddleTilesUpdateEvent());
+  }
+
+  /**
+   * Notifies the subscribed view that the points of each player were just updated.
+   * @param names name of all players
+   * @param points all players points
+   */
+  public void pointsUpdate(String[] names, int[] points){
+    notifyListeners(new PointsUpdatedEvent(names,points));
   }
 
   /**
