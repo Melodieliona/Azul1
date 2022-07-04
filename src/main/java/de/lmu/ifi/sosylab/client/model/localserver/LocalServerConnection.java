@@ -4,15 +4,16 @@ import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,7 +23,10 @@ import org.json.JSONObject;
 public class LocalServerConnection {
     private static final int port = 9090;
 
-    private final LocalServerConnection connection;
+    private final ServerSocket socket;
+
+    private final ExecutorService executorService;
+
 
     List<LocalUser> users;
 
@@ -30,12 +34,17 @@ public class LocalServerConnection {
 
     private int nextGameNumber = 1;
 
+    private BufferedWriter writer;
+
+    private BufferedReader reader;
+
     /**
      * Initializes the User list, which stores all clients that are currently connected.
      */
-    public LocalServerConnection() {
+    public LocalServerConnection() throws IOException {
         users = new ArrayList<>();
-        connection = this;
+        executorService = Executors.newCachedThreadPool();
+        socket = new ServerSocket(port);
     }
 
     /**
@@ -131,10 +140,10 @@ public class LocalServerConnection {
                                     // TODO Determine when to start the game
                                     int numberOfUsersInNextGame = 0;
                                     for (LocalUser user : users) {
-                                        if (user.getGameNumber() == nextGameNumber) {
+                                        //if (user.getGameNumber() == nextGameNumber) {
                                             numberOfUsersInNextGame++;
                                         }
-                                    }
+                                    //}
 
                                     // When 4 players are logged in
                                     // Add new game with these players to the game list
@@ -142,12 +151,12 @@ public class LocalServerConnection {
                                     if (numberOfUsersInNextGame > 3) {
                                         List<LocalUser> usersInGame = new ArrayList<>();
                                         for (LocalUser user : users) {
-                                            if (user.getGameNumber() == nextGameNumber) {
+                                            //if (user.getGameNumber() == nextGameNumber) {
                                                 usersInGame.add(user);
                                             }
-                                        }
+                                        //}
 
-                                        game = new LocalGame(usersInGame, connection);
+                                        //game = new LocalGame(usersInGame, connection);
                                         nextGameNumber++;
                                     }
                                 } catch (JSONException e) {
@@ -240,8 +249,8 @@ public class LocalServerConnection {
                 sendUserJoined.put("type", "user joined");
                 sendUserJoined.put("nick", nickname);
 
-                user.getWriter().write(sendUserJoined + System.lineSeparator());
-                user.getWriter().flush();
+                writer.write(sendUserJoined + System.lineSeparator());
+                writer.flush();
             } catch (IOException | JSONException e) {
                 System.out.println(e.getMessage());
             }
@@ -253,8 +262,8 @@ public class LocalServerConnection {
             JSONObject sendNextPlayerJson = new JSONObject();
             sendNextPlayerJson.put("type", "tiles not allowed");
 
-            user.getWriter().write(sendNextPlayerJson + System.lineSeparator());
-            user.getWriter().flush();
+            writer.write(sendNextPlayerJson + System.lineSeparator());
+            writer.flush();
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
         }
@@ -265,8 +274,8 @@ public class LocalServerConnection {
             JSONObject sendNextPlayerJson = new JSONObject();
             sendNextPlayerJson.put("type", "move not allowed");
 
-            user.getWriter().write(sendNextPlayerJson + System.lineSeparator());
-            user.getWriter().flush();
+            writer.write(sendNextPlayerJson + System.lineSeparator());
+            writer.flush();
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
         }
@@ -288,8 +297,8 @@ public class LocalServerConnection {
                 sendMoveJson.put("color", color.name());
                 sendMoveJson.put("amount", amount);
 
-                user.getWriter().write(sendMoveJson + System.lineSeparator());
-                user.getWriter().flush();
+                writer.write(sendMoveJson + System.lineSeparator());
+                writer.flush();
             }
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
@@ -310,8 +319,8 @@ public class LocalServerConnection {
                 sendMoveJson.put("amount", amount);
                 sendMoveJson.put("row", layingRow);
 
-                user.getWriter().write(sendMoveJson + System.lineSeparator());
-                user.getWriter().flush();
+                writer.write(sendMoveJson + System.lineSeparator());
+                writer.flush();
             }
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
@@ -343,8 +352,8 @@ public class LocalServerConnection {
                     tileIndex++;
                 }
 
-                user.getWriter().write(sendNewFloorLineTiles + System.lineSeparator());
-                user.getWriter().flush();
+                writer.write(sendNewFloorLineTiles + System.lineSeparator());
+                writer.flush();
             }
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
@@ -375,8 +384,8 @@ public class LocalServerConnection {
                 JSONObject sendBoardUpdate = new JSONObject();
                 sendBoardUpdate.put("type", "board update");
 
-                user.getWriter().write(sendBoardUpdate + System.lineSeparator());
-                user.getWriter().flush();
+                writer.write(sendBoardUpdate + System.lineSeparator());
+                writer.flush();
             }
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
@@ -401,8 +410,8 @@ public class LocalServerConnection {
             sendClickableRowsJson.put("type", "allowed fields");
             sendClickableRowsJson.put("row", clickableRows);
 
-            user.getWriter().write(sendClickableRowsJson + System.lineSeparator());
-            user.getWriter().flush();
+            writer.write(sendClickableRowsJson + System.lineSeparator());
+            writer.flush();
 
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
@@ -419,8 +428,8 @@ public class LocalServerConnection {
                 sendNextPlayerJson.put("type", "next turn");
                 sendNextPlayerJson.put("nick", currentUser.getName());
 
-                user.getWriter().write(sendNextPlayerJson + System.lineSeparator());
-                user.getWriter().flush();
+                writer.write(sendNextPlayerJson + System.lineSeparator());
+                writer.flush();
             }
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
@@ -460,10 +469,10 @@ public class LocalServerConnection {
                     finalScoresJson.put(scoreOfPlayerIndex, endScores[i]);
                 }
 
-                user.getWriter().write(winnerJson + System.lineSeparator());
-                user.getWriter().flush();
-                user.getWriter().write(finalScoresJson + System.lineSeparator());
-                user.getWriter().flush();
+                writer.write(winnerJson + System.lineSeparator());
+                writer.flush();
+                writer.write(finalScoresJson + System.lineSeparator());
+                writer.flush();
             }
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
@@ -482,8 +491,8 @@ public class LocalServerConnection {
                 postMessageJson.put("type", "user left");
                 postMessageJson.put("nick", clientNick);
 
-                user.getWriter().write(postMessageJson + System.lineSeparator());
-                user.getWriter().flush();
+                writer.write(postMessageJson + System.lineSeparator());
+                writer.flush();
             }
         } catch (IOException | JSONException e) {
             System.out.println(e.getMessage());
@@ -495,6 +504,11 @@ public class LocalServerConnection {
      * Unused in this implementation.
      */
     public void stop() {
-        // stop connection
+        executorService.shutdownNow();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

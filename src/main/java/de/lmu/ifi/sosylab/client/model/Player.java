@@ -10,6 +10,7 @@ public class Player {
    patternLines = new Object[5][2];
    tilesLines = new Object[5][5];
    createPatternLines();
+    System.out.println("created player");
    //createTilesLines();
   }
 

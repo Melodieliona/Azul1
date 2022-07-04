@@ -22,6 +22,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
@@ -208,7 +209,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showCard(LOGIN_M_CARD);
-                controller.setGameMode("Multiplayer");
+                try {
+                    controller.setGameMode("Multiplayer");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -226,7 +231,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             public void actionPerformed(ActionEvent e) {
                 //TODO: pass in string array with players names
                 showCard(LOGIN_H_CARD);
-                controller.setGameMode("Hot Seat");
+                try {
+                    controller.setGameMode("Hot Seat");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 

@@ -15,6 +15,7 @@ import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalServerConnection;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 
 
 public class GameModel {
@@ -38,7 +39,7 @@ public class GameModel {
     support = new PropertyChangeSupport(this);
   }
 
-  public void setGameMode(String gMode) {
+  public void setGameMode(String gMode) throws IOException {
     if (gMode.equals("Multiplayer")) {
       gameMode = "Multiplayer";
       connection = new GameClientNetworkConnection(this);

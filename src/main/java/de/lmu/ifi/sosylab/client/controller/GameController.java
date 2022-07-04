@@ -6,6 +6,7 @@ import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 
+import java.io.IOException;
 import java.util.List;
 import javax.swing.SwingWorker;
 
@@ -50,7 +51,7 @@ public class GameController {
 
     }
 
-    public void setGameMode(String gameMode) {
+    public void setGameMode(String gameMode) throws IOException {
         model.setGameMode(gameMode);
     }
 
