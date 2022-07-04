@@ -298,7 +298,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         JPanel center = middle;
         center.setPreferredSize(new Dimension(600, 340));
-        center.setBackground(Color.PINK);
+        center.setBackground(Color.getHSBColor(130,189,231));
         game.add(center, BorderLayout.CENTER);
 
         return game;
@@ -406,6 +406,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private Component createPlate(int plateNumber) {
         JPanel plate = new Plate(controller);
         plate.setPreferredSize(new Dimension(100, 120));
+        plate.setBackground(Color.getHSBColor(130,189,231));
 
         plate.addMouseListener(new MouseAdapter() {
             /**
@@ -448,12 +449,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     }
 
     private void createPile() {
-        Pile pile = new Pile(controller);
+        JPanel pile = new JPanel();
+        pile.setBackground(Color.getHSBColor(130,189,231));
+        pile.setPreferredSize(new Dimension(300,300));
+        //TODO Liste erstellen und updaten mit allen Tiles im Haufen.
+        //Dann mit for alle abarbeiten. Farbe von Tile aufrufen.
+        //Selber Ablauf dann mit den MouseListeners
+        for(int i = 0; i < 1; i++) {
+            JPanel tile = new Pile(0, "BLACK", tileSize);
+            tile.setPreferredSize(new Dimension(tileSize, tileSize));
+            tile.setBackground(Color.getHSBColor(130,189,231));
+            pile.add(tile);
+        }
         middle.add(pile);
-
-        // Für Mouselistener.
-        // JFrame Tile mit Listener und Farbe machen.
-        // Checken ob dort Tile liegt. Falls Nein nichts, falls Ja Tile auswählen.
     }
 
     @Override
