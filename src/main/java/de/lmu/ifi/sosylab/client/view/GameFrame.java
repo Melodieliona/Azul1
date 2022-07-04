@@ -4,8 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
-import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
-import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
+import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.TileCollection;
@@ -48,6 +47,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private CardLayout layout;
     private JTextField nickName;
     private JTextField nicknameHS;
+    private JButton loginHS;
     Integer[] numberOfPlayerOptions = {2, 3, 4};
 
     private final JComboBox<Integer> playerNumberSelection = new JComboBox<>(numberOfPlayerOptions);
@@ -78,7 +78,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         boardList = new ArrayList<>(4);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setPreferredSize(new Dimension(400, 300));
+        //this.setPreferredSize(new Dimension(400, 300));
 
         initializeWidgets();
         addEventListeners();
@@ -95,29 +95,37 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         layout = new CardLayout();
         nickName = new JTextField(20);
         nicknameHS = new JTextField(50);
+        loginHS = new JButton("Play");
         hotSeat = new JButton("HOTSEAT");
         multiPlayer = new JButton("MULTIPLAYER");
 
     }
 
+    /**
+     * Creates Card to set Game Mode. (Hot Seat or Multiplayer)
+     */
     public void createSetGameModeView() {
 
         JPanel setGameMode = new JPanel();
         setGameMode.setBackground(Color.GRAY);
         setGameMode.setPreferredSize(new Dimension(400, 100));
-        setGameMode.add(new JLabel("Chose mode"));
+        setGameMode.add(new JLabel("Choose mode"));
         setGameMode.add(hotSeat);
         setGameMode.add(multiPlayer);
         add(setGameMode, GAMEMODE_CARD);
 
     }
 
-    //TODO: Petras Job (Next line is just for Testing purposes
+    /**
+     * Creates Card for Game View.
+     */
     public void createGameView() {
         game = (JPanel) wholeGame();
         add(game, GAME_CARD);
     }
-
+    /**
+     * Creates Card for Multiplayer Login.
+     */
     public void createMultiplayerLoginView() {
 
         JPanel login = new JPanel();
@@ -128,6 +136,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         add(login, LOGIN_M_CARD);
     }
 
+    /**
+     * Creates Card for Hot Seat Login.
+     */
     public void createHotSeatLoginView() {
 
         JPanel login = new JPanel();
@@ -145,7 +156,18 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             }
         });
 
+        loginHS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.logInHotSeat(playerNames);
+            }
+        });
+
     }
+
+    /**
+     * Creates Card to enter nichnames in Hot Seat Mode.
+     */
 
     public void setPlayerNicknamesHS(int numberOfPlayers) {
 
@@ -162,6 +184,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             loginNames.add(nicknameHS);
 
         }
+        loginNames.add(loginHS);
 
     }
 
@@ -211,9 +234,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playerNames.add(nicknameHS.getText());
-                controller.logInHotSeat(playerNames);
             }
         });
+
     }
 
     /**
@@ -456,6 +479,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             JOptionPane.showMessageDialog(this,
                     String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
             showCard(LOGIN_M_CARD);
+        } else if (newValue instanceof MiddleTilesUpdateEvent){
+
+        }else if (newValue instanceof OtherPlayerPlacedTilesEvent){
+
+        }else if (newValue instanceof OtherPlayerSelectedTilesEvent){
+
+        }else if (newValue instanceof TilesAddedEvent){
+
+        }else if (newValue instanceof TilesSelectedEvent){
+
+        }else if (newValue instanceof UserJoinedEvent){
+
+        }else if (newValue instanceof UserLeftEvent){
+
         }
 
         /*
