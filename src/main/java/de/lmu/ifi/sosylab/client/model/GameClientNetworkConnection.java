@@ -287,7 +287,7 @@ public class GameClientNetworkConnection {
 
   public void sendTilePlacement(int line, int color, int numberOfTiles) { //color should be string
     //JSONObject tilePlacement = JsonMessage.placeTiles(color, line); //it actually makes sense to
-    //only send the line since the server already knows how many tiles and the color
+    //only send the line since the client already knows how many tiles and the color
     //send(tilePlacement);
   }
 }
