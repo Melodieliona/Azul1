@@ -118,10 +118,13 @@ public class ServerNetworkConnection {
                 clientNick = (String) jsonObject.get("nick");
 
                 boolean nickAlreadyUsed = false;
+
                 for (User user : users) {
-                  if (clientNick.equals(user.getName())) {
-                    nickAlreadyUsed = true;
-                    break;
+                  if (user.getGameNumber() == nextGameNumber) {
+                    if (clientNick.equals(user.getName())) {
+                      nickAlreadyUsed = true;
+                      break;
+                    }
                   }
                 }
 
@@ -356,20 +359,53 @@ public class ServerNetworkConnection {
   /**
    * Send board state to all players at the very beginning and after a round ended.
    * Contains:
-   * - all tiles on plates, the middle or player boards
    * - the current score of each player
    * - whose turn it is next (..?..)
    * */
-  public void sendBoardState(List<User> userList, TileCollection[] tilePlates, GameBoard[] gameBoards) {
+  public void sendBoardState(List<User> userList, GameBoard[] gameBoards) {
+    try {
+      for(User user : userList) {
+        JSONObject sendFillPlates = new JSONObject();
+        sendFillPlates.put("type", "fill plates");
 
-    // TODO Pseudocode
+        user.getWriter().write(sendFillPlates + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  /**
+   * Send filled tile plates to all players at the very beginning of a round.
+   * Contains all tiles on plates and the middle
+   * */
+  public void sendFilledPlates(List<User> userList, TileCollection[] tilePlates) {
+
+    // { "type" : "fill plates", "color" : "red yellow,black green blue”, “tiles” : “ 3 1,1 1 2“ }
+    // TODO Testing
+
+    String tileColors = "";
+    String tileAmounts = "";
+
+    for(TileCollection plate : tilePlates) {
+      ArrayList<Tile> containedColors = plate.getContainedColors();
+      for(Tile tile : containedColors) {
+        tileColors += (tile.name() + " ");
+        tileAmounts += (plate.getAmountTilesOfColor(tile) + " ");
+      }
+      tileColors += ",";
+      tileAmounts += ",";
+    }
 
     try {
       for(User user : userList) {
-        JSONObject sendBoardUpdate = new JSONObject();
-        sendBoardUpdate.put("type", "board update");
+        JSONObject sendFillPlates = new JSONObject();
+        sendFillPlates.put("type", "fill plates");
+        sendFillPlates.put("color", tileColors);
+        sendFillPlates.put("tiles", tileAmounts);
 
-        user.getWriter().write(sendBoardUpdate + System.lineSeparator());
+        user.getWriter().write(sendFillPlates + System.lineSeparator());
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
@@ -419,13 +455,6 @@ public class ServerNetworkConnection {
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
-  }
-
-  /**
-   * TODO Template, maybe unused.
-   */
-  public void sendNextRound() {
-
   }
 
   /**

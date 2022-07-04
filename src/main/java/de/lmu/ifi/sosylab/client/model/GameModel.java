@@ -46,13 +46,13 @@ public class GameModel {
       setConnection(connection);
       connection.start(8080);
     } else {
-      gameMode = "Hot seat";
+     /* gameMode = "Hot seat";
       localServer = new LocalServerConnection();
       localServer.start();
 
       connection = new GameClientNetworkConnection(this);
       setConnection(connection);
-      connection.start(9090);
+      connection.start(9090);*/
     }
   }
 
@@ -67,7 +67,7 @@ public class GameModel {
 
   public void logInMultiplayer(String name) {
     //TODO: testing
-    //loggedIn();
+    loggedIn();
 
     players = new Player[1];
     players[0] = new Player(name);
@@ -77,7 +77,7 @@ public class GameModel {
 
   public void logInHotSeat(String[] playersName) {
     //TODO: testing
-    //loggedIn();
+    loggedIn();
 
     numberOfPlayers = playersName.length;
     gameMode = "Hot Seat";

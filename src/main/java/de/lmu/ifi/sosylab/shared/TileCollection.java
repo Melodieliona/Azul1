@@ -93,4 +93,43 @@ public class TileCollection extends ArrayList<Tile> {
     return drawnTiles;
   }
 
+
+  /**
+   * Returns the amount of tiles of the same color.
+   * */
+  public int getAmountTilesOfColor (Tile color) {
+    int amount = 0;
+
+    for(Tile tile : this) {
+      if(tile.equals(color)) {
+        amount++;
+      }
+    }
+
+    return amount;
+  }
+
+
+
+  /**
+   * Returns all colors that there is at least one tile of in this collection.
+   * */
+  public ArrayList<Tile> getContainedColors () {
+    ArrayList<Tile> containedColors = new ArrayList<>();
+
+    if(this.contains(Tile.BLUE)) {
+      containedColors.add(Tile.BLUE);
+    } else if (this.contains(Tile.YELLOW)) {
+      containedColors.add(Tile.YELLOW);
+    } else if (this.contains(Tile.RED)) {
+      containedColors.add(Tile.RED);
+    } else if (this.contains(Tile.BLACK)) {
+      containedColors.add(Tile.BLACK);
+    } else if (this.contains(Tile.WHITE)) {
+      containedColors.add(Tile.WHITE);
+    }
+
+    return containedColors;
+  }
+
 }
