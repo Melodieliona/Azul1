@@ -28,7 +28,7 @@ public class Plate extends JPanel {
   private void drawTiles(Graphics2D g2D) {
     int b = 0;
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
       int tileSize = 20;
       if (i < 2) {
         //TODO Farbe von Controller holen

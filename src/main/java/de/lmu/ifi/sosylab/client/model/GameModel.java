@@ -15,6 +15,7 @@ import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
 import de.lmu.ifi.sosylab.client.model.events.TilesSelectedEvent;
 import de.lmu.ifi.sosylab.client.model.events.UserJoinedEvent;
 import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
+import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalServerConnection;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -49,13 +50,14 @@ public class GameModel {
       setConnection(connection);
       connection.start(8080);
     } else {
-     /* gameMode = "Hot seat";
-      localServer = new LocalServerConnection();
-      localServer.start();
+      gameMode = "Hot seat";
+
+      // Start local server
+      LocalGameServer.main(new String[0]);
 
       connection = new GameClientNetworkConnection(this);
       setConnection(connection);
-      connection.start(9090);*/
+      connection.start(9090);
     }
   }
 
@@ -141,18 +143,29 @@ public class GameModel {
     notifyListeners(new TilesAddedEvent(color, line, numberOfSelectedTiles, minuspoints));
   }
 
-  public void tileSelectionFailed(){
+  /**
+   * TODO JavaDoc
+   * */
+  public void tileSelectionFailed() {
     notifyListeners(new TileSelectionFailedEvent());
-  }
-  public void tilePlacementFailed(){
-    notifyListeners(new TilePlacementFailedEvent());
-  }
-  public void gameEnded(String[] players, int[] points, String winner){
-    notifyListeners(new GameEndedEvent(players, points,winner));
   }
 
   /**
-   * Notifies the subscribed view that another player placed specific tiles
+   * TODO JavaDoc
+   * */
+  public void tilePlacementFailed() {
+    notifyListeners(new TilePlacementFailedEvent());
+  }
+
+  /**
+   * TODO JavaDoc
+   * */
+  public void gameEnded(String[] players, int[] points, String winner) {
+    notifyListeners(new GameEndedEvent(players, points, winner));
+  }
+
+  /**
+   * Notifies the subscribed view that another player placed specific tiles.
    *
    * @param color                 type of tile
    * @param numberOfSelectedTiles number of tiles
@@ -165,7 +178,7 @@ public class GameModel {
 
 
   /**
-   * Notifies the subscribed view that another player placed specific tiles
+   * Notifies the subscribed view that another player placed specific tiles.
    *
    * @param color         type of tile
    * @param line          which line the tiles were placed
@@ -177,11 +190,12 @@ public class GameModel {
     notifyListeners(new OtherPlayerPlacedTilesEvent(name, color, numberOfTiles, line, minusPoints));
   }
 
-
+  /**
+   * TODO JavaDoc
+   * */
   public void middleTilesUpdate() { //array of tilecollection as parameters
     notifyListeners(new MiddleTilesUpdateEvent());
   }
-
 
   /**
    * Notify subscribed listeners that the state of the model has changed. To this end, a specific

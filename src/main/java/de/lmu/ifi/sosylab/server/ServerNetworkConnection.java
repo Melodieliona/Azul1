@@ -364,7 +364,7 @@ public class ServerNetworkConnection {
    * */
   public void sendBoardState(List<User> userList, GameBoard[] gameBoards) {
     try {
-      for(User user : userList) {
+      for (User user : userList) {
         JSONObject sendFillPlates = new JSONObject();
         sendFillPlates.put("type", "fill plates");
 
@@ -388,9 +388,9 @@ public class ServerNetworkConnection {
     String tileColors = "";
     String tileAmounts = "";
 
-    for(TileCollection plate : tilePlates) {
+    for (TileCollection plate : tilePlates) {
       ArrayList<Tile> containedColors = plate.getContainedColors();
-      for(Tile tile : containedColors) {
+      for (Tile tile : containedColors) {
         tileColors += (tile.name() + " ");
         tileAmounts += (plate.getAmountTilesOfColor(tile) + " ");
       }
@@ -399,7 +399,7 @@ public class ServerNetworkConnection {
     }
 
     try {
-      for(User user : userList) {
+      for (User user : userList) {
         JSONObject sendFillPlates = new JSONObject();
         sendFillPlates.put("type", "fill plates");
         sendFillPlates.put("color", tileColors);

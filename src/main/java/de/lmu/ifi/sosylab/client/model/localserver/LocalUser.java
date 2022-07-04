@@ -7,19 +7,17 @@ import java.io.OutputStreamWriter;
  * */
 
 public class LocalUser {
-    private final String name;
+  private final String name;
 
+  /**
+   * Represents a single local Player.
+   * */
+  public LocalUser(String name, OutputStreamWriter writer, int gameNumber) {
+    this.name = name;
+  }
 
-    /**
-     * Represents a single local Player.
-     * */
-    public LocalUser(String name, OutputStreamWriter writer, int gameNumber) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
+  public String getName() {
+    return name;
+  }
 
 }
