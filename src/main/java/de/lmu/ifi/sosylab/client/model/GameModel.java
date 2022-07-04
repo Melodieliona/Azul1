@@ -224,7 +224,11 @@ public class GameModel {
     return isLoggedin;
   }
 
+  private synchronized GameClientNetworkConnection getConnection() {
+    return connection;
+  }
 
   public void dispose() {
+    getConnection().stop();
   }
 }
