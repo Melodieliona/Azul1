@@ -79,10 +79,9 @@ public class LocalGame {
     startsAtNextRound = "";
 
     fillPlates();
+    connection.sendFilledPlates(this.userList, tilePlates);
 
-    connection.sendBoardState(this.userList, tilePlates, gameBoards);
-
-    connection.sendNextPlayer(userList, userList.get(currentPlayer));
+    connection.sendNextPlayer(userList.get(currentPlayer));
   }
 
 
@@ -130,8 +129,7 @@ public class LocalGame {
       currentSelectionSource = source;
 
       sendSuccessfulSelection(source, color, amount);
-      connection.sendClickableRows(
-          getUser(playerName), getClickableRows(getUser(playerName), color));
+      connection.sendClickableRows(getClickableRows(getUser(playerName), color));
     } else {
       sendInvalidSelection(playerName);
     }
@@ -224,7 +222,7 @@ public class LocalGame {
     }
 
     // Neuen Spielstand an alle Spieler schicken
-    connection.sendBoardState(this.userList, tilePlates, gameBoards);
+    connection.sendBoardUpdate(gameBoards);
 
     if (!hasCompletedWallRow() && !(bag.isEmpty() && trash.isEmpty())) {
       startNewRound();
@@ -250,13 +248,20 @@ public class LocalGame {
         }
       }
 
-      connection.announceWinner(userList, endScores, winners);
+      connection.announceWinner(endScores, winners);
     }
   }
 
+  /**
+   * Refills tile plates with tiles from the bag and lets the next player make a move.
+   * */
   private void startNewRound() {
 
     fillPlates();
+    connection.sendFilledPlates(userList, tilePlates);
+
+    //Unnecessary ?
+    //connection.sendBoardUpdate(this.userList, gameBoards);
 
     // Nächsten Spieler anhand Startmarker ermitteln, setzen und benachrichtigen.
     for (LocalUser user : userList) {
@@ -266,11 +271,6 @@ public class LocalGame {
         break;
       }
     }
-
-    // TODO sendNextRound necessary ?
-    connection.sendNextRound();
-
-    connection.sendBoardState(this.userList, tilePlates, gameBoards);
     sendNextPlayer();
   }
 
@@ -294,7 +294,7 @@ public class LocalGame {
   private void sendSuccessfulSelection(int tilePlate, Tile color, int amount) {
     String currentPlayer = userList.get(this.currentPlayer).getName();
 
-    connection.sendTileSelection(userList, currentPlayer, tilePlate, color, amount);
+    connection.sendTileSelection(currentPlayer, tilePlate, color, amount);
   }
 
   /**
@@ -305,7 +305,7 @@ public class LocalGame {
     Tile color = tileSelection.get(0);
     int amount = tileSelection.size();
 
-    connection.sendTilePlacement(userList, currentPlayer, color, amount, layingRow);
+    connection.sendTilePlacement(currentPlayer, color, amount, layingRow);
   }
 
   private void sendFloorLinePlacement(TileCollection leftOverTiles) {
@@ -324,7 +324,7 @@ public class LocalGame {
     } else {
       currentPlayer++;
     }
-    connection.sendNextPlayer(userList, userList.get(currentPlayer));
+    connection.sendNextPlayer(userList.get(currentPlayer));
   }
 
   /**
@@ -332,7 +332,7 @@ public class LocalGame {
    * It needs to be set prior to this.
    */
   private void sendNextPlayer() {
-    connection.sendNextPlayer(userList, userList.get(currentPlayer));
+    connection.sendNextPlayer(userList.get(currentPlayer));
   }
 
   /**

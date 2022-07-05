@@ -81,8 +81,8 @@ public class Game {
     startsAtNextRound = "";
 
     fillPlates();
-
     connection.sendFilledPlates(this.userList, tilePlates);
+
     connection.sendNextPlayer(userList, userList.get(currentPlayer));
   }
 
@@ -226,7 +226,7 @@ public class Game {
     }
 
     // Neuen Spielstand an alle Spieler schicken
-    connection.sendBoardState(this.userList, gameBoards);
+    connection.sendBoardUpdate(this.userList, gameBoards);
 
     if (!hasCompletedWallRow() && !(bag.isEmpty() && trash.isEmpty())) {
       startNewRound();
@@ -256,9 +256,16 @@ public class Game {
     }
   }
 
+  /**
+   * Refills tile plates with tiles from the bag and lets the next player make a move.
+   * */
   private void startNewRound() {
 
     fillPlates();
+    connection.sendFilledPlates(userList, tilePlates);
+
+    //Unnecessary ?
+    //connection.sendBoardUpdate(this.userList, gameBoards);
 
     // Nächsten Spieler anhand Startmarker ermitteln, setzen und benachrichtigen.
     for (User user : userList) {
@@ -268,8 +275,6 @@ public class Game {
         break;
       }
     }
-
-    connection.sendBoardState(this.userList, gameBoards);
     sendNextPlayer();
   }
 
@@ -311,7 +316,6 @@ public class Game {
     User currentPlayer = userList.get(this.currentPlayer);
     connection.sendFloorLineUpdate(userList, currentPlayer, leftOverTiles);
   }
-
 
   /**
    * Sets the player whose turn it is to make a move next.

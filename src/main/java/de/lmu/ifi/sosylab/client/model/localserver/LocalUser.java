@@ -12,7 +12,7 @@ public class LocalUser {
   /**
    * Represents a single local Player.
    * */
-  public LocalUser(String name, OutputStreamWriter writer, int gameNumber) {
+  public LocalUser(String name) {
     this.name = name;
   }
 

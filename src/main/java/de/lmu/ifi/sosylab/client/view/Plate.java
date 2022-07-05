@@ -7,6 +7,9 @@ import java.awt.Graphics2D;
 import java.io.Serial;
 import javax.swing.JPanel;
 
+/**
+ * TODO JavaDoc
+ * */
 public class Plate extends JPanel {
 
   @Serial

@@ -61,7 +61,7 @@ public class GameModel {
       gameMode = "Hot seat";
 
       // Start local server
-      LocalGameServer.main(new String[0]);
+      LocalGameServer.startUpLocalServer();
 
       connection = new GameClientNetworkConnection(this);
       setConnection(connection);
@@ -219,11 +219,12 @@ public class GameModel {
 
   /**
    * Notifies the subscribed view that the points of each player were just updated.
+   *
    * @param names name of all players
    * @param points all players points
    */
-  public void pointsUpdate(String[] names, int[] points){
-    notifyListeners(new PointsUpdatedEvent(names,points));
+  public void pointsUpdate(String[] names, int[] points) {
+    notifyListeners(new PointsUpdatedEvent(names, points));
   }
 
   /**

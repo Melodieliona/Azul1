@@ -118,7 +118,6 @@ public class ServerNetworkConnection {
                 clientNick = (String) jsonObject.get("nick");
 
                 boolean nickAlreadyUsed = false;
-
                 for (User user : users) {
                   if (user.getGameNumber() == nextGameNumber) {
                     if (clientNick.equals(user.getName())) {
@@ -129,32 +128,12 @@ public class ServerNetworkConnection {
                 }
 
                 if (nickAlreadyUsed) {
-                  JSONObject loginFailedJson = new JSONObject();
-                  loginFailedJson.put("type", "login failed");
-
-                  writer.write(loginFailedJson + System.lineSeparator());
-                  writer.flush();
+                  sendLoginFailed(writer);
+                  break;
                 } else {
-                  // Inform other users
-                  for (User user : users) {
-                    if (user.getGameNumber() == nextGameNumber) {
-                      JSONObject userJoinedJson = new JSONObject();
-                      userJoinedJson.put("type", "user joined");
-                      userJoinedJson.put("nick", clientNick);
-
-                      user.getWriter().write(userJoinedJson + System.lineSeparator());
-                      user.getWriter().flush();
-                    }
-                  }
-
-                  // Inform newly logged in user
-                  JSONObject loginSuccessJson = new JSONObject();
-                  System.out.println("log in"); // for debugging
-                  loginSuccessJson.put("type", "login success");
-                  loginSuccessJson.put("gameNumber", nextGameNumber);
-
-                  writer.write(loginSuccessJson + System.lineSeparator());
-                  writer.flush();
+                  // Acknowledge successful login
+                  sendLoginSuccess(writer);
+                  sendUserJoined(clientNick);
 
                   // Add user to User list
                   users.add(new User(clientNick, writer, nextGameNumber));
@@ -245,6 +224,60 @@ public class ServerNetworkConnection {
   }
 
 
+  /**
+   * Sends a login confirmation.
+   */
+  private void sendLoginSuccess(OutputStreamWriter writer) {
+    try {
+      System.out.println("log in"); // for debugging
+      JSONObject sendLoginSuccessJson = new JSONObject();
+      sendLoginSuccessJson.put("type", "login success");
+
+      writer.write(sendLoginSuccessJson + System.lineSeparator());
+      writer.flush();
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  /**
+   * Sends a login denial.
+   */
+  private void sendLoginFailed(OutputStreamWriter writer) {
+    try {
+      JSONObject sendLoginFailedJson = new JSONObject();
+      sendLoginFailedJson.put("type", "login failed");
+
+      writer.write(sendLoginFailedJson + System.lineSeparator());
+      writer.flush();
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  /**
+   * Acknowledges that a player has successfully joined the game.
+   * */
+  private void sendUserJoined(String nickname) {
+    try {
+      for (User user : users) {
+        if (user.getGameNumber() == nextGameNumber) {
+          JSONObject userJoinedJson = new JSONObject();
+          userJoinedJson.put("type", "user joined");
+          userJoinedJson.put("nick", nickname);
+
+          user.getWriter().write(userJoinedJson + System.lineSeparator());
+          user.getWriter().flush();
+        }
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  /**
+   * Denies a tile selection request.
+   */
   protected void sendInvalidSelectionMessage(User user) {
     try {
       JSONObject sendNextPlayerJson = new JSONObject();
@@ -257,6 +290,9 @@ public class ServerNetworkConnection {
     }
   }
 
+  /**
+   * Denies a tile placement request.
+   */
   protected void sendInvalidPlacementMessage(User user) {
     try {
       JSONObject sendNextPlayerJson = new JSONObject();
@@ -315,6 +351,7 @@ public class ServerNetworkConnection {
     }
   }
 
+  // TODO Integrate Floorline update into board update
   /**
    * Sends a message with all tiles that have been added to the floor line
    * to all other players of that game.
@@ -362,13 +399,13 @@ public class ServerNetworkConnection {
    * - the current score of each player
    * - whose turn it is next (..?..)
    * */
-  public void sendBoardState(List<User> userList, GameBoard[] gameBoards) {
+  public void sendBoardUpdate(List<User> userList, GameBoard[] gameBoards) {
     try {
       for (User user : userList) {
-        JSONObject sendFillPlates = new JSONObject();
-        sendFillPlates.put("type", "fill plates");
+        JSONObject sendBoardUpdate = new JSONObject();
+        sendBoardUpdate.put("type", "board update");
 
-        user.getWriter().write(sendFillPlates + System.lineSeparator());
+        user.getWriter().write(sendBoardUpdate + System.lineSeparator());
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {

@@ -14,12 +14,15 @@ import org.json.JSONObject;
  * */
 public enum JsonMessage {
 
-  LOGIN("login"), LOGIN_SUCCESS("login success"), LOGIN_FAILED("login failed"),
-  USER_JOINED("user joined"), TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
+  LOGIN("login"), LOGIN_SUCCESS("login success"),
+  LOGIN_FAILED("login failed"), USER_JOINED("user joined"),
+  TILE_SELECTION("tile selection"), TILE_PLACEMENT("tile placement"),
   NEXT_TURN("next turn"), ALLOWED_TILES("allowed tiles"),
-  MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("allowed fields"), BOARD_UPDATE("board update"),
-  USER_LEFT("user left"), FILL_PLATES("fill plates"), POINTS("points"), GAME_ENDED("game ended"),
-  GAME_RESTART("game restart"), GAME_RESTART_REQUEST("game restart request");
+  MOVE_NOT_ALLOWED("move not allowed"), ALLOWED_FIELDS("allowed fields"),
+  BOARD_UPDATE("board update"), USER_LEFT("user left"),
+  FILL_PLATES("fill plates"), POINTS("points"),
+  GAME_ENDED("game ended"), GAME_RESTART("game restart"),
+  GAME_RESTART_REQUEST("game restart request");
 
   public static final String TYPE_FIELD = "type";
 

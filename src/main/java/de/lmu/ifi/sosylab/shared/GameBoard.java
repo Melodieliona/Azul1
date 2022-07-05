@@ -129,11 +129,12 @@ public class GameBoard {
   }
 
   /**
-   * Clears the floor line.
+   * Subtracts minus-points from plus-points and clears the floor line.
    *
    * @return The removed tiles
    * */
   public TileCollection clearFloorLine() {
+    plusPoints -= minusPoints;
     TileCollection clearedTiles = floorLine.removeAllTiles();
     updateMinusPoints();
     return clearedTiles;

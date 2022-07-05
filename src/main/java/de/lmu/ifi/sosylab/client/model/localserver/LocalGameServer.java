@@ -11,15 +11,10 @@ public class LocalGameServer {
   /**
    * Launch the game server.
    */
-  public static void main(String[] args) throws IOException {
+  public static void startUpLocalServer() throws IOException {
     final LocalServerConnection connection = new LocalServerConnection();
     connection.start();
 
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        connection.stop();
-      }
-    });
+    Runtime.getRuntime().addShutdownHook(new Thread(connection::stop));
   }
 }
