@@ -216,7 +216,7 @@ public class GameClientNetworkConnection {
   private void handleFillPlates(JSONObject object) {
     String[] colors = JsonMessage.getTileColor(object).split(",");
     String[] amounts = JsonMessage.getTiles(object).trim().split(",");
-    model.middleTilesUpdate(colors, amounts);
+    model.fillTiles(colors, amounts);
   }
 
   private void handleGameEnded(JSONObject object) {

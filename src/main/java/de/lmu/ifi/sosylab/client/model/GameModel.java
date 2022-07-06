@@ -212,12 +212,11 @@ public class GameModel {
 
     /**
      * Notifies the subscribed view that the tiles in the middle and on the factory plates were
-     * updated by the server. Either because the game just started or because some player made a new
-     * move.
+     * updated by the server because the game has just started.
      */
-    public void middleTilesUpdate(String[] colors, String[] amounts) {//array of tilecollection as parameters
-        tilePlates = new TileCollection[colors.length+1];
-        for (int n = 1; n < tilePlates.length; n++) {
+    public void fillTiles(String[] colors, String[] amounts) {//array of tilecollection as parameters
+        tilePlates = new TileCollection[colors.length];
+        for (int n = 0; n < tilePlates.length; n++) {
             String hcolors = colors[n];
             String hamounts = amounts[n];
             String[] colorsCurrentPlate = hcolors.trim().split("\\s+");
