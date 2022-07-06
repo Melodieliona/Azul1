@@ -5,6 +5,7 @@ import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class LocalServerConnection {
 
   LocalGame game = null;
 
-  private BufferedWriter writer;
+  private OutputStreamWriter writer;
 
   private BufferedReader reader;
 
@@ -85,10 +86,9 @@ public class LocalServerConnection {
       public void run() {
 
         try {
-          BufferedReader reader = new BufferedReader(
+          reader = new BufferedReader(
               new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-          OutputStreamWriter writer =
-              new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
+          writer = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
 
 
           while (keepReading) {
@@ -168,7 +168,9 @@ public class LocalServerConnection {
                 game.handleTilePlacement(clientNick, targetRow, tileColor, tileAmount);
 
                 break;
-              default: break;
+              default:
+                sendInvalidJsonError();
+                break;
             }
           }
         } catch (IOException | JSONException e) {
@@ -189,6 +191,22 @@ public class LocalServerConnection {
     };
 
     newConnectionThread.start();
+  }
+
+  /**
+   * Tells client that it sent an invalid json message.
+   * */
+  private void sendInvalidJsonError() {
+    try {
+      System.out.println("Invalid Json"); // for debugging
+      JSONObject sendLoginSuccessJson = new JSONObject();
+      sendLoginSuccessJson.put("type", "invalid json");
+
+      writer.write(sendLoginSuccessJson + System.lineSeparator());
+      writer.flush();
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   /**
