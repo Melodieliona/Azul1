@@ -83,7 +83,7 @@ public class GameModel {
    * */
   public void logInMultiplayer(String name) {
     //TODO: testing
-    loggedIn();
+    //loggedIn();
 
     players = new Player[1];
     players[0] = new Player(name);
@@ -96,7 +96,7 @@ public class GameModel {
    * */
   public void logInHotSeat(String[] playersName) {
     //TODO: testing
-    loggedIn();
+    //loggedIn();
 
     numberOfPlayers = playersName.length;
     gameMode = "Hot Seat";
