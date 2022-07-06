@@ -100,7 +100,7 @@ public class GameController {
 
   public TileCollection[] getTilePlates() {
     //0 ist Haufen
-    return null;
+    return model.getTilePlates();
   }
 
   public String getTileColor() {

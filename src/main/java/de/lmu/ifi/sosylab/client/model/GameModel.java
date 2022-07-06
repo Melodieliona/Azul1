@@ -216,8 +216,8 @@ public class GameModel {
      * move.
      */
     public void middleTilesUpdate(String[] colors, String[] amounts) {//array of tilecollection as parameters
-        tilePlates = new TileCollection[colors.length];
-        for (int n = 0; n < tilePlates.length; n++) {
+        tilePlates = new TileCollection[colors.length+1];
+        for (int n = 1; n < tilePlates.length; n++) {
             String hcolors = colors[n];
             String hamounts = amounts[n];
             String[] colorsCurrentPlate = hcolors.trim().split("\\s+");
@@ -313,5 +313,10 @@ public class GameModel {
 
     public void dispose() {
         getConnection().stop();
+    }
+
+    public TileCollection[] getTilePlates() {
+        TileCollection[] copyofTilePlates = tilePlates.clone();
+        return copyofTilePlates;
     }
 }
