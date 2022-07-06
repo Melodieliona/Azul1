@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosylab.client.model.localserver;
 
+import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.Tile;
@@ -25,16 +26,15 @@ import org.json.JSONObject;
 public class LocalServerConnection {
   private static final int port = 9090;
 
+  private final LocalServerConnection connection;
+
   private final ServerSocket socket;
 
   private final ExecutorService executorService;
 
-
   List<LocalUser> users;
 
   LocalGame game = null;
-
-  private int nextGameNumber = 1;
 
   private BufferedWriter writer;
 
@@ -45,6 +45,7 @@ public class LocalServerConnection {
    */
   public LocalServerConnection() throws IOException {
     users = new ArrayList<>();
+    connection = this;
     executorService = Executors.newCachedThreadPool();
     socket = new ServerSocket(port);
   }
@@ -123,39 +124,27 @@ public class LocalServerConnection {
                     sendLoginFailed(writer);
                     break;
                   } else {
-                    // Inform other users
-                    for (LocalUser user : users) {
-                      sendUserJoined(clientNick);
-                    }
+                    // Acknowledge successful login
+                    sendLoginSuccess(writer);
+                    sendUserJoined(clientNick);
                   }
-
-                  // Inform newly logged in user
-                  sendLoginSuccess(writer);
 
                   // Add user to User list
-                  users.add(new LocalUser(clientNick, writer, nextGameNumber));
+                  users.add(new LocalUser(clientNick));
 
                   // TODO Determine when to start the game
-                  int numberOfUsersInNextGame = 0;
-                  for (LocalUser user : users) {
-                    //if (user.getGameNumber() == nextGameNumber) {
-                    numberOfUsersInNextGame++;
+                  int numberOfUsersInGame = 0;
+                  for (int i = 0; i < users.size(); i++) {
+                    numberOfUsersInGame++;
                   }
-                  //}
 
                   // When 4 players are logged in
                   // Add new game with these players to the game list
                   // Update the number of the next game
-                  if (numberOfUsersInNextGame > 3) {
-                    List<LocalUser> usersInGame = new ArrayList<>();
-                    for (LocalUser user : users) {
-                      //if (user.getGameNumber() == nextGameNumber) {
-                      usersInGame.add(user);
-                    }
-                    //}
+                  if (numberOfUsersInGame > 3) {
+                    List<LocalUser> usersInGame = new ArrayList<>(users);
 
-                    //game = new LocalGame(usersInGame, connection);
-                    nextGameNumber++;
+                    game = new LocalGame(usersInGame, connection);
                   }
                 } catch (JSONException e) {
                   System.out.println(e.getMessage());
@@ -211,9 +200,6 @@ public class LocalServerConnection {
       JSONObject sendLoginSuccessJson = new JSONObject();
       sendLoginSuccessJson.put("type", "login success");
 
-      // TODO unnecessary ?
-      sendLoginSuccessJson.put("gameNumber", nextGameNumber);
-
       writer.write(sendLoginSuccessJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
@@ -236,25 +222,25 @@ public class LocalServerConnection {
     }
   }
 
-
   /**
-   * Tells other players that a user joined.
+   * Acknowledges that a player has successfully joined the game.
    * */
   private void sendUserJoined(String nickname) {
-    for (LocalUser user : users) {
-      try {
-        JSONObject sendUserJoined = new JSONObject();
-        sendUserJoined.put("type", "user joined");
-        sendUserJoined.put("nick", nickname);
+    try {
+      JSONObject sendUserJoined = new JSONObject();
+      sendUserJoined.put("type", "user joined");
+      sendUserJoined.put("nick", nickname);
 
-        writer.write(sendUserJoined + System.lineSeparator());
-        writer.flush();
-      } catch (IOException | JSONException e) {
-        System.out.println(e.getMessage());
-      }
+      writer.write(sendUserJoined + System.lineSeparator());
+      writer.flush();
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
     }
   }
 
+  /**
+   * Denies a tile selection request.
+   */
   protected void sendInvalidSelectionMessage(LocalUser user) {
     try {
       JSONObject sendNextPlayerJson = new JSONObject();
@@ -267,6 +253,9 @@ public class LocalServerConnection {
     }
   }
 
+  /**
+   * Denies a tile placement request.
+   */
   protected void sendInvalidPlacementMessage(LocalUser user) {
     try {
       JSONObject sendNextPlayerJson = new JSONObject();
@@ -283,21 +272,19 @@ public class LocalServerConnection {
   /**
    * Sends a successful tile selection to all users (including the sender as confirmation).
    */
-  public void sendTileSelection(
-      List<LocalUser> list, String currentPlayer, int sourceTilePlate, Tile color, int amount) {
+  public void sendTileSelection(String currentPlayer, int sourceTilePlate, Tile color, int amount) {
     try {
-      for (LocalUser user : list) {
-        JSONObject sendMoveJson = new JSONObject();
-        sendMoveJson.put("type", "tile selection");
-        sendMoveJson.put("nick", currentPlayer);
-        // sourceTilePlate = 0 means the middle
-        sendMoveJson.put("plate", sourceTilePlate);
-        sendMoveJson.put("color", color.name());
-        sendMoveJson.put("amount", amount);
+      JSONObject sendMoveJson = new JSONObject();
+      sendMoveJson.put("type", "tile selection");
+      sendMoveJson.put("nick", currentPlayer);
+      // sourceTilePlate = 0 means the middle
+      sendMoveJson.put("plate", sourceTilePlate);
+      sendMoveJson.put("color", color.name());
+      sendMoveJson.put("amount", amount);
 
-        writer.write(sendMoveJson + System.lineSeparator());
-        writer.flush();
-      }
+      writer.write(sendMoveJson + System.lineSeparator());
+      writer.flush();
+
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
@@ -306,25 +293,24 @@ public class LocalServerConnection {
   /**
    * Sends a successful tile placement to all users (including the sender as confirmation).
    */
-  public void sendTilePlacement(
-      List<LocalUser> list, String currentPlayer, Tile color, int amount, int layingRow) {
+  public void sendTilePlacement(String currentPlayer, Tile color, int amount, int layingRow) {
     try {
-      for (LocalUser user : list) {
-        JSONObject sendMoveJson = new JSONObject();
-        sendMoveJson.put("type", "tile placement");
-        sendMoveJson.put("nick", currentPlayer);
-        sendMoveJson.put("color", color.name());
-        sendMoveJson.put("amount", amount);
-        sendMoveJson.put("row", layingRow);
+      JSONObject sendMoveJson = new JSONObject();
+      sendMoveJson.put("type", "tile placement");
+      sendMoveJson.put("nick", currentPlayer);
+      sendMoveJson.put("color", color.name());
+      sendMoveJson.put("amount", amount);
+      sendMoveJson.put("row", layingRow);
 
-        writer.write(sendMoveJson + System.lineSeparator());
-        writer.flush();
-      }
+      writer.write(sendMoveJson + System.lineSeparator());
+      writer.flush();
+
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
   }
 
+  // TODO Integrate Floorline update into board update
   /**
    * Sends a message with all tiles that have been added to the floor line
    * to all other players of that game.
@@ -369,33 +355,65 @@ public class LocalServerConnection {
   /**
    * Send board state to all players at the very beginning and after a round ended.
    * Contains:
-   * - all tiles on plates, the middle or player boards
    * - the current score of each player
    * - whose turn it is next (..?..)
    * */
-  public void sendBoardState(
-      List<LocalUser> userList, TileCollection[] tilePlates, GameBoard[] gameBoards) {
-
-    // TODO Pseudocode
-
+  public void sendBoardUpdate(GameBoard[] gameBoards) {
     try {
-      for (LocalUser user : userList) {
-        JSONObject sendBoardUpdate = new JSONObject();
-        sendBoardUpdate.put("type", "board update");
+      JSONObject sendBoardUpdate = new JSONObject();
+      sendBoardUpdate.put("type", "board update");
 
-        writer.write(sendBoardUpdate + System.lineSeparator());
-        writer.flush();
-      }
+      writer.write(sendBoardUpdate + System.lineSeparator());
+      writer.flush();
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
   }
 
   /**
+   * Send filled tile plates to all players at the very beginning of a round.
+   * Contains all tiles on plates and the middle
+   * */
+  public void sendFilledPlates(List<LocalUser> userList, TileCollection[] tilePlates) {
+
+    // { "type" : "fill plates", "color" : "red yellow,black green blue”, “tiles” : “ 3 1,1 1 2“ }
+    // TODO Testing
+
+    String tileColors = "";
+    String tileAmounts = "";
+
+    for (TileCollection plate : tilePlates) {
+      ArrayList<Tile> containedColors = plate.getContainedColors();
+      for (Tile tile : containedColors) {
+        tileColors += (tile.name() + " ");
+        tileAmounts += (plate.getAmountTilesOfColor(tile) + " ");
+      }
+      tileColors += ",";
+      tileAmounts += ",";
+    }
+
+    // Send filled plates to client once
+    // Client network layer needs to distribute the information to every player
+    try {
+      JSONObject sendFillPlates = new JSONObject();
+      sendFillPlates.put("type", "fill plates");
+      sendFillPlates.put("color", tileColors);
+      sendFillPlates.put("tiles", tileAmounts);
+
+      writer.write(sendFillPlates + System.lineSeparator());
+      writer.flush();
+
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+
+  /**
    * Gets send after a tile selection was made successfully.
    * Tells the player whose turn it is, which rows he can place selected tile(s) on.
    * */
-  public void sendClickableRows(LocalUser user, int[] rows) {
+  public void sendClickableRows(int[] rows) {
     try {
       String clickableRows = "";
       for (int i = 0; i < rows.length; i++) {
@@ -420,16 +438,14 @@ public class LocalServerConnection {
   /**
    * Tells players whose turn it is now.
    */
-  public void sendNextPlayer(List<LocalUser> userList, LocalUser currentUser) {
+  public void sendNextPlayer(LocalUser currentUser) {
     try {
-      for (LocalUser user : userList) {
-        JSONObject sendNextPlayerJson = new JSONObject();
-        sendNextPlayerJson.put("type", "next turn");
-        sendNextPlayerJson.put("nick", currentUser.getName());
+      JSONObject sendNextPlayerJson = new JSONObject();
+      sendNextPlayerJson.put("type", "next turn");
+      sendNextPlayerJson.put("nick", currentUser.getName());
 
-        writer.write(sendNextPlayerJson + System.lineSeparator());
-        writer.flush();
-      }
+      writer.write(sendNextPlayerJson + System.lineSeparator());
+      writer.flush();
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
@@ -449,30 +465,29 @@ public class LocalServerConnection {
    * Format finalScoresJson: {"type": "points", "points0": ..., "points1": ..., "points2": ...,
    *                                            "points3": ...}
    * */
-  public void announceWinner(List<LocalUser> userList, int[] endScores, ArrayList<String> winners) {
+  public void announceWinner(int[] endScores, ArrayList<String> winners) {
     try {
-      for (LocalUser user : userList) {
-        JSONObject winnerJson = new JSONObject();
-        winnerJson.put("type", "winner");
-        winnerJson.put("amount", winners.size());
-        // winners are 0-indexed
-        for (int i = 0; i < winners.size(); i++) {
-          String winnerIndex = "winner" + i;
-          winnerJson.put(winnerIndex, winners.get(i));
-        }
-
-        JSONObject finalScoresJson = new JSONObject();
-        finalScoresJson.put("type", "points");
-        for (int i = 0; i < endScores.length; i++) {
-          String scoreOfPlayerIndex = "points" + i;
-          finalScoresJson.put(scoreOfPlayerIndex, endScores[i]);
-        }
-
-        writer.write(winnerJson + System.lineSeparator());
-        writer.flush();
-        writer.write(finalScoresJson + System.lineSeparator());
-        writer.flush();
+      JSONObject winnerJson = new JSONObject();
+      winnerJson.put("type", "winner");
+      winnerJson.put("amount", winners.size());
+      // winners are 0-indexed
+      for (int i = 0; i < winners.size(); i++) {
+        String winnerIndex = "winner" + i;
+        winnerJson.put(winnerIndex, winners.get(i));
       }
+
+      JSONObject finalScoresJson = new JSONObject();
+      finalScoresJson.put("type", "points");
+      for (int i = 0; i < endScores.length; i++) {
+        String scoreOfPlayerIndex = "points" + i;
+        finalScoresJson.put(scoreOfPlayerIndex, endScores[i]);
+      }
+
+      writer.write(winnerJson + System.lineSeparator());
+      writer.flush();
+      writer.write(finalScoresJson + System.lineSeparator());
+      writer.flush();
+
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
@@ -485,14 +500,12 @@ public class LocalServerConnection {
    */
   private void sendUserLeft(String clientNick) {
     try {
-      for (LocalUser user : users) {
-        JSONObject postMessageJson = new JSONObject();
-        postMessageJson.put("type", "user left");
-        postMessageJson.put("nick", clientNick);
+      JSONObject postMessageJson = new JSONObject();
+      postMessageJson.put("type", "user left");
+      postMessageJson.put("nick", clientNick);
 
-        writer.write(postMessageJson + System.lineSeparator());
-        writer.flush();
-      }
+      writer.write(postMessageJson + System.lineSeparator());
+      writer.flush();
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
