@@ -22,7 +22,8 @@ public enum JsonMessage {
   BOARD_UPDATE("board update"), USER_LEFT("user left"),
   FILL_PLATES("fill plates"), POINTS("points"),
   GAME_ENDED("game ended"), GAME_RESTART("game restart"),
-  GAME_RESTART_REQUEST("game restart request");
+  GAME_RESTART_REQUEST("game restart request"), TILES_NOT_ALLOWED("TILES NOT ALLOWED");
+
 
   public static final String TYPE_FIELD = "type";
 

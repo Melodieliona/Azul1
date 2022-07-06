@@ -155,8 +155,10 @@ public class GameClientNetworkConnection {
       case GAME_RESTART:
         handleGameRestart(object);
         break;
+      case TILES_NOT_ALLOWED:
+        handleTilesNotAllowed(object);
       default:
-        throw new AssertionError("Unhandled message: " + object);
+        handleInvalidJSON(object);
     }
   }
 
@@ -199,8 +201,7 @@ public class GameClientNetworkConnection {
   }
 
   private void handleMoveNotAllowed(JSONObject object) {
-    String reason = JsonMessage.getContent(object);
-    //model. the client has just received that there was an attempt to perform an action not valid
+    model.tilePlacementFailed();
   }
 
   private void handleBoardUpdate(JSONObject object) {
@@ -215,12 +216,11 @@ public class GameClientNetworkConnection {
   private void handleFillPlates(JSONObject object) {
     String[] colors = JsonMessage.getTileColor(object).split(",");
     String[] amounts = JsonMessage.getTiles(object).trim().split(",");
-    //model. the client has just received an update of the plates because the round has ended,
-    // meaning that the plates must be filled with more tiles.
+    model.middleTilesUpdate(colors, amounts);
   }
 
   private void handleGameEnded(JSONObject object) {
-    //model. the client has just received that the game has ended.
+    //model.gameEnded();
   }
 
   private void handleGameRestartRequest(JSONObject object) {
@@ -237,6 +237,14 @@ public class GameClientNetworkConnection {
     String[] nicks = JsonMessage.getNickname(object).trim().split("\\s+");
     String[] points = JsonMessage.getScores(object).trim().split("\\s+");
     //model. the client has just received the actual scores of each player
+  }
+
+  public void handleInvalidJSON(JSONObject object) {
+    throw new AssertionError("Invalid JSON Message sent");
+  }
+
+  public void handleTilesNotAllowed(JSONObject object) {
+    model.tileSelectionFailed();
   }
 
 
