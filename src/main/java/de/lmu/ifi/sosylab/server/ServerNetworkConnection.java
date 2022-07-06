@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosylab.server;
 
+import de.lmu.ifi.sosylab.client.model.localserver.LocalGame;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.Tile;
@@ -29,6 +30,8 @@ public class ServerNetworkConnection {
   List<Game> games;
 
   private int nextGameNumber = 1;
+
+  private boolean gameStartTimerRunning = false;
 
   /**
    * Initializes the User list, which stores all clients that are currently connected.
@@ -138,7 +141,8 @@ public class ServerNetworkConnection {
                   // Add user to User list
                   users.add(new User(clientNick, writer, nextGameNumber));
 
-                  //
+                  // Start new game when 4 players are logged in
+                  // Start a new timer when at least 2 players are logged in.
                   int numberOfUsersInNextGame = 0;
                   for (User user : users) {
                     if (user.getGameNumber() == nextGameNumber) {
@@ -146,21 +150,16 @@ public class ServerNetworkConnection {
                     }
                   }
 
-                  // When 4 players are logged in
-                  // Add new game with these players to the game list
-                  // Update the number of the next game
                   if (numberOfUsersInNextGame > 3) {
-                    List<User> usersInGame = new ArrayList<>();
-                    for (User user : users) {
-                      if (user.getGameNumber() == nextGameNumber) {
-                        usersInGame.add(user);
-                      }
-                    }
-
-                    games.add(new Game(nextGameNumber, usersInGame, connection));
+                    startGame();
                     clientGameNumber = nextGameNumber;
                     nextGameNumber++;
+                  } else if (numberOfUsersInNextGame > 1) {
+                    if(gameStartTimerRunning) {
+                      startTimer();
+                    }
                   }
+
                 }
                 break;
               case TILE_SELECTION:
@@ -548,6 +547,64 @@ public class ServerNetworkConnection {
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
+  }
+
+  /**
+   * Tells all players waiting for the game to start, that the game will start soon.
+   * */
+  private void sendStartTimer() {
+    try {
+      for (User user : users) {
+        if (user.getGameNumber() == nextGameNumber) {
+          JSONObject postMessageJson = new JSONObject();
+          postMessageJson.put("type", "timer");
+
+          user.getWriter().write(postMessageJson + System.lineSeparator());
+          user.getWriter().flush();
+        }
+      }
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  /**
+   * Starts the game.
+   * */
+  private void startGame() {
+    List<User> usersInGame = new ArrayList<>();
+    for (User user : users) {
+      if (user.getGameNumber() == nextGameNumber) {
+        usersInGame.add(user);
+      }
+    }
+
+    games.add(new Game(nextGameNumber, usersInGame, connection));
+  }
+
+  /**
+   * Starts a timer. When expired, starts the game with current amount of logged in players.
+   * Timer length: 60 sec
+   * */
+  private void startTimer() {
+    gameStartTimerRunning = true;
+    sendStartTimer();
+
+    Thread timerThread = new Thread(() -> {
+      try {
+        Thread.sleep(1000 * 60);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      // Check if game hasn't already been started (because a 4th user joined) and if there are
+      // enough users for a game (at least 2)
+      if((games.size() == nextGameNumber + 1) && (users.size() > 1)) {
+        gameStartTimerRunning = false;
+        startGame();
+      }
+    });
+
+    timerThread.start();
   }
 
   /**

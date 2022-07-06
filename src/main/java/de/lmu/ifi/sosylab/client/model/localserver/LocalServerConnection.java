@@ -528,9 +528,7 @@ public class LocalServerConnection {
    * Starts the game.
    * */
   private void startGame() {
-
     game = new LocalGame(new ArrayList<>(users), connection);
-
   }
 
   /**
