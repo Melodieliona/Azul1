@@ -1,11 +1,9 @@
 package de.lmu.ifi.sosylab.client.model.localserver;
 
-import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +31,15 @@ public class LocalServerConnection {
 
   private final ExecutorService executorService;
 
-  List<LocalUser> users;
-
   LocalGame game = null;
 
   private BufferedWriter writer;
 
   private BufferedReader reader;
+
+  List<LocalUser> users;
+
+  private int amountOfExpectedUsers = 4;
 
   /**
    * Initializes the User list, which stores all clients that are currently connected.
@@ -108,6 +107,11 @@ public class LocalServerConnection {
             System.out.println("message received");
             // Get Info out of the message
             switch (JsonMessage.typeOf(jsonObject)) {
+              // TODO Amount of players Json
+              // TODO !! GAME_ENDEN is just a placeholder !!
+              case GAME_ENDED:
+                amountOfExpectedUsers = (int) jsonObject.get("amount");
+                break;
               case LOGIN:
                 System.out.println("login request");
                 try {
@@ -133,19 +137,9 @@ public class LocalServerConnection {
                   // Add user to User list
                   users.add(new LocalUser(clientNick));
 
-                  // TODO Determine when to start the game
-                  int numberOfUsersInGame = 0;
-                  for (int i = 0; i < users.size(); i++) {
-                    numberOfUsersInGame++;
-                  }
-
-                  // When 4 players are logged in
-                  // Add new game with these players to the game list
-                  // Update the number of the next game
-                  if (numberOfUsersInGame > 3) {
-                    List<LocalUser> usersInGame = new ArrayList<>(users);
-
-                    game = new LocalGame(usersInGame, connection);
+                  // Start the game immediately if 4 players are logged in.
+                  if (users.size() == amountOfExpectedUsers) {
+                    startGame();
                   }
                 } catch (JSONException e) {
                   System.out.println(e.getMessage());
@@ -528,6 +522,15 @@ public class LocalServerConnection {
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
+  }
+
+  /**
+   * Starts the game.
+   * */
+  private void startGame() {
+
+    game = new LocalGame(new ArrayList<>(users), connection);
+
   }
 
   /**
