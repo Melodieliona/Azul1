@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class LocalServerConnection {
 
   LocalGame game = null;
 
-  private OutputStreamWriter writer;
+  private BufferedWriter writer;
 
   private BufferedReader reader;
 
@@ -88,8 +89,8 @@ public class LocalServerConnection {
         try {
           reader = new BufferedReader(
               new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-          writer = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
-
+          writer = new BufferedWriter(
+              new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 
           while (keepReading) {
             String clientNick = "Not initialized.";
@@ -121,11 +122,11 @@ public class LocalServerConnection {
                   }
 
                   if (nickAlreadyUsed) {
-                    sendLoginFailed(writer);
+                    sendLoginFailed();
                     break;
                   } else {
                     // Acknowledge successful login
-                    sendLoginSuccess(writer);
+                    sendLoginSuccess();
                     sendUserJoined(clientNick);
                   }
 
@@ -212,7 +213,7 @@ public class LocalServerConnection {
   /**
    * Sends a login confirmation.
    */
-  private void sendLoginSuccess(OutputStreamWriter writer) {
+  private void sendLoginSuccess() {
     try {
       System.out.println("log in"); // for debugging
       JSONObject sendLoginSuccessJson = new JSONObject();
@@ -228,7 +229,7 @@ public class LocalServerConnection {
   /**
    * Sends a login denial.
    */
-  private void sendLoginFailed(OutputStreamWriter writer) {
+  private void sendLoginFailed() {
     try {
       JSONObject sendLoginFailedJson = new JSONObject();
       sendLoginFailedJson.put("type", "login failed");
