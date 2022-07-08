@@ -104,7 +104,7 @@ public class LocalServerConnection {
               keepReading = false;
               break;
             }
-            System.out.println("message received");
+
             // Get Info out of the message
             switch (JsonMessage.typeOf(jsonObject)) {
               // TODO Amount of players Json
@@ -113,7 +113,6 @@ public class LocalServerConnection {
                 amountOfExpectedUsers = (int) jsonObject.get("amount");
                 break;
               case LOGIN:
-                System.out.println("login request");
                 try {
                   clientNick = (String) jsonObject.get("nick");
 
@@ -387,22 +386,35 @@ public class LocalServerConnection {
    * Send filled tile plates to all players at the very beginning of a round.
    * Contains all tiles on plates and the middle
    * */
-  public void sendFilledPlates(List<LocalUser> userList, TileCollection[] tilePlates) {
+  public void sendFilledPlates(TileCollection[] tilePlates) {
 
     // { "type" : "fill plates", "color" : "red yellow,black green blue”, “tiles” : “ 3 1,1 1 2“ }
     // TODO Testing
 
-    String tileColors = "";
-    String tileAmounts = "";
+    StringBuilder tileColors = new StringBuilder();
+    StringBuilder tileAmounts = new StringBuilder();
 
+    int platesIterator = 0;
     for (TileCollection plate : tilePlates) {
       ArrayList<Tile> containedColors = plate.getContainedColors();
+
+      int colorsIterator = 0;
       for (Tile tile : containedColors) {
-        tileColors += (tile.name() + " ");
-        tileAmounts += (plate.getAmountTilesOfColor(tile) + " ");
+        tileColors.append(tile.name());
+        tileAmounts.append(plate.getAmountTilesOfColor(tile));
+
+        if(colorsIterator < containedColors.size() - 1) {
+          tileColors.append(" ");
+          tileAmounts.append(" ");
+        }
+        colorsIterator++;
       }
-      tileColors += ",";
-      tileAmounts += ",";
+
+      if(platesIterator < tilePlates.length - 1) {
+        tileColors.append(",");
+        tileAmounts.append(",");
+      }
+      platesIterator++;
     }
 
     // Send filled plates to client once
@@ -410,13 +422,19 @@ public class LocalServerConnection {
     try {
       JSONObject sendFillPlates = new JSONObject();
       sendFillPlates.put("type", "fill plates");
-      sendFillPlates.put("color", tileColors);
-      sendFillPlates.put("tiles", tileAmounts);
+      sendFillPlates.put("color", tileColors.toString());
+      sendFillPlates.put("tiles", tileAmounts.toString());
+
+      System.out.println("\n");
+      System.out.println("There will always be data just for an amount of 2 players, because" +
+        " the server still needs to be told how many players will participate -> Gabriel");
+      System.out.println("LocalServer: Sending the values below in fillPlates JSON");
+      System.out.println("Colors: " + tileColors);
+      System.out.println("Amounts: " + tileAmounts);
+      System.out.println("\n");
 
       writer.write(sendFillPlates + System.lineSeparator());
       writer.flush();
-
-      System.out.println("fill plates Json geschickt!");
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }

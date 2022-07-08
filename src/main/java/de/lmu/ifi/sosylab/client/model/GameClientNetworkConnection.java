@@ -142,7 +142,6 @@ public class GameClientNetworkConnection {
         break;
       case FILL_PLATES:
         handleFillPlates(object);
-        System.out.println("Fill plates Json empfangen!");
         break;
       case POINTS:
         handlePoints(object);

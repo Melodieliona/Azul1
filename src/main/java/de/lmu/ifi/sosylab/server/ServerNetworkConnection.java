@@ -113,7 +113,7 @@ public class ServerNetworkConnection {
               keepReading = false;
               break;
             }
-            System.out.println("message received");
+
             // Get Info out of the message
             switch (JsonMessage.typeOf(jsonObject)) {
               case LOGIN:
@@ -132,7 +132,6 @@ public class ServerNetworkConnection {
 
                 if (nickAlreadyUsed) {
                   sendLoginFailed(writer);
-                  System.out.println("Login Failed Json sent!");
                   break;
                 } else {
                   // Acknowledge successful login
@@ -156,7 +155,7 @@ public class ServerNetworkConnection {
                     clientGameNumber = nextGameNumber;
                     nextGameNumber++;
                   } else if (numberOfUsersInNextGame > 1) {
-                    if(gameStartTimerRunning) {
+                    if(!gameStartTimerRunning) {
                       startTimer();
                     }
                   }
@@ -245,6 +244,7 @@ public class ServerNetworkConnection {
    */
   private void sendLoginFailed(OutputStreamWriter writer) {
     try {
+      System.out.println("login failed"); // for debugging
       JSONObject sendLoginFailedJson = new JSONObject();
       sendLoginFailedJson.put("type", "login failed");
 
@@ -422,17 +422,30 @@ public class ServerNetworkConnection {
     // { "type" : "fill plates", "color" : "red yellow,black green blue”, “tiles” : “ 3 1,1 1 2“ }
     // TODO Testing
 
-    String tileColors = "";
-    String tileAmounts = "";
+    StringBuilder tileColors = new StringBuilder();
+    StringBuilder tileAmounts = new StringBuilder();
 
+    int platesIterator = 0;
     for (TileCollection plate : tilePlates) {
       ArrayList<Tile> containedColors = plate.getContainedColors();
+
+      int colorsIterator = 0;
       for (Tile tile : containedColors) {
-        tileColors += (tile.name() + " ");
-        tileAmounts += (plate.getAmountTilesOfColor(tile) + " ");
+        tileColors.append(tile.name());
+        tileAmounts.append(plate.getAmountTilesOfColor(tile));
+
+        if(colorsIterator < containedColors.size() - 1) {
+          tileColors.append(" ");
+          tileAmounts.append(" ");
+        }
+        colorsIterator++;
       }
-      tileColors += ",";
-      tileAmounts += ",";
+
+      if(platesIterator < tilePlates.length - 1) {
+        tileColors.append(",");
+        tileAmounts.append(",");
+      }
+      platesIterator++;
     }
 
     try {
@@ -589,7 +602,8 @@ public class ServerNetworkConnection {
    * */
   private void startTimer() {
     gameStartTimerRunning = true;
-    sendStartTimer();
+    //TODO send Timer when Client is updated to receive a "timer" JSON
+    //sendStartTimer();
 
     Thread timerThread = new Thread(() -> {
       try {
@@ -599,6 +613,7 @@ public class ServerNetworkConnection {
       }
       // Check if game hasn't already been started (because a 4th user joined) and if there are
       // enough users for a game (at least 2)
+      System.out.println("Timer elapsed! Game will start now...");
       if((games.size() == nextGameNumber + 1) && (users.size() > 1)) {
         gameStartTimerRunning = false;
         startGame();

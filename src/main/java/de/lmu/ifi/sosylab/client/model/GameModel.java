@@ -229,7 +229,7 @@ public class GameModel {
                 tilePlates[n].addTiles(Tile.getTile(currentColor), amountCurrentColor);
             }
         }
-        System.out.println("Fill tiles Json unpacked and fired ");
+
         notifyListeners(new MiddleTilesUpdateEvent());
     }
 

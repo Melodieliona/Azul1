@@ -119,14 +119,21 @@ public class TileCollection extends ArrayList<Tile> {
 
     if (this.contains(Tile.BLUE)) {
       containedColors.add(Tile.BLUE);
-    } else if (this.contains(Tile.YELLOW)) {
+    }
+    if (this.contains(Tile.YELLOW)) {
       containedColors.add(Tile.YELLOW);
-    } else if (this.contains(Tile.RED)) {
+    }
+    if (this.contains(Tile.RED)) {
       containedColors.add(Tile.RED);
-    } else if (this.contains(Tile.BLACK)) {
+    }
+    if (this.contains(Tile.BLACK)) {
       containedColors.add(Tile.BLACK);
-    } else if (this.contains(Tile.WHITE)) {
+    }
+    if (this.contains(Tile.WHITE)) {
       containedColors.add(Tile.WHITE);
+    }
+    if (this.contains(Tile.STARTING_MARKER)) {
+      containedColors.add(Tile.STARTING_MARKER);
     }
 
     return containedColors;
