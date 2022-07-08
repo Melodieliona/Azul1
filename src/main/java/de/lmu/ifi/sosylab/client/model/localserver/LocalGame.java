@@ -74,14 +74,14 @@ public class LocalGame {
 
     // Choose random player to begin with
     Random rand = new Random();
-    currentPlayer = rand.nextInt(userList.size()) + 1;
+    currentPlayer = rand.nextInt(userList.size());
 
     startsAtNextRound = "";
 
     fillPlates();
     connection.sendFilledPlates(this.userList, tilePlates);
 
-    connection.sendNextPlayer(userList.get(currentPlayer));
+    sendNextPlayer();
   }
 
 
@@ -266,7 +266,7 @@ public class LocalGame {
     // Nächsten Spieler anhand Startmarker ermitteln, setzen und benachrichtigen.
     for (LocalUser user : userList) {
       if (user.getName().equals(startsAtNextRound)) {
-        currentPlayer = userList.indexOf(user) + 1;
+        currentPlayer = userList.indexOf(user);
         startsAtNextRound = "";
         break;
       }
@@ -319,7 +319,7 @@ public class LocalGame {
    * Tells all other players whose turn it is next.
    */
   private void setAndSendNextPlayer() {
-    if (currentPlayer == userList.size()) {
+    if (currentPlayer == userList.size() - 1) {
       currentPlayer = 0;
     } else {
       currentPlayer++;

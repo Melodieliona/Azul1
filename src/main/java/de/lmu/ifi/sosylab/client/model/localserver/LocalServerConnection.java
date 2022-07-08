@@ -39,7 +39,7 @@ public class LocalServerConnection {
 
   List<LocalUser> users;
 
-  private int amountOfExpectedUsers = 4;
+  private int amountOfExpectedUsers = 2;
 
   /**
    * Initializes the User list, which stores all clients that are currently connected.
@@ -416,6 +416,7 @@ public class LocalServerConnection {
       writer.write(sendFillPlates + System.lineSeparator());
       writer.flush();
 
+      System.out.println("fill plates Json geschickt!");
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
