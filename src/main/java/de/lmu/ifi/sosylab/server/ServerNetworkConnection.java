@@ -132,6 +132,7 @@ public class ServerNetworkConnection {
 
                 if (nickAlreadyUsed) {
                   sendLoginFailed(writer);
+                  System.out.println("Login Failed Json sent!");
                   break;
                 } else {
                   // Acknowledge successful login

@@ -229,6 +229,7 @@ public class GameModel {
                 }
             }
         }
+        System.out.println("Fill tiles Json unpacked and fired ");
         notifyListeners(new MiddleTilesUpdateEvent());
     }
 
