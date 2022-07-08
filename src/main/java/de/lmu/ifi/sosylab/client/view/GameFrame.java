@@ -7,15 +7,10 @@ import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.server.User;
+import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-import org.w3c.dom.ls.LSOutput;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -101,10 +96,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         layout = new CardLayout();
         nickName = new JTextField(20);
         //nicknameHS = new JTextField(50);
-        firstNicknameHS = new JTextField(50);
-        secondNicknameHS = new JTextField(50);
-        thirdNicknameHS = new JTextField(50);
-        fourthNicknameHS = new JTextField(50);
+        firstNicknameHS = new JTextField(20);
+        secondNicknameHS = new JTextField(20);
+        thirdNicknameHS = new JTextField(20);
+        fourthNicknameHS = new JTextField(20);
         loginHS = new JButton("Play");
         hotSeat = new JButton("HOTSEAT");
         multiPlayer = new JButton("MULTIPLAYER");
@@ -182,6 +177,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     public void setPlayerNicknamesHS(int numberOfPlayers) {
 
+        //GridLayout gridLayout = new GridLayout(2,2);
         JPanel loginNames = new JPanel();
         loginNames.setBackground(Color.CYAN);
         loginNames.setPreferredSize(new Dimension(400, 100));
@@ -534,6 +530,42 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         middle.add(pile);
     }
 
+    /**
+     * When MiddleTilesUpdateEvent is fired, gets Information from TileCollection[] (TileCollection[0] is the middle,
+     * at the beginning it only Contains the Starting Marker, TileCollection[1] onwards are the Plates)
+     * and gives information to Method ... that fills the Plates.
+     *
+     * @param tileCollection - The Array of TileCollections that where provided by the Server.
+     *                      (Each collection is a plate) and need to be placed in the Middle.
+     */
+    private void setTilesInMiddle(TileCollection[] tileCollection){
+        for (int i = 0; i < tileCollection.length; i++){
+
+           int plateNumber = i;
+
+           // Get colors that are contained in Plate number i.
+           ArrayList<Tile> tileColors = tileCollection[i].getContainedColors();
+
+            for(int j = 0; j < tileColors.size(); j++){
+                Tile tileWithSpecificColour = tileColors.get(j);
+                String colour = tileWithSpecificColour.toString();
+                //test
+                System.out.println(colour);
+                int amountOfTiles = tileCollection[i].getAmountTilesOfColor(tileWithSpecificColour);
+
+                fillPlateWithTiles(plateNumber, colour, amountOfTiles);
+
+
+
+            }
+        }
+
+    }
+    //TODO: Petra mit dieser Mehtode kannst du die Plättchen in der Mitte füllen und updaten.
+    public void fillPlateWithTiles(int plateNumber, String colour, int amountOfTiles){
+
+    }
+
     @Override
     public void dispose() {
         super.dispose();
@@ -567,6 +599,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                     String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
             showCard(LOGIN_M_CARD);
         } else if (newValue instanceof MiddleTilesUpdateEvent) {
+            System.out.println("MiddleTilesUpdateEvent has been fired");
+            TileCollection[] tileCollection = model.getTilePlates();
+            setTilesInMiddle(tileCollection);
+
 
         } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
 
