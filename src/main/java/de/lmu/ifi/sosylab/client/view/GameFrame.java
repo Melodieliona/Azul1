@@ -265,7 +265,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         nickName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.logInMultiplayer(nickName.getText());
                 controller.logInMultiplayer(nickName.getText());
                 System.out.println("sending log in");
             }
@@ -600,7 +599,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             showCard(LOGIN_M_CARD);
         } else if (newValue instanceof MiddleTilesUpdateEvent) {
             System.out.println("MiddleTilesUpdateEvent has been fired");
-            TileCollection[] tileCollection = model.getTilePlates();
+            TileCollection[] tileCollection = controller.getTilePlates();
             setTilesInMiddle(tileCollection);
 
 

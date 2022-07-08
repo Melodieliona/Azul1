@@ -4,6 +4,7 @@ import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.LayingRow;
+import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.io.IOException;
 import java.util.List;
@@ -111,7 +112,7 @@ public class GameController {
     return model.getTilePlates();
   }
 
-  public String getTileColor() {
+  public String getTileColor(Tile tile) {
     return null;
   }
 
