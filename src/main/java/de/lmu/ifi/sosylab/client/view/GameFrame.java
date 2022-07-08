@@ -535,17 +535,17 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
      * and gives information to Method ... that fills the Plates.
      *
      * @param tileCollection - The Array of TileCollections that where provided by the Server.
-     *                      (Each collection is a plate) and need to be placed in the Middle.
+     *                       (Each collection is a plate) and need to be placed in the Middle.
      */
-    private void setTilesInMiddle(TileCollection[] tileCollection){
-        for (int i = 0; i < tileCollection.length; i++){
+    private void setTilesInMiddle(TileCollection[] tileCollection) {
+        for (int i = 0; i < tileCollection.length; i++) {
 
-           int plateNumber = i;
+            int plateNumber = i;
 
-           // Get colors that are contained in Plate number i.
-           ArrayList<Tile> tileColors = tileCollection[i].getContainedColors();
+            // Get colors that are contained in Plate number i.
+            ArrayList<Tile> tileColors = tileCollection[i].getContainedColors();
 
-            for(int j = 0; j < tileColors.size(); j++){
+            for (int j = 0; j < tileColors.size(); j++) {
                 Tile tileWithSpecificColour = tileColors.get(j);
                 String colour = tileWithSpecificColour.toString();
                 //test
@@ -555,13 +555,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                 fillPlateWithTiles(plateNumber, colour, amountOfTiles);
 
 
-
             }
         }
 
     }
+
     //TODO: Petra mit dieser Mehtode kannst du die Plättchen in der Mitte füllen und updaten.
-    public void fillPlateWithTiles(int plateNumber, String colour, int amountOfTiles){
+    public void fillPlateWithTiles(int plateNumber, String colour, int amountOfTiles) {
 
     }
 

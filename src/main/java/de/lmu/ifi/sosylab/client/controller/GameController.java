@@ -6,128 +6,130 @@ import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.io.IOException;
 import java.util.List;
 import javax.swing.SwingWorker;
 
 /**
  * Todo JavaDoc
- * */
+ */
 public class GameController {
 
-  /**
-   * The controller of the chat-UI.
-   */
+    /**
+     * The controller of the chat-UI.
+     */
 
-  GameModel model;
+    GameModel model;
 
-  /**
-   * Todo JavaDoc
-   * */
-  public GameController(GameModel model) {
-    this.model = model;
-  }
-
-  /**
-   * Todo JavaDoc
-   * */
-  public void logInMultiplayer(String nickname) {
-    new SwingWorker<Boolean, Void>() {
-
-      @Override
-      protected Boolean doInBackground() {
-        model.logInMultiplayer(nickname);
-        return true;
-      }
-
-    }.execute();
-
-  }
-
-  //TODO: pass in string array with players names
-  /**
-   * Todo JavaDoc
-   * */
-  public void logInHotSeat(List<String> playersName) {
-    System.out.println("login HS controller");
-    for(int j = 0; j < playersName.size(); j++){
-      System.out.println(playersName.get(j));
+    /**
+     * Todo JavaDoc
+     */
+    public GameController(GameModel model) {
+        this.model = model;
     }
 
-    new SwingWorker<Boolean, Void>() {
+    /**
+     * Todo JavaDoc
+     */
+    public void logInMultiplayer(String nickname) {
+        new SwingWorker<Boolean, Void>() {
 
-      @Override
-      protected Boolean doInBackground() {
-        String[] namesArray = playersName.toArray(new String[0]);
-        //test
-        for(int i = 0; i < namesArray.length; i++){
-          System.out.println(namesArray[i]);
+            @Override
+            protected Boolean doInBackground() {
+                model.logInMultiplayer(nickname);
+                return true;
+            }
+
+        }.execute();
+
+    }
+
+    //TODO: pass in string array with players names
+
+    /**
+     * Todo JavaDoc
+     */
+    public void logInHotSeat(List<String> playersName) {
+        System.out.println("login HS controller");
+        for (int j = 0; j < playersName.size(); j++) {
+            System.out.println(playersName.get(j));
         }
-        model.logInHotSeat(namesArray);
-        return true;
-      }
 
-    }.execute();
+        new SwingWorker<Boolean, Void>() {
 
-  }
+            @Override
+            protected Boolean doInBackground() {
+                String[] namesArray = playersName.toArray(new String[0]);
+                //test
+                for (int i = 0; i < namesArray.length; i++) {
+                    System.out.println(namesArray[i]);
+                }
+                model.logInHotSeat(namesArray);
+                return true;
+            }
 
-  public void setGameMode(String gameMode) throws IOException {
-    model.setGameMode(gameMode);
-  }
+        }.execute();
 
-  //TODO
-  public Player getPlayer(int player) {
-    return /*model.getPlayer(player)*/ null;
-  }
+    }
 
-  public List<User> getUserList() {
-    //TODO get User List through Connection, is there a method getUsers in Server?
-    return null;
-  }
+    public void setGameMode(String gameMode) throws IOException {
+        model.setGameMode(gameMode);
+    }
 
-  public TileCollection[] selectAllTilesWithColor(String color) {
-    return null;
-  }
+    //TODO
+    public Player getPlayer(int player) {
+        return /*model.getPlayer(player)*/ null;
+    }
 
-  public void setTilesToRow(int row) {
-  }
+    public List<User> getUserList() {
+        //TODO get User List through Connection, is there a method getUsers in Server?
+        return null;
+    }
 
-  //left
-  public LayingRow[] getLayingRow(int rowNumber) {
-    return null;
-  }
+    public TileCollection[] selectAllTilesWithColor(String color) {
+        return null;
+    }
 
-  //right
-  public Object[][] getTileWall() {
-    return null;
-  }
+    public void setTilesToRow(int row) {
+    }
 
-  public int getCurrentScore(int board) {
-    int score = 0;
-    return score;
-  }
+    //left
+    public LayingRow[] getLayingRow(int rowNumber) {
+        return null;
+    }
 
-  public TileCollection[] getTilePlates() {
-    //0 ist Haufen
-    return model.getTilePlates();
-  }
+    //right
+    public Object[][] getTileWall() {
+        return null;
+    }
 
-  public String getTileColor(Tile tile) {
-    return null;
-  }
+    public int getCurrentScore(int board) {
+        int score = 0;
+        return score;
+    }
 
-  public void dispose() {
-    model.dispose();
-  }
+    public TileCollection[] getTilePlates() {
+        //0 ist Haufen
+        return model.getTilePlates();
+    }
 
-  public String getTile(int plateNumber, int i) {
-    //dadurch dann auch Farbe holen
-    return null;
-  }
+    public String getTileColor(Tile tile) {
+        return null;
+    }
 
-  public void placeTiles(String color, int numberOfSelectedTiles, int line) {
-    //model.placeTiles(color, numberOfSelectedTiles, line);
-  }
+    public void dispose() {
+        model.dispose();
+    }
+
+    public String getTile(int plateNumber, int i) {
+        //dadurch dann auch Farbe holen
+        return null;
+    }
+
+    public void placeTiles(String color, int numberOfSelectedTiles, int line) {
+        //model.placeTiles(color, numberOfSelectedTiles, line);
+    }
 
 }
 

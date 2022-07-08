@@ -144,7 +144,6 @@ public class GameModel {
      * @param color                 of tile
      * @param numberOfSelectedTiles that were selected
      * @param line                  selected to place tiles
-     *
      */
     public void placeTiles(String color, int numberOfSelectedTiles, int line, String playersName) {
         int minuspoints = 0;
@@ -226,8 +225,8 @@ public class GameModel {
             for (int j = 0; j < i; j++) {
                 String currentColor = colorsCurrentPlate[j];
                 int amountCurrentColor = Integer.parseInt(amountsCurrentPlate[j]);
-                    tilePlates[n]=new TileCollection();
-                    tilePlates[n].addTiles(Tile.getTile(currentColor),amountCurrentColor);
+                tilePlates[n] = new TileCollection();
+                tilePlates[n].addTiles(Tile.getTile(currentColor), amountCurrentColor);
             }
         }
         notifyListeners(new MiddleTilesUpdateEvent());
