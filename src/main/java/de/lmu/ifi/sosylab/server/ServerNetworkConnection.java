@@ -155,7 +155,7 @@ public class ServerNetworkConnection {
                     clientGameNumber = nextGameNumber;
                     nextGameNumber++;
                   } else if (numberOfUsersInNextGame > 1) {
-                    if(!gameStartTimerRunning) {
+                    if (!gameStartTimerRunning) {
                       startTimer();
                     }
                   }
@@ -434,14 +434,14 @@ public class ServerNetworkConnection {
         tileColors.append(tile.name());
         tileAmounts.append(plate.getAmountTilesOfColor(tile));
 
-        if(colorsIterator < containedColors.size() - 1) {
+        if (colorsIterator < containedColors.size() - 1) {
           tileColors.append(" ");
           tileAmounts.append(" ");
         }
         colorsIterator++;
       }
 
-      if(platesIterator < tilePlates.length - 1) {
+      if (platesIterator < tilePlates.length - 1) {
         tileColors.append(",");
         tileAmounts.append(",");
       }
@@ -614,7 +614,7 @@ public class ServerNetworkConnection {
       // Check if game hasn't already been started (because a 4th user joined) and if there are
       // enough users for a game (at least 2)
       System.out.println("Timer elapsed! Game will start now...");
-      if((games.size() == nextGameNumber + 1) && (users.size() > 1)) {
+      if ((games.size() == nextGameNumber + 1) && (users.size() > 1)) {
         gameStartTimerRunning = false;
         startGame();
       }

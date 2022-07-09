@@ -403,14 +403,14 @@ public class LocalServerConnection {
         tileColors.append(tile.name());
         tileAmounts.append(plate.getAmountTilesOfColor(tile));
 
-        if(colorsIterator < containedColors.size() - 1) {
+        if (colorsIterator < containedColors.size() - 1) {
           tileColors.append(" ");
           tileAmounts.append(" ");
         }
         colorsIterator++;
       }
 
-      if(platesIterator < tilePlates.length - 1) {
+      if (platesIterator < tilePlates.length - 1) {
         tileColors.append(",");
         tileAmounts.append(",");
       }
@@ -426,8 +426,8 @@ public class LocalServerConnection {
       sendFillPlates.put("tiles", tileAmounts.toString());
 
       System.out.println("\n");
-      System.out.println("There will always be data just for an amount of 2 players, because" +
-        " the server still needs to be told how many players will participate -> Gabriel");
+      System.out.println("There will always be data just for an amount of 2 players, because"
+          + " the server still needs to be told how many players will participate -> Gabriel");
       System.out.println("LocalServer: Sending the values below in fillPlates JSON");
       System.out.println("Colors: " + tileColors);
       System.out.println("Amounts: " + tileAmounts);

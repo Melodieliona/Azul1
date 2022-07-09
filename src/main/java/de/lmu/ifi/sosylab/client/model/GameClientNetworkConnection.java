@@ -157,8 +157,9 @@ public class GameClientNetworkConnection {
         break;
       case TILES_NOT_ALLOWED:
         handleTilesNotAllowed(object);
+        break;
       default:
-        handleInvalidJSON(object);
+        handleInvalidJson(object);
     }
   }
 
@@ -239,7 +240,7 @@ public class GameClientNetworkConnection {
     //model. the client has just received the actual scores of each player
   }
 
-  public void handleInvalidJSON(JSONObject object) {
+  public void handleInvalidJson(JSONObject object) {
     throw new AssertionError("Invalid JSON Message sent");
   }
 

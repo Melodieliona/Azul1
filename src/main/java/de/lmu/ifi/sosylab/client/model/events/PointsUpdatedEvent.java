@@ -1,5 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
+/**
+ * TODO Add JavaDoc
+ * */
 public class PointsUpdatedEvent extends GameEvents {
   private String[] playerName;
   private int[] points;
