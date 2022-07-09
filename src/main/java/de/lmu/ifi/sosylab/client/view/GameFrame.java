@@ -560,7 +560,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       // Get colors that are contained in Plate number i.
       ArrayList<Tile> tileColors = tileCollection[i].getContainedColors();
 
-      /* for(int j = 0; j < tileColors.size(); j++){
+       for(int j = 0; j < tileColors.size(); j++){
             Tile tileWithSpecificColour = tileColors.get(j);
             String colour = tileWithSpecificColour.toString();
             //test
@@ -571,7 +571,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
             fillPlateWithTiles(plateNumber, colour, amountOfTiles);
 
-       }*/
+       }
     }
 
   }
