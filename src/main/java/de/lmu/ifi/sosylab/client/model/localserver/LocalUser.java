@@ -1,7 +1,5 @@
 package de.lmu.ifi.sosylab.client.model.localserver;
 
-import java.io.OutputStreamWriter;
-
 /**
  * Stores the data corresponding to a single local user.
  * */

@@ -28,7 +28,7 @@ public class User {
     return gameNumber;
   }
 
-  public OutputStreamWriter getWriter() {
+  protected OutputStreamWriter getWriter() {
     return writer;
   }
 

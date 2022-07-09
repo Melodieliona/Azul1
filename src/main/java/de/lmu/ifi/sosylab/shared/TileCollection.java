@@ -93,7 +93,6 @@ public class TileCollection extends ArrayList<Tile> {
     return drawnTiles;
   }
 
-
   /**
    * Returns the amount of tiles of the same color.
    * */
@@ -108,8 +107,6 @@ public class TileCollection extends ArrayList<Tile> {
 
     return amount;
   }
-
-
 
   /**
    * Returns all colors that there is at least one tile of in this collection.
@@ -135,7 +132,6 @@ public class TileCollection extends ArrayList<Tile> {
     if (this.contains(Tile.STARTING_MARKER)) {
       containedColors.add(Tile.STARTING_MARKER);
     }
-    System.out.println("getCotainedCOlors() return List size: " + containedColors.size());
 
     return containedColors;
   }
