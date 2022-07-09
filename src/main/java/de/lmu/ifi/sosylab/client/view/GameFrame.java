@@ -17,30 +17,20 @@ import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 /**
  * The main view of the chat user interface. It provides and connects all graphical elements
@@ -56,7 +46,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   private static final String GAME_CARD = "game";
   private static final String GAMEMODE_CARD = "gameMode";
-  private final int tileSize = 27;
   private transient GameModel model;
   private transient GameController controller;
   private CardLayout layout;
@@ -74,12 +63,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private transient List<String> playerNames;
   private JButton hotSeat;
   private JButton multiPlayer;
-  private JPanel game;
-  private JPanel middle = new JPanel();
-  private transient List<User> playerList;
-  private transient List<PlayerBoard> boardList;
 
   private transient Game gamesettings = null;
+
+  private final int tileSize = 25;
+  private TileCollection[] collection;
+  private Images images;
 
 
   /**
@@ -96,7 +85,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     // playerList = controller.getUserList(); // TODO get correct usercount.
     playerNames = new ArrayList<>();
 
-    boardList = new ArrayList<>(4);
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     //this.setPreferredSize(new Dimension(400, 300));
 
@@ -144,7 +132,18 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates Card for Game View.
    */
   public void createGameView() {
-    game = (JPanel) wholeGame();
+    JPanel game = new JPanel();
+    collection = controller.getTilePlates();
+    images = new Images();
+
+    BufferedImage img = images.getBackground();
+    JLabel background = new JLabel(new ImageIcon(img));
+
+    background.setPreferredSize(createGameField().getPreferredSize());
+    background.setLayout(new FlowLayout());
+    background.add(createGameField());
+
+    game.add(background);
     add(game, GAME_CARD);
   }
 
@@ -327,90 +326,104 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   }
 
-  /**
-   * @return Layout from game with PlayerBoard.
-   */
-  private Component wholeGame() {
-    int playerBoard = 0;
-    JPanel game = new JPanel(new BorderLayout());
+  private Component createGameField() {
+    pack();
+    JPanel gameField = new JPanel(new BorderLayout());
+    gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
 
-    JPanel north = (JPanel) playerBoard(playerBoard);
-    north.setBackground(Color.yellow);
-    north.setPreferredSize(new Dimension(340, 250));
-    game.add(north, BorderLayout.NORTH);
-    playerBoard++;
+    gameField.add(createBoard(0), BorderLayout.NORTH);
+    gameField.add(createBoard(1), BorderLayout.SOUTH);
 
-    JPanel south = (JPanel) playerBoard(playerBoard);
-    south.setBackground(Color.GREEN);
-    game.add(south, BorderLayout.SOUTH);
-    playerBoard++;
-
-
-    try {
-      if (playerNames.size() == 2) {
-        JPanel west = (JPanel) playerBoard(playerBoard);
-        west.setBackground(Color.BLUE);
-        playerBoard++;
-        west.setPreferredSize(new Dimension(340, 340));
-        game.add(west, BorderLayout.WEST);
+    switch (playerNames.size()) {
+      case 2 -> gameField.add(createBoard(2), BorderLayout.WEST);
+      case 3 -> {
+        gameField.add(createBoard(2), BorderLayout.WEST);
+        gameField.add(createBoard(3), BorderLayout.EAST);
       }
-
-      if (playerNames.size() == 3) {
-        JPanel west = (JPanel) playerBoard(playerBoard);
-        west.setPreferredSize(new Dimension(340, 340));
-        west.setBackground(Color.cyan);
-        game.add(west, BorderLayout.WEST);
-        playerBoard++;
-
-        JPanel east = (JPanel) playerBoard(playerBoard);
-        east.setBackground(Color.magenta);
-        east.setPreferredSize(new Dimension(340, 340));
-        game.add(east, BorderLayout.EAST);
-      }
-
-
-      createPlates(5);
-      createPile();
-    } catch (NullPointerException e) {
-      System.out.println("User Liste ist noch leer!");
     }
-
-    JPanel center = middle;
-    center.setPreferredSize(new Dimension(600, 340));
-    center.setBackground(Color.getHSBColor(130, 189, 231));
-    game.add(center, BorderLayout.CENTER);
-
-    return game;
+    gameField.add(createMiddle(), BorderLayout.CENTER);
+    return gameField;
   }
 
   /**
-   * @return PlayerBoard with PointCounter, Name, PatternRows left and right and MouseListener.
+   * Creates Middle with plates and pile.
+   * @return -middle.
    */
-  private Component playerBoard(int playerBoard) {
-    PlayerBoard pb = new PlayerBoard(playerBoard, tileSize, controller);
-    boardList.add(pb);
-    JPanel board = new JPanel(new BorderLayout());
+  private Component createMiddle() {
+    JPanel middle = new JPanel(new FlowLayout());
+    middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    middle.setPreferredSize(new Dimension(325, 300));
+    createPlates(middle);
+    middle.add(createPile());
+    return middle;
+  }
 
-    JPanel north = new JPanel();
-    north.add(nameAndPoints(playerBoard));
+  /**
+   * Creates the Plates in the middle with the tiles and adds a MouseListener.
+   * @param middle - Plates can be directly added to the middle.
+   */
+  private void createPlates(JPanel middle) {
+    for (int plateNumber = 1; plateNumber < 9; plateNumber++) {
+      BufferedImage img = images.getPlate();
 
+      JLabel plate = new JLabel(new ImageIcon(img));
+      plate.setName(String.valueOf(plateNumber));
 
-    try {
-      JPanel west = new JPanel();
-      if ((playerBoard == 0 || playerBoard == 1) && playerNames.size() > 2) {
-        west.setPreferredSize(new Dimension(390, 200));
+      int x = 1;
+      int y = 1;
+
+      for (int i = 0; i < collection[plateNumber].size(); i++) {
+        String color = String.valueOf(collection[plateNumber].get(i));
+        PaintTile tile = new PaintTile(color,images);
+        tile.setName(color);
+        if (i == 2) {
+          x = 1;
+          y = 3;
+        }
+        tile.setBounds(12 * x, 12 * y, 25, 25);
+        x+=2;
+        plate.add(tile);
       }
 
-      board.setPreferredSize(new Dimension(340, 250));
-      board.add(north, BorderLayout.NORTH);
-      board.add(west, BorderLayout.WEST);
-      board.add(pb, BorderLayout.CENTER);
+      plate.addMouseListener(new MouseAdapter() {
+        /**
+         * {@inheritDoc}
+         *
+         * @param e
+         */
+        @Override
+        public void mouseClicked(MouseEvent e) {
+          super.mouseClicked(e);
+          Point checkMouseTip = e.getPoint();
 
-    } catch (NullPointerException e) {
-      System.out.println("User List is empty!");
+          String plates = plate.getComponentAt(checkMouseTip).getParent().getName();
+          String tile = plate.getComponentAt(checkMouseTip).getName();
+          if (plates != null && tile != null) {
+            System.out.println("Plate: " + plates + " Tile: " + tile);
+          }
+        }
+      });
+      middle.add(plate);
     }
+  }
 
-    pb.addMouseListener(new MouseAdapter() {
+  /**
+   * Creates tile pile in the Middle.
+   * @return - pile.
+   */
+  private Component createPile() {
+    JPanel pile = new JPanel();
+    pile.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    pile.setPreferredSize(new Dimension(325, 100));
+
+    for (int i = 0; i < collection[0].size(); i++) {
+      String color = String.valueOf(collection[0].get(i));
+      PaintTile tile = new PaintTile(color,images);
+      tile.setName(color);
+      tile.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+      pile.add(tile);
+    }
+    pile.addMouseListener(new MouseAdapter() {
       /**
        * {@inheritDoc}
        *
@@ -418,129 +431,72 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
        */
       @Override
       public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        Point checkMouseTip = e.getPoint();
+        String name = pile.getComponentAt(checkMouseTip).getName();
+        if (name != null) {
+          System.out.println("Tile " + name + " was clicked.");
+        }
+
+      }
+    });
+    return pile;
+  }
+
+  /**
+   * Creates a Board with MouseListener for the Rows.
+   * @param boardNumber -
+   * @return -board.
+   */
+  private Component createBoard(int boardNumber) {
+    Board b = new Board(collection, tileSize, playerNames.get(boardNumber),images);
+
+    JPanel board = new JPanel();
+    board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+
+    if (playerNames.size() == 2) {
+      board.setLayout(new BorderLayout());
+      JPanel west = new JPanel();
+      board.add(west);
+    }
+    board.add(b);
+
+    b.addMouseListener(new MouseAdapter() {
+      /**
+       * {@inheritDoc}
+       *
+       * @param e
+       */
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
         Point checkMouseTip = e.getPoint();
         int mousePointX = checkMouseTip.x / tileSize;
         int mousePointY = checkMouseTip.y / tileSize;
 
 
-        if (mousePointX == 4 && mousePointY == 0) {
+        if (mousePointX == 5 && mousePointY == 2) {
           System.out.println("Clicked First Row");
         }
-        if (mousePointX > 2 && mousePointX < 5 && mousePointY == 1) {
+        if (mousePointX > 3 && mousePointX < 6 && mousePointY == 3) {
           System.out.println("Clicked Second Row");
         }
-        if (mousePointX > 1 && mousePointX < 5 && mousePointY == 2) {
+        if (mousePointX > 2 && mousePointX < 6 && mousePointY == 4) {
           System.out.println("Clicked Third Row");
         }
-        if (mousePointX > 0 && mousePointX < 5 && mousePointY == 3) {
+        if (mousePointX > 1 && mousePointX < 6 && mousePointY == 5) {
           System.out.println("Clicked Forth Row");
         }
-        if (mousePointX < 5 && mousePointY == 4) {
+        if (mousePointX > 0 && mousePointX < 6 && mousePointY == 6) {
           System.out.println("Clicked Fifth Row");
         }
-        if (mousePointX < 7 && mousePointY == 6) {
+        if (mousePointX > 0 && mousePointX < 8 && mousePointY == 8) {
           System.out.println("Minus Points");
         }
-
       }
     });
 
     return board;
-  }
-
-  /**
-   * @return Name and User Points.
-   */
-  private Component nameAndPoints(int userNumber) {
-    JLabel counter;
-    if (playerList != null) {
-      counter = new JLabel("Player: " + playerList.get(userNumber).getName() + " Points: "
-        + controller.getCurrentScore(userNumber));
-      return counter;
-    }
-
-    counter = new JLabel("There are no active Players");
-    return counter;
-
-  }
-
-  /**
-   * Creates all the Plates for the middle.
-   *
-   * @param plateNumber - Number of plates.
-   */
-  private void createPlates(int plateNumber) {
-    for (int i = 0; i < plateNumber; i++) {
-      middle.add(createPlate(i));
-    }
-  }
-
-  /**
-   * Creates a single Plate with Tiles.
-   * Adds Mouselistener so that Tiles can be clicked.
-   *
-   * @param plateNumber - Platenumber so that the model knows wich plate was clicked.
-   * @return - plate.
-   */
-  private Component createPlate(int plateNumber) {
-    JPanel plate = new Plate(controller);
-    plate.setPreferredSize(new Dimension(100, 120));
-    plate.setBackground(Color.getHSBColor(130, 189, 231));
-
-    plate.addMouseListener(new MouseAdapter() {
-      /**
-       * {@inheritDoc}
-       *
-       * @param e
-       */
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        Point checkMouseTip = e.getPoint();
-        int mousePointX = checkMouseTip.x / 20;
-        int mousePointY = checkMouseTip.y / 20;
-
-
-        if (mousePointX == 1 && mousePointY == 1) {
-          System.out.println("Plate: " + plateNumber + " Tile 1");
-          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 0));
-          //TODO Farbe auswählen
-        }
-        if (mousePointX == 2 && mousePointY == 1) {
-          System.out.println("Plate: " + plateNumber + " Tile 2");
-          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 1));
-        }
-        if (mousePointX == 1 && mousePointY == 3) {
-          System.out.println("Plate: " + plateNumber + " Tile 3");
-          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 2));
-        }
-        if (mousePointX == 2 && mousePointY == 3) {
-          System.out.println("Plate: " + plateNumber + " Tile 4");
-          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 3));
-        }
-        if (mousePointX == 3 && mousePointY == 3) {
-          System.out.println("Plate: " + plateNumber + " Tile 5");
-          controller.selectAllTilesWithColor(controller.getTile(plateNumber, 4));
-        }
-      }
-    });
-
-    return plate;
-  }
-
-  private void createPile() {
-    JPanel pile = new JPanel();
-    pile.setBackground(Color.getHSBColor(130, 189, 231));
-    pile.setPreferredSize(new Dimension(300, 300));
-    //TODO Liste erstellen und updaten mit allen Tiles im Haufen.
-    //Dann mit for alle abarbeiten. Farbe von Tile aufrufen.
-    //Selber Ablauf dann mit den MouseListeners
-    for (int i = 0; i < 1; i++) {
-      JPanel tile = new Pile(0, "BLACK", tileSize);
-      tile.setPreferredSize(new Dimension(tileSize, tileSize));
-      tile.setBackground(Color.getHSBColor(130, 189, 231));
-      pile.add(tile);
-    }
-    middle.add(pile);
   }
 
   /**
