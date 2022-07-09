@@ -135,6 +135,7 @@ public class TileCollection extends ArrayList<Tile> {
     if (this.contains(Tile.STARTING_MARKER)) {
       containedColors.add(Tile.STARTING_MARKER);
     }
+    System.out.println("getCotainedCOlors() return List size: " + containedColors.size());
 
     return containedColors;
   }
