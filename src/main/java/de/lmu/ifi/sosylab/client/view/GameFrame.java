@@ -17,12 +17,8 @@ import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -33,14 +29,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 /**
  * The main view of the chat user interface. It provides and connects all graphical elements
@@ -65,6 +54,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JTextField secondNicknameHS;
   private JTextField thirdNicknameHS;
   private JTextField fourthNicknameHS;
+  private JButton addFirstName;
+  private JButton addSecondName;
+  private JButton addThirdName;
+  private JButton addFourthName;
 
 
   private JButton loginHS;
@@ -114,11 +107,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     // CardLayout ist nur Platzhalter
     layout = new CardLayout();
     nickName = new JTextField(20);
-    //nicknameHS = new JTextField(50);
     firstNicknameHS = new JTextField(20);
     secondNicknameHS = new JTextField(20);
     thirdNicknameHS = new JTextField(20);
     fourthNicknameHS = new JTextField(20);
+    addFirstName = new JButton("Add First Player");
+    addSecondName = new JButton("Add Second Player");
+    addThirdName = new JButton("Add Third Player");
+    addFourthName = new JButton("Add Fourth Player");
     loginHS = new JButton("Play");
     hotSeat = new JButton("HOTSEAT");
     multiPlayer = new JButton("MULTIPLAYER");
@@ -130,12 +126,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    */
   public void createSetGameModeView() {
 
-    JPanel setGameMode = new JPanel();
-    setGameMode.setBackground(Color.GRAY);
-    setGameMode.setPreferredSize(new Dimension(400, 100));
-    setGameMode.add(new JLabel("Choose mode"));
-    setGameMode.add(hotSeat);
-    setGameMode.add(multiPlayer);
+    JPanel setGameMode = new JPanel(new BorderLayout());
+    //JLabel background = new JLabel(new ImageIcon("/Users/sara/Desktop/rm277-katie-47.jpg"));
+    //setGameMode.add(background, BorderLayout.CENTER);
+    //setGameMode.setBackground(Color.GRAY);
+    //setGameMode.setPreferredSize(new Dimension(400, 100));
+    setGameMode.add(new JLabel("Choose mode"), BorderLayout.CENTER);
+    setGameMode.add(hotSeat, BorderLayout.EAST);
+    setGameMode.add(multiPlayer, BorderLayout.WEST);
     add(setGameMode, GAMEMODE_CARD);
 
   }
@@ -174,19 +172,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     login.add(new JLabel("How many Players would you like to play with?"));
     login.add(playerNumberSelection);
 
-    playerNumberSelection.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        setPlayerNicknamesHS((int) playerNumberSelection.getSelectedItem());
-      }
-    });
-
-    loginHS.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        controller.logInHotSeat(playerNames);
-      }
-    });
 
   }
 
@@ -196,8 +181,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   public void setPlayerNicknamesHS(int numberOfPlayers) {
 
-    //GridLayout gridLayout = new GridLayout(2,2);
     JPanel loginNames = new JPanel();
+    loginNames.setLayout(new BorderLayout());
+    JPanel east = new JPanel();
+    east.setLayout(new GridLayout(numberOfPlayers, 1));
+    JPanel center = new JPanel();
     loginNames.setBackground(Color.CYAN);
     loginNames.setPreferredSize(new Dimension(400, 100));
     add(loginNames, "loginNames");
@@ -206,45 +194,56 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     switch (numberOfPlayers) {
       case 2:
-        loginNames.add(new JLabel("Player " + "1" + ": Login with your nick name:"));
-        loginNames.add(firstNicknameHS);
+        center.add(new JLabel("Player " + "1" + ": Login with your nick name:"));
+        center.add(firstNicknameHS);
+        east.add(addFirstName);
 
-        loginNames.add(new JLabel("Player " + "2" + ": Login with your nick name:"));
-        loginNames.add(secondNicknameHS);
+        center.add(new JLabel("Player " + "2" + ": Login with your nick name:"));
+        center.add(secondNicknameHS);
+        east.add(addSecondName);
 
         break;
 
       case 3:
-        loginNames.add(new JLabel("Player " + "1" + ": Login with your nick name:"));
-        loginNames.add(firstNicknameHS);
+        center.add(new JLabel("Player " + "1" + ": Login with your nick name:"));
+        center.add(firstNicknameHS);
+        east.add(addFirstName);
 
-        loginNames.add(new JLabel("Player " + "2" + ": Login with your nick name:"));
-        loginNames.add(secondNicknameHS);
+        center.add(new JLabel("Player " + "2" + ": Login with your nick name:"));
+        center.add(secondNicknameHS);
+        east.add(addSecondName);
 
-        loginNames.add(new JLabel("Player " + "3" + ": Login with your nick name:"));
-        loginNames.add(thirdNicknameHS);
+        center.add(new JLabel("Player " + "3" + ": Login with your nick name:"));
+        center.add(thirdNicknameHS);
+        east.add(addThirdName);
 
         break;
 
       case 4:
-        loginNames.add(new JLabel("Player " + "1" + ": Login with your nick name:"));
-        loginNames.add(firstNicknameHS);
+        center.add(new JLabel("Player " + "1" + ": Login with your nick name:"));
+        center.add(firstNicknameHS);
+        east.add(addFirstName);
 
-        loginNames.add(new JLabel("Player " + "2" + ": Login with your nick name:"));
-        loginNames.add(secondNicknameHS);
+        center.add(new JLabel("Player " + "2" + ": Login with your nick name:"));
+        center.add(secondNicknameHS);
+        east.add(addSecondName);
 
-        loginNames.add(new JLabel("Player " + "3" + ": Login with your nick name:"));
-        loginNames.add(thirdNicknameHS);
+        center.add(new JLabel("Player " + "3" + ": Login with your nick name:"));
+        center.add(thirdNicknameHS);
+        east.add(addThirdName);
 
-        loginNames.add(new JLabel("Player " + "4" + ": Login with your nick name:"));
-        loginNames.add(fourthNicknameHS);
+        center.add(new JLabel("Player " + "4" + ": Login with your nick name:"));
+        center.add(fourthNicknameHS);
+        east.add(addFourthName);
 
         break;
       default:
         break;
     }
 
-    loginNames.add(loginHS);
+    loginNames.add(east, BorderLayout.EAST);
+    loginNames.add(center, BorderLayout.CENTER);
+    loginNames.add(loginHS, BorderLayout.SOUTH);
 
   }
 
@@ -287,7 +286,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     hotSeat.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        //TODO: pass in string array with players names
         showCard(LOGIN_H_CARD);
         try {
           controller.setGameMode("Hot Seat");
@@ -297,31 +295,49 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       }
     });
 
-    firstNicknameHS.addActionListener(new ActionListener() {
+    playerNumberSelection.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        setPlayerNicknamesHS((int) playerNumberSelection.getSelectedItem());
+      }
+    });
+
+    addFirstName.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         playerNames.add(firstNicknameHS.getText());
+
       }
     });
 
-    secondNicknameHS.addActionListener(new ActionListener() {
+    addSecondName.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         playerNames.add(secondNicknameHS.getText());
+
       }
     });
 
-    thirdNicknameHS.addActionListener(new ActionListener() {
+    addThirdName.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         playerNames.add(thirdNicknameHS.getText());
+
       }
     });
 
-    fourthNicknameHS.addActionListener(new ActionListener() {
+    addFourthName.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         playerNames.add(fourthNicknameHS.getText());
+
+      }
+    });
+
+    loginHS.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        controller.logInHotSeat(playerNames);
       }
     });
 
@@ -455,7 +471,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     JLabel counter;
     if (playerList != null) {
       counter = new JLabel("Player: " + playerList.get(userNumber).getName() + " Points: "
-        + controller.getCurrentScore(userNumber));
+              + controller.getCurrentScore(userNumber));
       return counter;
     }
 
@@ -550,7 +566,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * and gives information to Method ... that fills the Plates.
    *
    * @param tileCollection - The Array of TileCollections that where provided by the Server.
-   *                      (Each collection is a plate) and need to be placed in the Middle.
+   *                       (Each collection is a plate) and need to be placed in the Middle.
    */
   private void setTilesInMiddle(TileCollection[] tileCollection) {
     for (int i = 0; i < tileCollection.length; i++) {
@@ -560,25 +576,25 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       // Get colors that are contained in Plate number i.
       ArrayList<Tile> tileColors = tileCollection[i].getContainedColors();
 
-       for(int j = 0; j < tileColors.size(); j++){
-            Tile tileWithSpecificColour = tileColors.get(j);
-            String colour = tileWithSpecificColour.toString();
-            //test
-            //System.out.println("Numer of colors" + tileColors.size());
-            //System.out.println("Plate Number: " + i + " contains these colors: ");
-            //System.out.println(colour);
-            int amountOfTiles = tileCollection[i].getAmountTilesOfColor(tileWithSpecificColour);
+      for (int j = 0; j < tileColors.size(); j++) {
+        Tile tileWithSpecificColour = tileColors.get(j);
+        String colour = tileWithSpecificColour.toString();
+        //test
+        //System.out.println("Numer of colors" + tileColors.size());
+        //System.out.println("Plate Number: " + i + " contains these colors: ");
+        //System.out.println(colour);
+        int amountOfTiles = tileCollection[i].getAmountTilesOfColor(tileWithSpecificColour);
 
-            fillPlateWithTiles(plateNumber, colour, amountOfTiles);
+        fillPlateWithTiles(plateNumber, colour, amountOfTiles);
 
-       }
+      }
     }
 
   }
 
-  //TODO: Petra mit dieser Mehtode kannst du die Plättchen in der Mitte füllen und updaten.
+  //TODO: Petra mit dieser Methode kannst du die Plättchen in der Mitte füllen und updaten.
   // Diese Methode wird ein mal pro Plättchen aufgerufen.
-  public void fillPlateWithTiles(int plateNumber, String colour, int amountOfTiles){
+  public void fillPlateWithTiles(int plateNumber, String colour, int amountOfTiles) {
 
   }
 
@@ -612,10 +628,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       showGame();
     } else if (newValue instanceof LoginFailedEvent) {
       JOptionPane.showMessageDialog(this,
-          String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
+              String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
       showCard(LOGIN_M_CARD);
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
-      TileCollection[] tileCollection = model.getTilePlates();
+      TileCollection[] tileCollection = controller.getTilePlates();
       setTilesInMiddle(tileCollection);
 
 

@@ -51,19 +51,12 @@ public class GameController {
    */
   public void logInHotSeat(List<String> playersName) {
     System.out.println("login HS controller");
-    for (int j = 0; j < playersName.size(); j++) {
-      System.out.println(playersName.get(j));
-    }
 
     new SwingWorker<Boolean, Void>() {
 
       @Override
       protected Boolean doInBackground() {
         String[] namesArray = playersName.toArray(new String[0]);
-        //test
-        for (int i = 0; i < namesArray.length; i++) {
-          System.out.println(namesArray[i]);
-        }
         model.logInHotSeat(namesArray);
         return true;
       }

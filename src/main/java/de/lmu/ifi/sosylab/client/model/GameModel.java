@@ -82,9 +82,6 @@ public class GameModel {
    * TODO Javadoc
    */
   public void logInMultiplayer(String name) {
-    //TODO: testing
-    //loggedIn();
-
     players = new Player[1];
     players[0] = new Player(name);
     connection.sendLogin(name);
@@ -95,8 +92,10 @@ public class GameModel {
    * TODO Javadoc
    */
   public void logInHotSeat(String[] playersName) {
-    //TODO: testing
-    //loggedIn();
+    //testing
+    for (int i = 0; i < playersName.length; i++){
+      System.out.println(playersName[i]);
+    }
 
     numberOfPlayers = playersName.length;
     gameMode = "Hot Seat";
