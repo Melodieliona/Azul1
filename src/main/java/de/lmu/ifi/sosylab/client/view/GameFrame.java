@@ -67,9 +67,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private transient Game gamesettings = null;
 
   private final int tileSize = 25;
-  private TileCollection[] collection;
+  private static TileCollection[] collection;
   private Images images;
-
+  private JPanel middle;
+  private JPanel gameField;
 
   /**
    * Create a new graphical view that contains all necessary elements for playing the game.
@@ -82,8 +83,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     this.controller = requireNonNull(controller);
     this.model = requireNonNull(model);
-    // playerList = controller.getUserList(); // TODO get correct usercount.
-    playerNames = new ArrayList<>();
+
+    images = new Images();
+    //Creates Game icon.
+    BufferedImage icon = images.getIcon();
+    this.setIconImage(icon);
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     //this.setPreferredSize(new Dimension(400, 300));
@@ -111,6 +115,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     hotSeat = new JButton("HOTSEAT");
     multiPlayer = new JButton("MULTIPLAYER");
 
+    //Game
+    playerNames = new ArrayList<>();
+    collection = new TileCollection[100];
+    gameField = new JPanel(new BorderLayout());
+    gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+
+    middle = new JPanel(new FlowLayout());
+    middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    middle.setPreferredSize(new Dimension(325, 300));
   }
 
   /**
@@ -132,19 +145,23 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates Card for Game View.
    */
   public void createGameView() {
+    //ToDO remove when Names work
+    playerNames.add("TestPlayer");
+    playerNames.add("TestPlayer2");
+    playerNames.add("TestPlayer3");
+    //playerNames.add("TestPlayer4");
+
     JPanel game = new JPanel();
-    collection = controller.getTilePlates();
-    images = new Images();
+    add(game, GAME_CARD);
 
     BufferedImage img = images.getBackground();
     JLabel background = new JLabel(new ImageIcon(img));
 
     background.setPreferredSize(createGameField().getPreferredSize());
     background.setLayout(new FlowLayout());
-    background.add(createGameField());
+    background.add(gameField);
 
     game.add(background);
-    add(game, GAME_CARD);
   }
 
   /**
@@ -327,14 +344,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   private Component createGameField() {
-    pack();
-    JPanel gameField = new JPanel(new BorderLayout());
-    gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-
     gameField.add(createBoard(0), BorderLayout.NORTH);
     gameField.add(createBoard(1), BorderLayout.SOUTH);
 
-    switch (playerNames.size()) {
+    switch (playerNames.size()-1) {
       case 2 -> gameField.add(createBoard(2), BorderLayout.WEST);
       case 3 -> {
         gameField.add(createBoard(2), BorderLayout.WEST);
@@ -350,9 +363,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -middle.
    */
   private Component createMiddle() {
-    JPanel middle = new JPanel(new FlowLayout());
-    middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    middle.setPreferredSize(new Dimension(325, 300));
     createPlates(middle);
     middle.add(createPile());
     return middle;
@@ -363,48 +373,53 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @param middle - Plates can be directly added to the middle.
    */
   private void createPlates(JPanel middle) {
-    for (int plateNumber = 1; plateNumber < 9; plateNumber++) {
-      BufferedImage img = images.getPlate();
+    try {
+      for (int plateNumber = 1; plateNumber < collection.length; plateNumber++) {
+        BufferedImage img = images.getPlate();
 
-      JLabel plate = new JLabel(new ImageIcon(img));
-      plate.setName(String.valueOf(plateNumber));
+        JLabel plate = new JLabel(new ImageIcon(img));
+        plate.setName(String.valueOf(plateNumber));
 
-      int x = 1;
-      int y = 1;
+        int x = 1;
+        int y = 1;
 
-      for (int i = 0; i < collection[plateNumber].size(); i++) {
-        String color = String.valueOf(collection[plateNumber].get(i));
-        PaintTile tile = new PaintTile(color,images);
-        tile.setName(color);
-        if (i == 2) {
-          x = 1;
-          y = 3;
-        }
-        tile.setBounds(12 * x, 12 * y, 25, 25);
-        x+=2;
-        plate.add(tile);
-      }
-
-      plate.addMouseListener(new MouseAdapter() {
-        /**
-         * {@inheritDoc}
-         *
-         * @param e
-         */
-        @Override
-        public void mouseClicked(MouseEvent e) {
-          super.mouseClicked(e);
-          Point checkMouseTip = e.getPoint();
-
-          String plates = plate.getComponentAt(checkMouseTip).getParent().getName();
-          String tile = plate.getComponentAt(checkMouseTip).getName();
-          if (plates != null && tile != null) {
-            System.out.println("Plate: " + plates + " Tile: " + tile);
+        for (int i = 0; i < collection[plateNumber].size(); i++) {
+          String color = String.valueOf(collection[plateNumber].get(i));
+          PaintTile tile = new PaintTile(color, images);
+          tile.setName(color);
+          if (i == 2) {
+            x = 1;
+            y = 3;
           }
+          tile.setBounds(12 * x, 12 * y, 25, 25);
+          x += 2;
+          plate.add(tile);
         }
-      });
-      middle.add(plate);
+
+        plate.addMouseListener(new MouseAdapter() {
+          /**
+           * {@inheritDoc}
+           *
+           * @param e
+           */
+          @Override
+          public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            Point checkMouseTip = e.getPoint();
+
+            String plates = plate.getComponentAt(checkMouseTip).getParent().getName();
+            String tile = plate.getComponentAt(checkMouseTip).getName();
+            if (plates != null && tile != null) {
+              System.out.println("Plate: " + plates + " Tile: " + tile);
+            }
+          }
+        });
+        middle.add(plate);
+      }
+    } catch (NullPointerException e) {
+      System.out.println("collection ist noch leer! (createPlates)");
     }
+
   }
 
   /**
@@ -415,7 +430,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     JPanel pile = new JPanel();
     pile.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     pile.setPreferredSize(new Dimension(325, 100));
-
+    try {
     for (int i = 0; i < collection[0].size(); i++) {
       String color = String.valueOf(collection[0].get(i));
       PaintTile tile = new PaintTile(color,images);
@@ -440,6 +455,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
       }
     });
+    } catch (NullPointerException e) {
+      System.out.println("Collection ist noch leer! (createPile)");
+    }
     return pile;
   }
 
@@ -520,10 +538,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             Tile tileWithSpecificColour = tileColors.get(j);
             String colour = tileWithSpecificColour.toString();
             //test
-            //System.out.println("Numer of colors" + tileColors.size());
-            //System.out.println("Plate Number: " + i + " contains these colors: ");
-            //System.out.println(colour);
+            System.out.println("Numer of colors" + tileColors.size());
+            System.out.println("Plate Number: " + i + " contains these colors: ");
+            System.out.println(colour);
             int amountOfTiles = tileCollection[i].getAmountTilesOfColor(tileWithSpecificColour);
+         System.out.println(amountOfTiles);
 
             fillPlateWithTiles(plateNumber, colour, amountOfTiles);
 
@@ -535,7 +554,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   //TODO: Petra mit dieser Mehtode kannst du die Plättchen in der Mitte füllen und updaten.
   // Diese Methode wird ein mal pro Plättchen aufgerufen.
   public void fillPlateWithTiles(int plateNumber, String colour, int amountOfTiles){
-
   }
 
   @Override
@@ -572,6 +590,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       showCard(LOGIN_M_CARD);
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
       TileCollection[] tileCollection = model.getTilePlates();
+      collection = model.getTilePlates();
+      gameField.removeAll();
+      //createGameField();
+      createGameView();
       setTilesInMiddle(tileCollection);
 
 

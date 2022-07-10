@@ -12,6 +12,7 @@ public class Images {
     private BufferedImage plate;
     private BufferedImage background;
     private BufferedImage icon;
+    private BufferedImage tileStarter;
 
     /**
      * Imports images and resizes them if needed.
@@ -25,15 +26,16 @@ public class Images {
      * Imports images.
      */
     private void importImages() {
-        board = new ImportImage("Board.png").getImg();
-        tileRed = new ImportImage("TileRed.png").getImg();
-        tileBlue = new ImportImage("TileBlue.png").getImg();
-        tileBlack = new ImportImage("TileBlack.png").getImg();
-        tileYellow = new ImportImage("TileYellow.png").getImg();
-        tileWhite = new ImportImage("TileWhite.png").getImg();
-        plate = new ImportImage("Plate.png").getImg();
-        icon = new ImportImage("Icon.png").getImg();
-        background = new ImportImage("Background.png").getImg();
+        board = new ImportImage("images/Board.png").getImg();
+        tileRed = new ImportImage("images/TileRed.png").getImg();
+        tileBlue = new ImportImage("images/TileBlue.png").getImg();
+        tileBlack = new ImportImage("images/TileBlack.png").getImg();
+        tileYellow = new ImportImage("images/TileYellow.png").getImg();
+        tileWhite = new ImportImage("images/TileWhite.png").getImg();
+        tileStarter = new ImportImage("images/TileStarter.png").getImg();
+        plate = new ImportImage("images/Plate.png").getImg();
+        icon = new ImportImage("images/Icon.png").getImg();
+        background = new ImportImage("images/Background.png").getImg();
         resize();
     }
 
@@ -48,6 +50,7 @@ public class Images {
         tileBlack = resizeImage(tileBlack, 25, 25);
         tileYellow = resizeImage(tileYellow, 25, 25);
         tileWhite = resizeImage(tileWhite, 25, 25);
+        tileStarter = resizeImage(tileStarter, 25, 25);
     }
 
     /**
@@ -147,5 +150,9 @@ public class Images {
      */
     public BufferedImage getIcon() {
         return icon;
+    }
+
+    public BufferedImage getTileStarter() {
+        return tileStarter;
     }
 }
