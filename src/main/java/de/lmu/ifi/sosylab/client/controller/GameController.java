@@ -79,8 +79,8 @@ public class GameController {
     return null;
   }
 
-  public TileCollection[] selectAllTilesWithColor(String color) {
-    return null;
+  public void selectAllTiles(int source, String color, int numberOfTiles) {
+    model.selectTiles(source,color,numberOfTiles);;
   }
 
   public void setTilesToRow(int row) {
@@ -104,10 +104,6 @@ public class GameController {
   public TileCollection[] getTilePlates() {
     //0 ist Haufen
     return model.getTilePlates();
-  }
-
-  public String getTileColor(Tile tile) {
-    return null;
   }
 
   public void dispose() {
