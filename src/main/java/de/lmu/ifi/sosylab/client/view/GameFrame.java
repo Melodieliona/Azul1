@@ -117,13 +117,18 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     //Game
     playerNames = new ArrayList<>();
+    //ToDO remove when Names work
+    playerNames.add("TestPlayer");
+    playerNames.add("TestPlayer2");
+    playerNames.add("TestPlayer3");
+    //playerNames.add("TestPlayer4");
+
+
+
     collection = new TileCollection[100];
     gameField = new JPanel(new BorderLayout());
     gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-
-    middle = new JPanel(new FlowLayout());
-    middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    middle.setPreferredSize(new Dimension(325, 300));
+    gameField.setPreferredSize(createGameField().getPreferredSize());
   }
 
   /**
@@ -145,12 +150,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates Card for Game View.
    */
   public void createGameView() {
-    //ToDO remove when Names work
-    playerNames.add("TestPlayer");
-    playerNames.add("TestPlayer2");
-    playerNames.add("TestPlayer3");
-    //playerNames.add("TestPlayer4");
-
     JPanel game = new JPanel();
     add(game, GAME_CARD);
 
@@ -363,6 +362,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -middle.
    */
   private Component createMiddle() {
+    middle = new JPanel(new FlowLayout());
+    middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    middle.setPreferredSize(new Dimension(325, 300));
+
     createPlates(middle);
     middle.add(createPile());
     return middle;
@@ -538,11 +541,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             Tile tileWithSpecificColour = tileColors.get(j);
             String colour = tileWithSpecificColour.toString();
             //test
-            System.out.println("Numer of colors" + tileColors.size());
-            System.out.println("Plate Number: " + i + " contains these colors: ");
-            System.out.println(colour);
+           // System.out.println("Numer of colors" + tileColors.size());
+            //System.out.println("Plate Number: " + i + " contains these colors: ");
+            //System.out.println(colour);
             int amountOfTiles = tileCollection[i].getAmountTilesOfColor(tileWithSpecificColour);
-         System.out.println(amountOfTiles);
+         System.out.println("Amount of the Colour: " + amountOfTiles);
 
             fillPlateWithTiles(plateNumber, colour, amountOfTiles);
 
@@ -589,12 +592,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
       showCard(LOGIN_M_CARD);
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
-      TileCollection[] tileCollection = model.getTilePlates();
+     // TileCollection[] tileCollection = model.getTilePlates();
       collection = model.getTilePlates();
       gameField.removeAll();
       //createGameField();
       createGameView();
-      setTilesInMiddle(tileCollection);
+     // setTilesInMiddle(tileCollection);
 
 
     } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {

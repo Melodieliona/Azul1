@@ -18,7 +18,6 @@ public class Images {
      * Imports images and resizes them if needed.
      */
     Images() {
-        System.out.println("Import");
         importImages();
     }
 
