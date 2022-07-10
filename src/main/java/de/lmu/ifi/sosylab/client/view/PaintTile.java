@@ -39,6 +39,6 @@ public class PaintTile extends JPanel {
             case "STARTING_MARKER" -> g2D.drawImage(img.getTileStarter(),0,0,null);
             default -> throw new IllegalArgumentException("Invalid color.");
         }
-        repaint();
+     //   repaint();
     }
 }
