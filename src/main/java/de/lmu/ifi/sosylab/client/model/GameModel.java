@@ -2,20 +2,7 @@ package de.lmu.ifi.sosylab.client.model;
 
 import static java.util.Objects.requireNonNull;
 
-import de.lmu.ifi.sosylab.client.model.events.GameEndedEvent;
-import de.lmu.ifi.sosylab.client.model.events.GameEvents;
-import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
-import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.MiddleTilesUpdateEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerPlacedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerSelectedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.PointsUpdatedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilePlacementFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TileSelectionFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesSelectedEvent;
-import de.lmu.ifi.sosylab.client.model.events.UserJoinedEvent;
-import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
+import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
@@ -107,6 +94,15 @@ public class GameModel {
     }
   }
 
+  /**
+   * Sends a NextPlayerEvent to the subscribed view with the name of the player whose turn it is.
+   *
+   * @param nickname Name of the player.
+   */
+  private void nextPlayer(String nickname) {
+    notifyListeners(new NextPlayerEvent(nickname));
+  }
+
 
   /**
    * Sends a request to the server to select tiles.
@@ -191,7 +187,7 @@ public class GameModel {
   public void otherPlayerSelectedTiles(String color, int numberOfSelectedTiles, String playerName,
                                        int source) {
     notifyListeners(
-        new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, playerName, source));
+      new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, playerName, source));
   }
 
 
