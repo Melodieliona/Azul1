@@ -164,6 +164,9 @@ public class GameClientNetworkConnection {
       case TILES_NOT_ALLOWED:
         handleTilesNotAllowed(object);
         break;
+      case TIMER:
+        handleTimer(object);
+        break;
       default:
         handleInvalidJson(object);
     }
@@ -333,6 +336,15 @@ public class GameClientNetworkConnection {
     model.tileSelectionFailed();
   }
 
+  /**
+   * Handles receiving that a tiles selection failed.
+   *
+   * @param object JsonMessage received
+   */
+  private void handleTimer(JSONObject object) {
+    //model.
+  }
+
 
   /**
    * Stop the network-connection.
@@ -394,6 +406,16 @@ public class GameClientNetworkConnection {
   public void sendTileSelection(int source, String color, int numberOfTiles) {
     JSONObject tileSelection = JsonMessage.selectTile(color, source);
     send(tileSelection);
+  }
+
+  /**
+   * Handles sending the amount of players that will play.
+   *
+   * @param players amount
+   */
+  public void sendPlayers(int players) {
+    JSONObject amountOfPlayers = JsonMessage.players(players);
+    send(amountOfPlayers);
   }
 
   public void sendTilePlacement(int line, int color, int numberOfTiles) { //color should be string

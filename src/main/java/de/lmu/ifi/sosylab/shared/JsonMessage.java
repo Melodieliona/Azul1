@@ -195,7 +195,7 @@ public enum JsonMessage {
    * @param players of the desired tiles
    * @return JsonMessage to be sent
    */
-  private static JSONObject players(int players) {
+  public static JSONObject players(int players) {
     try {
       JSONObject message = createMessageOfType(PLAYERS);
       message.put(AMOUNTS, String.valueOf(players));
