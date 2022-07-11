@@ -46,10 +46,10 @@ public class Board extends JPanel {
     public void paint(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
         g2D.drawImage(board, 0, 0, board.getWidth(), board.getHeight(), null);
-        g2D.setFont(new Font("Arial", Font.PLAIN, 20));
+        g2D.setFont(new Font("Arial", Font.PLAIN, 15));
         g2D.setColor(Color.white);
         g2D.drawString(name, 83, 35);
-        createTiles(g2D);
+       // createTiles(g2D);
     }
 
     /**
@@ -80,7 +80,7 @@ public class Board extends JPanel {
 
                 }
             }
-            repaint();
+         //   repaint();
 
         } catch (NullPointerException e) {
             System.out.println("Collection ist noch leer! (Board)");

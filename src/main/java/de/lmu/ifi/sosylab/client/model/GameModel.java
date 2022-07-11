@@ -218,6 +218,7 @@ public class GameModel {
   public void fillTiles(String[] colors, String[] amounts) { //array of tilecollection as parameters
     tilePlates = new TileCollection[colors.length];
     for (int n = 0; n < tilePlates.length; n++) {
+      tilePlates[n] = new TileCollection();
       String hcolors = colors[n];
       String hamounts = amounts[n];
       String[] colorsCurrentPlate = hcolors.trim().split("\\s+");
@@ -226,7 +227,6 @@ public class GameModel {
       for (int j = 0; j < i; j++) {
         String currentColor = colorsCurrentPlate[j];
         int amountCurrentColor = Integer.parseInt(amountsCurrentPlate[j]);
-        tilePlates[n] = new TileCollection();
         tilePlates[n].addTiles(Tile.getTile(currentColor), amountCurrentColor);
       }
     }

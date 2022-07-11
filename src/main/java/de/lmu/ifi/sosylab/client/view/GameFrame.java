@@ -59,7 +59,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JButton addThirdName;
   private JButton addFourthName;
 
-
   private JButton loginHS;
   Integer[] numberOfPlayerOptions = {2, 3, 4};
 
@@ -75,6 +74,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private Images images;
   private JPanel middle;
   private JPanel gameField;
+  private int currentBoard;
 
   /**
    * Create a new graphical view that contains all necessary elements for playing the game.
@@ -164,7 +164,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     BufferedImage img = images.getBackground();
     JLabel background = new JLabel(new ImageIcon(img));
 
-    background.setPreferredSize(createGameField().getPreferredSize());
+    game.setPreferredSize(createGameField().getPreferredSize());
     background.setLayout(new FlowLayout());
     background.add(gameField);
 
@@ -369,13 +369,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   private Component createGameField() {
-    System.out.println("Create GameField");
-    gameField.add(createBoard(0), BorderLayout.NORTH);
-    gameField.add(createBoard(1), BorderLayout.SOUTH);
-
     switch (playerNames.size()-1) {
-      case 2 -> gameField.add(createBoard(2), BorderLayout.WEST);
+      case 1 -> {
+        gameField.add(createBoard(0), BorderLayout.NORTH);
+        gameField.add(createBoard(1), BorderLayout.SOUTH);
+      }
+      case 2 -> {
+        gameField.add(createBoard(0), BorderLayout.NORTH);
+        gameField.add(createBoard(1), BorderLayout.WEST);
+        gameField.add(createBoard(2), BorderLayout.SOUTH);
+      }
       case 3 -> {
+        gameField.add(createBoard(0), BorderLayout.NORTH);
+        gameField.add(createBoard(1), BorderLayout.SOUTH);
         gameField.add(createBoard(2), BorderLayout.WEST);
         gameField.add(createBoard(3), BorderLayout.EAST);
       }
@@ -389,7 +395,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -middle.
    */
   private Component createMiddle() {
-    System.out.println("Create Middle");
     middle = new JPanel(new FlowLayout());
     middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     middle.setPreferredSize(new Dimension(325, 300));
@@ -405,7 +410,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    */
   private void createPlates(JPanel middle) {
     try {
-      System.out.println("Create Plates");
       for (int plateNumber = 1; plateNumber < collection.length; plateNumber++) {
         BufferedImage img = images.getPlate();
 
@@ -416,7 +420,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         int y = 1;
 
         for (int i = 0; i < collection[plateNumber].size(); i++) {
-          System.out.println("Create Tiles for Plate");
           String color = String.valueOf(collection[plateNumber].get(i));
           PaintTile tile = new PaintTile(color, images);
           tile.setName(color);
@@ -446,7 +449,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
               System.out.println("Plate: " + plates + " Tile: " + tile);
               int plateNumber = Integer.parseInt(plates);
               int amount = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile));
-              controller.selectAllTiles(plateNumber,tile,amount);
+              controller.selectAllTiles(plateNumber,tile,amount,playerNames.get(currentBoard));
             }
           }
         });
@@ -463,7 +466,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return - pile.
    */
   private Component createPile() {
-    System.out.println("Create Pile");
     JPanel pile = new JPanel();
     pile.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     pile.setPreferredSize(new Dimension(325, 100));
@@ -489,7 +491,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         if (name != null) {
           System.out.println("Tile " + name + " was clicked on Plate 0");
           int amount = collection[0].getAmountTilesOfColor(Tile.getTile(name));
-          controller.selectAllTiles(0, name ,amount);
+          controller.selectAllTiles(0, name ,amount, playerNames.get(currentBoard));
+          System.out.println(playerNames.get(currentBoard));
         }
 
       }
@@ -511,11 +514,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     JPanel board = new JPanel();
     board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
 
-    if (playerNames.size() == 2) {
+    if (playerNames.size() - 1 == 2) {
       board.setLayout(new BorderLayout());
       JPanel west = new JPanel();
-      board.add(west);
+      west.setPreferredSize(new Dimension(20,300));
+      west.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+      board.add(west,BorderLayout.WEST);
     }
+
     board.add(b);
 
     b.addMouseListener(new MouseAdapter() {
@@ -530,6 +536,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         Point checkMouseTip = e.getPoint();
         int mousePointX = checkMouseTip.x / tileSize;
         int mousePointY = checkMouseTip.y / tileSize;
+        currentBoard = boardNumber;
 
 
         if (mousePointX == 5 && mousePointY == 2) {
