@@ -41,7 +41,6 @@ public class Player {
       for (int j = 0; j < 5; j++) {
         tilesLines[i][j] = colors[i + j];
       }
-
     }
   }
 
