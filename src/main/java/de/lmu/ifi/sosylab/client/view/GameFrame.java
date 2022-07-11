@@ -17,7 +17,6 @@ import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -369,7 +368,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   private Component createGameField() {
-    switch (playerNames.size()-1) {
+    switch (playerNames.size() - 1) {
       case 1 -> {
         gameField.add(createBoard(0), BorderLayout.NORTH);
         gameField.add(createBoard(1), BorderLayout.SOUTH);
@@ -385,6 +384,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         gameField.add(createBoard(2), BorderLayout.WEST);
         gameField.add(createBoard(3), BorderLayout.EAST);
       }
+      default -> { }
     }
     gameField.add(createMiddle(), BorderLayout.CENTER);
     return gameField;
@@ -392,6 +392,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   /**
    * Creates Middle with plates and pile.
+   *
    * @return -middle.
    */
   private Component createMiddle() {
@@ -406,6 +407,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   /**
    * Creates the Plates in the middle with the tiles and adds a MouseListener.
+   *
    * @param middle - Plates can be directly added to the middle.
    */
   private void createPlates(JPanel middle) {
@@ -449,7 +451,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
               System.out.println("Plate: " + plates + " Tile: " + tile);
               int plateNumber = Integer.parseInt(plates);
               int amount = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile));
-              controller.selectAllTiles(plateNumber,tile,amount,playerNames.get(currentBoard));
+              controller.selectAllTiles(plateNumber, tile, amount, playerNames.get(currentBoard));
             }
           }
         });
@@ -463,6 +465,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   /**
    * Creates tile pile in the Middle.
+   *
    * @return - pile.
    */
   private Component createPile() {
@@ -470,33 +473,33 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     pile.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     pile.setPreferredSize(new Dimension(325, 100));
     try {
-    for (int i = 0; i < collection[0].size(); i++) {
-      String color = String.valueOf(collection[0].get(i));
-      PaintTile tile = new PaintTile(color,images);
-      tile.setName(color);
-      tile.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-      pile.add(tile);
-    }
-    pile.addMouseListener(new MouseAdapter() {
-      /**
-       * {@inheritDoc}
-       *
-       * @param e
-       */
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
-        Point checkMouseTip = e.getPoint();
-        String name = pile.getComponentAt(checkMouseTip).getName();
-        if (name != null) {
-          System.out.println("Tile " + name + " was clicked on Plate 0");
-          int amount = collection[0].getAmountTilesOfColor(Tile.getTile(name));
-          controller.selectAllTiles(0, name ,amount, playerNames.get(currentBoard));
-          System.out.println(playerNames.get(currentBoard));
-        }
-
+      for (int i = 0; i < collection[0].size(); i++) {
+        String color = String.valueOf(collection[0].get(i));
+        PaintTile tile = new PaintTile(color, images);
+        tile.setName(color);
+        tile.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+        pile.add(tile);
       }
-    });
+
+      pile.addMouseListener(new MouseAdapter() {
+        /**
+         * {@inheritDoc}
+         *
+         * @param e
+         */
+        @Override
+        public void mouseClicked(MouseEvent e) {
+          super.mouseClicked(e);
+          Point checkMouseTip = e.getPoint();
+          String name = pile.getComponentAt(checkMouseTip).getName();
+          if (name != null) {
+            System.out.println("Tile " + name + " was clicked on Plate 0");
+            int amount = collection[0].getAmountTilesOfColor(Tile.getTile(name));
+            controller.selectAllTiles(0, name, amount, playerNames.get(currentBoard));
+            System.out.println(playerNames.get(currentBoard));
+          }
+        }
+      });
     } catch (NullPointerException e) {
       System.out.println("Collection ist noch leer! (createPile)");
     }
@@ -505,11 +508,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   /**
    * Creates a Board with MouseListener for the Rows.
+   *
    * @param boardNumber -
    * @return -board.
    */
   private Component createBoard(int boardNumber) {
-    Board b = new Board(collection, tileSize, playerNames.get(boardNumber),images);
+    Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images);
 
     JPanel board = new JPanel();
     board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
@@ -517,9 +521,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     if (playerNames.size() - 1 == 2) {
       board.setLayout(new BorderLayout());
       JPanel west = new JPanel();
-      west.setPreferredSize(new Dimension(20,300));
+      west.setPreferredSize(new Dimension(20, 300));
       west.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-      board.add(west,BorderLayout.WEST);
+      board.add(west, BorderLayout.WEST);
     }
 
     board.add(b);

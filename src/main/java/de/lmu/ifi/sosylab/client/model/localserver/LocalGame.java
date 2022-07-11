@@ -38,6 +38,8 @@ public class LocalGame {
 
   private String startsAtNextRound;
 
+  private static final Random RANDOM = new Random();
+
 
 
   /**
@@ -73,8 +75,7 @@ public class LocalGame {
     currentSelection = new TileCollection();
 
     // Choose random player to begin with
-    Random rand = new Random();
-    currentPlayer = rand.nextInt(userList.size());
+    currentPlayer = RANDOM.nextInt(userList.size());
 
     startsAtNextRound = "";
 

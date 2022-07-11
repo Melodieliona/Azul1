@@ -39,6 +39,8 @@ public class Game {
 
   private String startsAtNextRound;
 
+  private static final Random RANDOM = new Random();
+
 
 
   /**
@@ -74,10 +76,11 @@ public class Game {
 
     currentSelection = new TileCollection();
 
+    System.out.println(RANDOM.nextInt(userList.size()));
     // Choose random player to begin with
-    Random rand = new Random();
-    currentPlayer = rand.nextInt(userList.size()) + 1;
-
+    currentPlayer = RANDOM.nextInt(userList.size());
+    System.out.println(currentPlayer);
+    System.out.println(RANDOM.nextInt(userList.size()));
     startsAtNextRound = "";
 
     fillPlates();

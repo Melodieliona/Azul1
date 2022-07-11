@@ -4,9 +4,14 @@ package de.lmu.ifi.sosylab.shared;
  * Represents a single tile.
  */
 public enum Tile {
-  BLUE("blue"), YELLOW("yellow"), RED("yellow"), BLACK("black"), WHITE("white"), STARTING_MARKER("");
+  BLUE("blue"),
+  YELLOW("yellow"),
+  RED("yellow"),
+  BLACK("black"),
+  WHITE("white"),
+  STARTING_MARKER("");
 
-  String color;
+  final String color;
 
   Tile(String color) {
     this.color = color;
