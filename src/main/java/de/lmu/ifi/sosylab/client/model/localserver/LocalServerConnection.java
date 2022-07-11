@@ -107,10 +107,10 @@ public class LocalServerConnection {
 
             // Get Info out of the message
             switch (JsonMessage.typeOf(jsonObject)) {
-              // TODO Amount of players Json
-              // TODO !! GAME_ENDEN is just a placeholder !!
-              case GAME_ENDED:
-                amountOfExpectedUsers = (int) jsonObject.get("amount");
+              case PLAYERS:
+                if (amountOfExpectedUsers == 0) {
+                  amountOfExpectedUsers = (int) jsonObject.get("players");
+                }
                 break;
               case LOGIN:
                 try {
@@ -447,11 +447,11 @@ public class LocalServerConnection {
    * */
   public void sendClickableRows(int[] rows) {
     try {
-      String clickableRows = "";
+      StringBuilder clickableRows = new StringBuilder();
       for (int i = 0; i < rows.length; i++) {
-        clickableRows += rows[i];
+        clickableRows.append(rows[i]);
         if (i != rows.length - 1) {
-          clickableRows += " ";
+          clickableRows.append(" ");
         }
       }
 
@@ -481,13 +481,6 @@ public class LocalServerConnection {
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
-  }
-
-  /**
-   * TODO Template, maybe unused.
-   */
-  public void sendNextRound() {
-
   }
 
   /**

@@ -119,6 +119,7 @@ public class ServerNetworkConnection {
               case LOGIN:
                 System.out.println("login request");
                 clientNick = (String) jsonObject.get("nick");
+                clientGameNumber = nextGameNumber;
 
                 boolean nickAlreadyUsed = false;
                 for (User user : users) {
@@ -152,12 +153,9 @@ public class ServerNetworkConnection {
 
                   if (numberOfUsersInNextGame > 3) {
                     startGame();
-                    clientGameNumber = nextGameNumber;
                     nextGameNumber++;
-                  } else if (numberOfUsersInNextGame > 1) {
-                    if (!gameStartTimerRunning) {
-                      startTimer();
-                    }
+                  } else if ((numberOfUsersInNextGame > 1) && !gameStartTimerRunning) {
+                    startTimer();
                   }
 
                 }
@@ -469,17 +467,18 @@ public class ServerNetworkConnection {
    * */
   public void sendClickableRows(User user, int[] rows) {
     try {
-      String clickableRows = "";
+      StringBuilder clickableRows = new StringBuilder();
+      //String clickableRows = "";
       for (int i = 0; i < rows.length; i++) {
-        clickableRows += rows[i];
+        clickableRows.append(rows[i]);
         if (i != rows.length - 1) {
-          clickableRows += " ";
+          clickableRows.append(" ");
         }
       }
 
       JSONObject sendClickableRowsJson = new JSONObject();
       sendClickableRowsJson.put("type", "allowed fields");
-      sendClickableRowsJson.put("row", clickableRows);
+      sendClickableRowsJson.put("row", clickableRows.toString());
 
       user.getWriter().write(sendClickableRowsJson + System.lineSeparator());
       user.getWriter().flush();
@@ -594,6 +593,7 @@ public class ServerNetworkConnection {
     }
 
     games.add(new Game(nextGameNumber, usersInGame, connection));
+    nextGameNumber++;
   }
 
   /**
@@ -602,8 +602,9 @@ public class ServerNetworkConnection {
    * */
   private void startTimer() {
     gameStartTimerRunning = true;
-    //TODO send Timer when Client is updated to receive a "timer" JSON
-    //sendStartTimer();
+    sendStartTimer();
+
+    System.out.println("Timer set on 10sec for testing...");
 
     Thread timerThread = new Thread(() -> {
       try {

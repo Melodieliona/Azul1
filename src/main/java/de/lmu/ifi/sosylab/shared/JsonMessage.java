@@ -1,17 +1,12 @@
 package de.lmu.ifi.sosylab.shared;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Optional;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * TODO Javadoc
+ * Provides the structure for JSON Messages sent between server(s) and client(s).
  */
 public enum JsonMessage {
 
@@ -23,8 +18,8 @@ public enum JsonMessage {
   BOARD_UPDATE("board update"), USER_LEFT("user left"),
   FILL_PLATES("fill plates"), POINTS("points"),
   GAME_ENDED("game ended"), GAME_RESTART("game restart"),
-  GAME_RESTART_REQUEST("game restart request"), TIMER("timer"), PLAYERS("players"),
-  TILES_NOT_ALLOWED("tiles not allowed");
+  GAME_RESTART_REQUEST("game restart request"), TIMER("timer"),
+  PLAYERS("players"), TILES_NOT_ALLOWED("tiles not allowed");
 
 
   public static final String TYPE_FIELD = "type";
@@ -190,7 +185,8 @@ public enum JsonMessage {
   }
 
   /**
-   * Creates a message to be sent when it has been declared how many players want to play in hotseat mode
+   * Creates a message to be sent when it has been declared
+   * how many players want to play in hotseat mode.
    *
    * @param players of the desired tiles
    * @return JsonMessage to be sent
@@ -357,7 +353,7 @@ public enum JsonMessage {
   }
 
   /**
-   * Gets the type of JsonMessage
+   * Gets the type of JsonMessage.
    *
    * @return Json Type
    */
