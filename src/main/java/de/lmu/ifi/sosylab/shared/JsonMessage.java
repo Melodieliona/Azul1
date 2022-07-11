@@ -1,17 +1,13 @@
 package de.lmu.ifi.sosylab.shared;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * TODO Javadoc
- * */
+ * Provides the structure for JSON Messages sent between server(s) and client(s).
+ */
 public enum JsonMessage {
 
   LOGIN("login"), LOGIN_SUCCESS("login success"),
@@ -22,8 +18,8 @@ public enum JsonMessage {
   BOARD_UPDATE("board update"), USER_LEFT("user left"),
   FILL_PLATES("fill plates"), POINTS("points"),
   GAME_ENDED("game ended"), GAME_RESTART("game restart"),
-  GAME_RESTART_REQUEST("game restart request"),
-  TILES_NOT_ALLOWED("tiles not allowed");
+  GAME_RESTART_REQUEST("game restart request"), TIMER("timer"),
+  PLAYERS("players"), TILES_NOT_ALLOWED("tiles not allowed");
 
 
   public static final String TYPE_FIELD = "type";
@@ -47,6 +43,8 @@ public enum JsonMessage {
   public static final String SCORES_FIELD = "scores";
 
   public static final String CONTENT_FIELD = "content";
+
+  public static final String AMOUNTS = "amounts";
 
   private final String jsonName;
 
@@ -158,7 +156,7 @@ public enum JsonMessage {
   public static JSONObject selectTile(String color, int plate) {
     try {
       JSONObject message = createMessageOfType(TILE_SELECTION);
-      message.put(PLATE_FIELD, plate);
+      message.put(PLATE_FIELD, String.valueOf(plate));
       message.put(COLOR_FIELD, color);
 
       return message;
@@ -168,14 +166,35 @@ public enum JsonMessage {
   }
 
   /**
-   * TODO Javadoc
-   * */
+   * Creates a message to be sent when a tile placement has been done.
+   *
+   * @param color of the desired tiles
+   * @param row   rows of the desired tiles
+   * @return JsonMessage to be sent
+   */
   public static JSONObject placeTiles(String color, int row) {
     try {
       JSONObject message = createMessageOfType(TILE_SELECTION);
-      message.put(ROWS_FIELD, row);
+      message.put(ROWS_FIELD, String.valueOf(row));
       message.put(COLOR_FIELD, color);
 
+      return message;
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to create a json object.", e);
+    }
+  }
+
+  /**
+   * Creates a message to be sent when it has been declared
+   * how many players want to play in hotseat mode.
+   *
+   * @param players of the desired tiles
+   * @return JsonMessage to be sent
+   */
+  public static JSONObject players(int players) {
+    try {
+      JSONObject message = createMessageOfType(PLAYERS);
+      message.put(AMOUNTS, String.valueOf(players));
       return message;
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to create a json object.", e);
@@ -333,7 +352,11 @@ public enum JsonMessage {
     }
   }
 
-
+  /**
+   * Gets the type of JsonMessage.
+   *
+   * @return Json Type
+   */
   public String getJsonName() {
     return jsonName;
   }

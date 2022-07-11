@@ -1,6 +1,7 @@
 package de.lmu.ifi.sosylab.client.model;
 
 import de.lmu.ifi.sosylab.shared.JsonMessage;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,12 +10,14 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Todo JavaDoc
- * */
+ * The network-connection of the client. Establishes a connection to the server and takes
+ * care of sending and receiving messages in JSON format.
+ */
 public class GameClientNetworkConnection {
 
   private static final String HOST = "localhost";
@@ -101,9 +104,12 @@ public class GameClientNetworkConnection {
   }
 
   //TODO: Get rid of sout's
+
   /**
-   * Todo JavaDoc
-   * */
+   * Decides methods to be executed based on type of message received.
+   *
+   * @param object JsonMessage received
+   */
   public void handleGameEvent(JSONObject object) {
     switch (JsonMessage.typeOf(object)) {
       case LOGIN_SUCCESS:
@@ -158,53 +164,101 @@ public class GameClientNetworkConnection {
       case TILES_NOT_ALLOWED:
         handleTilesNotAllowed(object);
         break;
+      case TIMER:
+        handleTimer(object);
+        break;
       default:
         handleInvalidJson(object);
     }
   }
 
+  /**
+   * Handles receiving that a user has left.
+   *
+   * @param object JsonMessage received
+   */
   private void handleUserLeft(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
     model.userLeft(nick);
   }
 
+  /**
+   * Handles receiving that a user has joined.
+   *
+   * @param object JsonMessage received
+   */
   private void handleUserJoined(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
     model.userJoined(nick);
   }
 
+  /**
+   * Handles receiving that a user has made a tiles selection.
+   *
+   * @param object JsonMessage received
+   */
   private void handleTileSelection(JSONObject object) {
     String color = JsonMessage.getTileColor(object);
     String plate = JsonMessage.getFactoryPlate(object);
     //model.otherPlayerSelectedTiles();
   }
 
+  /**
+   * Handles receiving that a user placed tiles.
+   *
+   * @param object JsonMessage received
+   */
   private void handleTilePlacement(JSONObject object) {
     String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
     String[] cols = JsonMessage.getColumns(object).trim().split("\\s+");
     //model.otherPlayerPlacedTiles();
   }
 
+  /**
+   * Handles receiving which fields are allowed to place tiles.
+   *
+   * @param object JsonMessage received
+   */
   private void handleAllowedFields(JSONObject object) {
     String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
     //model.  the client has just received which fields can be clicked to place the selected tiles
   }
 
+  /**
+   * Handles receiving which tiles are allowed to be selected.
+   *
+   * @param object JsonMessage received
+   */
   private void handleAllowedTiles(JSONObject object) {
     String[] plates = JsonMessage.getFactoryPlate(object).trim().split("\\s+");
     //model. the client has just received which plates have allowed tiles to be selected
   }
 
+  /**
+   * Handles receiving which player is next.
+   *
+   * @param object JsonMessage received
+   */
   private void handleNextTurn(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
     //model. the client has just received that is the turn of the player with nickname <nick>
 
   }
 
+  /**
+   * Handles receiving that a placement is not allowed.
+   *
+   * @param object JsonMessage received
+   */
   private void handleMoveNotAllowed(JSONObject object) {
     model.tilePlacementFailed();
   }
 
+  /**
+   * Handles receiving that a board must be updated.
+   *
+   * @param object JsonMessage received
+   */
   private void handleBoardUpdate(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
     String rowsToBeCleared = JsonMessage.getRows(object);
@@ -214,38 +268,81 @@ public class GameClientNetworkConnection {
     // meaning that some rows should be cleared and tiles may need to be placed in the pattern.
   }
 
+  /**
+   * Handles receiving that the plates should be filled in a given way.
+   *
+   * @param object JsonMessage received
+   */
   private void handleFillPlates(JSONObject object) {
     String[] colors = JsonMessage.getTileColor(object).split(",");
     String[] amounts = JsonMessage.getTiles(object).trim().split(",");
     model.fillTiles(colors, amounts);
   }
 
+  /**
+   * Handles receiving that the game has ended.
+   *
+   * @param object JsonMessage received
+   */
   private void handleGameEnded(JSONObject object) {
     //model.gameEnded();
   }
 
+  /**
+   * Handles receiving a game restart request.
+   *
+   * @param object JsonMessage received
+   */
   private void handleGameRestartRequest(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
     //model. the client has just received that the player <nick> wants to restart the game
   }
 
+  /**
+   * Handles receiving that the game has been restarted.
+   *
+   * @param object JsonMessage received
+   */
   private void handleGameRestart(JSONObject object) {
     //model. the client has just received that the game will be restarted
   }
 
-
+  /**
+   * Handles receiving the current scores.
+   *
+   * @param object JsonMessage received
+   */
   private void handlePoints(JSONObject object) {
     String[] nicks = JsonMessage.getNickname(object).trim().split("\\s+");
     String[] points = JsonMessage.getScores(object).trim().split("\\s+");
     //model. the client has just received the actual scores of each player
   }
 
-  public void handleInvalidJson(JSONObject object) {
+  /**
+   * Handles receiving that an invalid JSON has been sent.
+   *
+   * @param object JsonMessage received
+   */
+  private void handleInvalidJson(JSONObject object) {
     throw new AssertionError("Invalid JSON Message sent");
   }
 
-  public void handleTilesNotAllowed(JSONObject object) {
+  /**
+   * Handles receiving that a tiles selection failed.
+   *
+   * @param object JsonMessage received
+   */
+  private void handleTilesNotAllowed(JSONObject object) {
     model.tileSelectionFailed();
+  }
+
+  /**
+   * Handles receiving that a tiles selection failed.
+   *
+   * @param object JsonMessage received
+   */
+  private void handleTimer(JSONObject object) {
+    //model.
   }
 
 
@@ -284,6 +381,11 @@ public class GameClientNetworkConnection {
     send(login);
   }
 
+  /**
+   * Handles sending a JSON.
+   *
+   * @param message JsonMessage to be sent
+   */
   private synchronized void send(JSONObject message) {
     try {
       writer.write(message + System.lineSeparator());
@@ -294,9 +396,26 @@ public class GameClientNetworkConnection {
     }
   }
 
+  /**
+   * Handles sending a tile selection.
+   *
+   * @param source        plate
+   * @param color         color
+   * @param numberOfTiles number of tiles
+   */
   public void sendTileSelection(int source, String color, int numberOfTiles) {
     JSONObject tileSelection = JsonMessage.selectTile(color, source);
     send(tileSelection);
+  }
+
+  /**
+   * Handles sending the amount of players that will play.
+   *
+   * @param players amount
+   */
+  public void sendPlayers(int players) {
+    JSONObject amountOfPlayers = JsonMessage.players(players);
+    send(amountOfPlayers);
   }
 
   public void sendTilePlacement(int line, int color, int numberOfTiles) { //color should be string

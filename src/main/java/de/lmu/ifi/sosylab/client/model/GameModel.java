@@ -19,6 +19,7 @@ import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -93,7 +94,7 @@ public class GameModel {
    */
   public void logInHotSeat(String[] playersName) {
     //testing
-    for (int i = 0; i < playersName.length; i++){
+    for (int i = 0; i < playersName.length; i++) {
       System.out.println(playersName[i]);
     }
 
@@ -190,7 +191,7 @@ public class GameModel {
   public void otherPlayerSelectedTiles(String color, int numberOfSelectedTiles, String playerName,
                                        int source) {
     notifyListeners(
-      new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, playerName, source));
+        new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, playerName, source));
   }
 
 
@@ -210,6 +211,9 @@ public class GameModel {
   /**
    * Notifies the subscribed view that the tiles in the middle and on the factory plates were
    * updated by the server because the game has just started.
+   *
+   * @param colors  array, a single index has all colors for a given plate
+   * @param amounts array, a single index has all amounts for a given color
    */
   public void fillTiles(String[] colors, String[] amounts) { //array of tilecollection as parameters
     tilePlates = new TileCollection[colors.length];
