@@ -143,10 +143,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   public void createSetGameModeView() {
 
     JPanel setGameMode = new JPanel(new BorderLayout());
-    //JLabel background = new JLabel(new ImageIcon("/Users/sara/Desktop/rm277-katie-47.jpg"));
-    //setGameMode.add(background, BorderLayout.CENTER);
-    //setGameMode.setBackground(Color.GRAY);
-    //setGameMode.setPreferredSize(new Dimension(400, 100));
     setGameMode.add(new JLabel("Choose mode"), BorderLayout.CENTER);
     setGameMode.add(hotSeat, BorderLayout.EAST);
     setGameMode.add(multiPlayer, BorderLayout.WEST);
@@ -449,7 +445,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
               System.out.println("Plate: " + plates + " Tile: " + tile);
               int plateNumber = Integer.parseInt(plates);
               int amount = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile));
-              controller.selectAllTiles(plateNumber,tile,amount,playerNames.get(currentBoard));
+              boolean confirmation = confirmTileSelection(plateNumber, tile, playerNames.get(currentBoard) );
+              if(confirmation){controller.selectAllTiles(plateNumber,tile,amount,playerNames.get(currentBoard));}
             }
           }
         });
@@ -458,6 +455,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     } catch (NullPointerException e) {
       System.out.println("collection ist noch leer! (createPlates)");
     }
+
+  }
+
+  private boolean confirmTileSelection(int plateNumber, String tile, String playerName){
+
+    int selection = JOptionPane.showConfirmDialog(null,
+            playerName + ": Are you sure you want to select the " + tile + " tile from plate " + plateNumber,
+            "Tile Selection", JOptionPane.YES_NO_OPTION);
+
+    if(selection == 0){
+      return true;
+    }
+    return false;
+
 
   }
 
@@ -563,45 +574,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     return board;
   }
 
-  /**
-   * When MiddleTilesUpdateEvent is fired, gets Information from TileCollection[]
-   * (TileCollection[0] is the middle, at the beginning it only Contains the Starting Marker,
-   * TileCollection[1] onwards are the Plates)
-   * and gives information to Method ... that fills the Plates.
-   *
-   * @param tileCollection - The Array of TileCollections that where provided by the Server.
-   *                       (Each collection is a plate) and need to be placed in the Middle.
-   */
-  private void setTilesInMiddle(TileCollection[] tileCollection) {
-    for (int i = 0; i < tileCollection.length; i++) {
-
-      int plateNumber = i;
-
-      // Get colors that are contained in Plate number i.
-      ArrayList<Tile> tileColors = tileCollection[i].getContainedColors();
-
-      for (int j = 0; j < tileColors.size(); j++) {
-        Tile tileWithSpecificColour = tileColors.get(j);
-        String colour = tileWithSpecificColour.toString();
-        //test
-        //System.out.println("Numer of colors" + tileColors.size());
-        //System.out.println("Plate Number: " + i + " contains these colors: ");
-        //System.out.println(colour);
-        int amountOfTiles = tileCollection[i].getAmountTilesOfColor(tileWithSpecificColour);
-
-        fillPlateWithTiles(plateNumber, colour, amountOfTiles);
-
-      }
-    }
-
-  }
-
-  //TODO: Petra mit dieser Methode kannst du die Plättchen in der Mitte füllen und updaten.
-  // Diese Methode wird ein mal pro Plättchen aufgerufen.
-  public void fillPlateWithTiles(int plateNumber, String colour, int amountOfTiles) {
-
-  }
-
   @Override
   public void dispose() {
     super.dispose();
@@ -635,12 +607,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
               String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
       showCard(LOGIN_M_CARD);
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
-      //TileCollection[] tileCollection = controller.getTilePlates();
-      //setTilesInMiddle(tileCollection);
       collection = controller.getTilePlates();
       gameField.removeAll();
       createGameView();
-
 
     } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
 
@@ -649,6 +618,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     } else if (newValue instanceof TilesAddedEvent) {
 
     } else if (newValue instanceof TilesSelectedEvent) {
+
 
     } else if (newValue instanceof UserJoinedEvent) {
 
