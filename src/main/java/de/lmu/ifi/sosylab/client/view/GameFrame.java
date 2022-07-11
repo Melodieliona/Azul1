@@ -126,14 +126,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     //ToDO remove when Names work
     playerNames.add("TestPlayer");
     playerNames.add("TestPlayer2");
-    playerNames.add("TestPlayer3");
-    playerNames.add("TestPlayer4");
+    //playerNames.add("TestPlayer3");
+    //playerNames.add("TestPlayer4");
 
 
     collection = new TileCollection[10];
     gameField = new JPanel(new BorderLayout());
     gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    gameField.setPreferredSize(createGameField().getPreferredSize());
+   // gameField.setPreferredSize(createGameField().getPreferredSize());
   }
 
   /**
@@ -165,6 +165,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     game.setPreferredSize(createGameField().getPreferredSize());
     background.setLayout(new FlowLayout());
+
+    if(playerNames.size()==2){
+    gameField = new JPanel(new BorderLayout());
+    gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));} //ToDO herausfinden warum es nur bei 2 Spielern benötigt wird
+
     background.add(gameField);
 
     game.add(background);
