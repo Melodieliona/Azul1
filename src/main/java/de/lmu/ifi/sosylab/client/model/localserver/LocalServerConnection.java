@@ -39,7 +39,7 @@ public class LocalServerConnection {
 
   List<LocalUser> users;
 
-  private int amountOfExpectedUsers = 2;
+  private int amountOfExpectedUsers = 0;
 
   /**
    * Initializes the User list, which stores all clients that are currently connected.
@@ -109,7 +109,8 @@ public class LocalServerConnection {
             switch (JsonMessage.typeOf(jsonObject)) {
               case PLAYERS:
                 if (amountOfExpectedUsers == 0) {
-                  amountOfExpectedUsers = (int) jsonObject.get("players");
+                  amountOfExpectedUsers = Integer.parseInt(jsonObject.getString("amounts"));
+                  System.out.println("Amount of players: " + amountOfExpectedUsers);
                 }
                 break;
               case LOGIN:
@@ -426,8 +427,6 @@ public class LocalServerConnection {
       sendFillPlates.put("tiles", tileAmounts.toString());
 
       System.out.println("\n");
-      System.out.println("There will always be data just for an amount of 2 players, because"
-          + " the server still needs to be told how many players will participate -> Gabriel");
       System.out.println("LocalServer: Sending the values below in fillPlates JSON");
       System.out.println("Colors: " + tileColors);
       System.out.println("Amounts: " + tileAmounts);

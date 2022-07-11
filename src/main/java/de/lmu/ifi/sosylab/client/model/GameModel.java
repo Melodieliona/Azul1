@@ -101,6 +101,7 @@ public class GameModel {
     numberOfPlayers = playersName.length;
     gameMode = "Hot Seat";
     players = new Player[numberOfPlayers];
+    connection.sendPlayers(numberOfPlayers);
     for (int i = 0; i < numberOfPlayers; i++) {
       players[i] = new Player(playersName[i]);
       connection.sendLogin(playersName[i]);
