@@ -174,7 +174,7 @@ public enum JsonMessage {
    */
   public static JSONObject placeTiles(String color, int row) {
     try {
-      JSONObject message = createMessageOfType(TILE_SELECTION);
+      JSONObject message = createMessageOfType(TILE_PLACEMENT);
       message.put(ROWS_FIELD, String.valueOf(row));
       message.put(COLOR_FIELD, color);
 

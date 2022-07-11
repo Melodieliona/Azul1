@@ -162,26 +162,24 @@ public class ServerNetworkConnection {
                 break;
               case TILE_SELECTION:
                 // 0 = middle, 1-9 = plates
-                int plateOrMiddle = (int) jsonObject.get("source");
-                Tile tileColor = Tile.getTile((String) jsonObject.get("color"));
-                int tileAmount = (int) jsonObject.get("amount");
+                int plateOrMiddle = (int) jsonObject.get("plate");
+                Tile selectionColor = Tile.getTile((String) jsonObject.get("color"));
 
                 for (Game game : games) {
                   if (game.getGameNumber() == clientGameNumber) {
-                    game.handleTileSelection(clientNick, plateOrMiddle, tileColor, tileAmount);
+                    game.handleTileSelection(clientNick, plateOrMiddle, selectionColor);
                     break;
                   }
                 }
                 break;
               case TILE_PLACEMENT:
                 // '0' is row 1, '1' is row 2, '2' is row 3, etc...
-                int targetRow = (int) jsonObject.get("target");
-                tileColor = Tile.getTile((String) jsonObject.get("color"));
-                tileAmount = (int) jsonObject.get("amount");
+                int targetRow = (int) jsonObject.get("row");
+                Tile placementColor = Tile.getTile((String) jsonObject.get("color"));
 
                 for (Game game : games) {
                   if (game.getGameNumber() == clientGameNumber) {
-                    game.handleTilePlacement(clientNick, targetRow, tileColor, tileAmount);
+                    game.handleTilePlacement(clientNick, targetRow, placementColor);
                     break;
                   }
                 }

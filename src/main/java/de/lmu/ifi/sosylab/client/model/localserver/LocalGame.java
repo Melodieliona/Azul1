@@ -45,8 +45,8 @@ public class LocalGame {
   /**
    * Initializes all necessary data for a game with a given amount of users.
    * */
-  public LocalGame(List<LocalUser> userList, LocalServerConnection connection) {
-    this.userList = userList;
+  public LocalGame(List<LocalUser> users, LocalServerConnection connection) {
+    this.userList = List.copyOf(users);
     this.connection = connection;
 
 
@@ -115,13 +115,10 @@ public class LocalGame {
    * Checks a requested tile selection for validity and if valid changes model accordingly.
    * Remembers who picked the start marker.
    * */
-  protected void handleTileSelection(String playerName, int source, Tile color, int amount) {
-    if (!currentSelection.isEmpty()) {
-      sendInvalidSelection(playerName);
-      return;
-    }
+  protected void handleTileSelection(String playerName, int source, Tile color) {
 
-    if (Collections.frequency(tilePlates[source], color) == amount) {
+    int amount = tilePlates[source].getAmountTilesOfColor(color);
+    if (amount > 0 && currentSelection.isEmpty()) {
 
       // Add starting marker to selection if it's the first pick out of the middle.
       if (source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
@@ -142,8 +139,8 @@ public class LocalGame {
   /**
    * Checks a requested tile placement for validity and if valid changes model accordingly.
    * */
-  protected void handleTilePlacement(String playerName, int targetRow, Tile color, int amount) {
-    if (currentSelection.isEmpty() || !(Collections.frequency(currentSelection, color) == amount)) {
+  protected void handleTilePlacement(String playerName, int targetRow, Tile color) {
+    if (currentSelection.isEmpty()) {
       sendInvalidPlacement(playerName);
       return;
     }
@@ -152,6 +149,7 @@ public class LocalGame {
 
     // Check if at least one tile of the given color can be added to the row
     if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
+      //Attempt to place tiles
       TileCollection placedTiles =
           gameBoard.getLayingRow(targetRow).layTilesOnRow(currentSelection);
 
@@ -160,7 +158,7 @@ public class LocalGame {
       TileCollection leftOverTiles = currentSelection;
       leftOverTiles.removeAll(placedTiles);
 
-      if (placedTiles.size() < amount) {
+      if (placedTiles.size() < currentSelection.size()) {
         TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(leftOverTiles);
         leftOverTiles.removeAll(didNotFitOnFloorLine);
         trash.addAll(didNotFitOnFloorLine);

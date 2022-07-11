@@ -117,13 +117,10 @@ public class Game {
    * Checks a requested tile selection for validity and if valid changes model accordingly.
    * Remembers who picked the start marker.
    * */
-  protected void handleTileSelection(String playerName, int source, Tile color, int amount) {
-    if (!currentSelection.isEmpty()) {
-      sendInvalidSelection(playerName);
-      return;
-    }
+  protected void handleTileSelection(String playerName, int source, Tile color) {
 
-    if (Collections.frequency(tilePlates[source], color) == amount) {
+    int amount = tilePlates[source].getAmountTilesOfColor(color);
+    if (amount > 0 && !currentSelection.isEmpty()) {
 
       // Add starting marker to selection if it's the first pick out of the middle.
       if (source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
@@ -136,7 +133,7 @@ public class Game {
 
       sendSuccessfulSelection(source, color, amount);
       connection.sendClickableRows(
-          getUser(playerName), getClickableRows(getUser(playerName), color));
+        getUser(playerName), getClickableRows(getUser(playerName), color));
     } else {
       sendInvalidSelection(playerName);
     }
@@ -145,8 +142,8 @@ public class Game {
   /**
    * Checks a requested tile placement for validity and if valid changes model accordingly.
    * */
-  protected void handleTilePlacement(String playerName, int targetRow, Tile color, int amount) {
-    if (currentSelection.isEmpty() || !(Collections.frequency(currentSelection, color) == amount)) {
+  protected void handleTilePlacement(String playerName, int targetRow, Tile color) {
+    if (currentSelection.isEmpty()) {
       sendInvalidPlacement(playerName);
       return;
     }
@@ -163,7 +160,7 @@ public class Game {
       TileCollection leftOverTiles = currentSelection;
       leftOverTiles.removeAll(placedTiles);
 
-      if (placedTiles.size() < amount) {
+      if (placedTiles.size() < currentSelection.size()) {
         TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(leftOverTiles);
         leftOverTiles.removeAll(didNotFitOnFloorLine);
         trash.addAll(didNotFitOnFloorLine);
