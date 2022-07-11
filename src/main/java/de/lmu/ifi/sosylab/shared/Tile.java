@@ -2,13 +2,19 @@ package de.lmu.ifi.sosylab.shared;
 
 /**
  * Represents a single tile.
- * */
+ */
 public enum Tile {
-  BLUE, YELLOW, RED, BLACK, WHITE, STARTING_MARKER;
+  BLUE("blue"), YELLOW("yellow"), RED("yellow"), BLACK("black"), WHITE("white"), STARTING_MARKER("");
+
+  String color;
+
+  Tile(String color) {
+    this.color = color;
+  }
 
   /**
    * Returns the corresponding tile for a given color.
-   * */
+   */
   public static Tile getTile(String color) {
     return switch (color.toUpperCase()) {
       case "BLUE" -> BLUE;
@@ -19,5 +25,12 @@ public enum Tile {
       case "STARTING_MARKER" -> STARTING_MARKER;
       default -> throw new IllegalArgumentException("Invalid color.");
     };
+  }
+
+  /**
+   * Returns the color of a given tile.
+   */
+  public String getColor() {
+    return color;
   }
 }
