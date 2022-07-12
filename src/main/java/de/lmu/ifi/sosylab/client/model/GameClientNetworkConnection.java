@@ -210,8 +210,7 @@ public class GameClientNetworkConnection {
    */
   private void handleTilePlacement(JSONObject object) {
     String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
-    String[] cols = JsonMessage.getColumns(object).trim().split("\\s+");
-    //model.otherPlayerPlacedTiles();
+    model.otherPlayerPlacedTiles(rows);
   }
 
   /**
@@ -231,7 +230,7 @@ public class GameClientNetworkConnection {
    */
   private void handleAllowedTiles(JSONObject object) {
     String[] plates = JsonMessage.getFactoryPlate(object).trim().split("\\s+");
-    //model. the client has just received which plates have allowed tiles to be selected
+    model.setValidPlates(plates);
   }
 
   /**

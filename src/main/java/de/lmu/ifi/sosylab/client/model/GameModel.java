@@ -46,7 +46,11 @@ public class GameModel {
 
   private String currentPlayer;
 
-  private int validRows[];
+  private int[] validRows;
+
+  private int[] validPlates;
+
+  private TileCollection selectedTiles;
 
   public GameModel() {
     support = new PropertyChangeSupport(this);
@@ -205,6 +209,7 @@ public class GameModel {
    */
   public void otherPlayerSelectedTiles(String color, int source) {
     int numberOfSelectedTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
+    selectedTiles.addTiles(Tile.getTile(color), numberOfSelectedTiles);
     notifyListeners(
         new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
   }
@@ -213,14 +218,18 @@ public class GameModel {
   /**
    * Notifies the subscribed view that another player placed specific tiles.
    *
-   * @param color         type of tile
-   * @param line          which line the tiles were placed
-   * @param numberOfTiles number of tiles
-   * @param minusPoints   number of minus-points
+   * @param lines which lines the tiles were placed
    */
-  public void otherPlayerPlacedTiles(String name, String color, int line, int numberOfTiles,
-                                     int minusPoints) {
-    notifyListeners(new OtherPlayerPlacedTilesEvent(name, color, numberOfTiles, line, minusPoints));
+  public void otherPlayerPlacedTiles(String[] lines) {
+    String actualColor = selectedTiles.getContainedColors().get(0).getColor();
+    int[] intLines = new int[lines.length];
+    for (int i = 0; i < intLines.length; i++) {
+      intLines[i] = Integer.parseInt(lines[i]);
+    }
+    for (int line :
+        intLines) {
+      notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, 1, line, 0)); // I think the amount of points are always sent with the minus points calculated so I just put 0 in the parameter for minuspoints
+    }
   }
 
   /**
@@ -345,6 +354,18 @@ public class GameModel {
     validRows = new int[numberOfValidRows];
     for (int i = 0; i < numberOfValidRows; i++) {
       validRows[i] = Integer.parseInt(rows[i]);
+    }
+  }
+
+  public int[] getValidPlates(){
+    int[] copyOfValidPlates = validPlates.clone();
+    return copyOfValidPlates;
+  }
+
+  public void setValidPlates(String[] plates) {
+    validPlates= new int[plates.length];
+    for (int i = 0; i < validPlates.length; i++) {
+      validPlates[i] = Integer.parseInt(plates[i]);
     }
   }
 
