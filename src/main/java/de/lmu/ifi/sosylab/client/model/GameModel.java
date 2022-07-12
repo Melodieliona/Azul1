@@ -20,6 +20,7 @@ import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -42,6 +43,10 @@ public class GameModel {
   private TileCollection[] tilePlates;
 
   private boolean isLoggedin = false;
+
+  private String currentPlayer;
+
+  private int validRows[];
 
   public GameModel() {
     support = new PropertyChangeSupport(this);
@@ -113,7 +118,8 @@ public class GameModel {
    *
    * @param nickname Name of the player.
    */
-  private void nextPlayer(String nickname) {
+  public void nextPlayer(String nickname) {
+    currentPlayer = nickname;
     notifyListeners(new NextPlayerEvent(nickname));
   }
 
@@ -195,13 +201,12 @@ public class GameModel {
   /**
    * Notifies the subscribed view that another player placed specific tiles.
    *
-   * @param color                 type of tile
-   * @param numberOfSelectedTiles number of tiles
+   * @param color type of tile
    */
-  public void otherPlayerSelectedTiles(String color, int numberOfSelectedTiles, String playerName,
-                                       int source) {
+  public void otherPlayerSelectedTiles(String color, int source) {
+    int numberOfSelectedTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     notifyListeners(
-      new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, playerName, source));
+        new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
   }
 
 
@@ -330,4 +335,17 @@ public class GameModel {
     TileCollection[] copyofTilePlates = tilePlates.clone();
     return copyofTilePlates;
   }
+
+  public int[] getValidRows() {
+    int[] copyOfValidRows = validRows.clone();
+    return copyOfValidRows;
+  }
+
+  public void setValidRows(int numberOfValidRows, String[] rows) {
+    validRows = new int[numberOfValidRows];
+    for (int i = 0; i < numberOfValidRows; i++) {
+      validRows[i] = Integer.parseInt(rows[i]);
+    }
+  }
+
 }

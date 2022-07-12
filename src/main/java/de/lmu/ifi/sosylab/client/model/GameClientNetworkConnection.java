@@ -199,8 +199,8 @@ public class GameClientNetworkConnection {
    */
   private void handleTileSelection(JSONObject object) {
     String color = JsonMessage.getTileColor(object);
-    String plate = JsonMessage.getFactoryPlate(object);
-    //model.otherPlayerSelectedTiles();
+    int plate = Integer.parseInt(JsonMessage.getFactoryPlate(object));
+    model.otherPlayerSelectedTiles(color, plate);
   }
 
   /**
@@ -221,7 +221,7 @@ public class GameClientNetworkConnection {
    */
   private void handleAllowedFields(JSONObject object) {
     String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
-    //model.  the client has just received which fields can be clicked to place the selected tiles
+    model.setValidRows(rows.length, rows);
   }
 
   /**
@@ -241,7 +241,7 @@ public class GameClientNetworkConnection {
    */
   private void handleNextTurn(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
-    //model. the client has just received that is the turn of the player with nickname <nick>
+    model.nextPlayer(nick);
 
   }
 
