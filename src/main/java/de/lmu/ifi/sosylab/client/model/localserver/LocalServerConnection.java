@@ -289,7 +289,7 @@ public class LocalServerConnection {
       sendMoveJson.put("type", "tile selection");
       sendMoveJson.put("nick", currentPlayer);
       // sourceTilePlate = 0 means the middle
-      sendMoveJson.put("plate", sourceTilePlate);
+      sendMoveJson.put("plate", String.valueOf(sourceTilePlate));
       sendMoveJson.put("color", color.name());
       sendMoveJson.put("amount", amount);
 
