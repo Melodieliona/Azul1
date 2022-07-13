@@ -162,7 +162,7 @@ public class ServerNetworkConnection {
                 break;
               case TILE_SELECTION:
                 // 0 = middle, 1-9 = plates
-                int plateOrMiddle = (int) jsonObject.get("plate");
+                int plateOrMiddle = jsonObject.getInt("plate");
                 Tile selectionColor = Tile.getTile((String) jsonObject.get("color"));
 
                 for (Game game : games) {
@@ -174,7 +174,7 @@ public class ServerNetworkConnection {
                 break;
               case TILE_PLACEMENT:
                 // '0' is row 1, '1' is row 2, '2' is row 3, etc...
-                int targetRow = (int) jsonObject.get("row");
+                int targetRow = jsonObject.getInt("row");
                 Tile placementColor = Tile.getTile((String) jsonObject.get("color"));
 
                 for (Game game : games) {
@@ -313,7 +313,7 @@ public class ServerNetworkConnection {
         sendMoveJson.put("type", "tile selection");
         sendMoveJson.put("nick", currentPlayer);
         // sourceTilePlate = 0 means the middle
-        sendMoveJson.put("plate", sourceTilePlate);
+        sendMoveJson.put("plate", String.valueOf(sourceTilePlate));
         sendMoveJson.put("color", color.name());
         sendMoveJson.put("amount", amount);
 

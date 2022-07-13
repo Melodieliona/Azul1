@@ -14,7 +14,7 @@ public class User {
   /**
    * Represents a single Player.
    * */
-  public User(String name, OutputStreamWriter writer, int gameNumber) {
+  protected User(String name, OutputStreamWriter writer, int gameNumber) {
     this.name = name;
     this.gameNumber = gameNumber;
     this.writer = writer;

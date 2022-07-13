@@ -20,6 +20,7 @@ import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -42,6 +43,17 @@ public class GameModel {
   private TileCollection[] tilePlates;
 
   private boolean isLoggedin = false;
+
+  private String currentPlayer;
+
+  private int[] validRows;
+
+  private int[] validPlates;
+
+  private TileCollection selectedTiles;
+
+  private String nickname;
+
 
   public GameModel() {
     support = new PropertyChangeSupport(this);
@@ -86,7 +98,7 @@ public class GameModel {
     players = new Player[1];
     players[0] = new Player(name);
     connection.sendLogin(name);
-
+    setNickname(name);
   }
 
   /**
@@ -113,7 +125,8 @@ public class GameModel {
    *
    * @param nickname Name of the player.
    */
-  private void nextPlayer(String nickname) {
+  public void nextPlayer(String nickname) {
+    currentPlayer = nickname;
     notifyListeners(new NextPlayerEvent(nickname));
   }
 
@@ -122,11 +135,10 @@ public class GameModel {
    * Sends a request to the server to select tiles.
    *
    * @param color         of tile
-   * @param numberOfTiles that were selected
    * @param source        source of selected tiles (factory plates)
-   * @param name          name of player
    */
-  public void selectTilesRequest(int source, String color, int numberOfTiles, String name) {
+  public void selectTilesRequest(int source, String color) {
+    int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     connection.sendTileSelection(source, color, numberOfTiles);
   }
 
@@ -134,37 +146,39 @@ public class GameModel {
    * Sends a request to the server to place tiles.
    *
    * @param color         of tile
-   * @param numberOfTiles that were selected
    * @param line          desired row/line to place tiles
    */
-  public void placeTilesRequest(int line, int color, int numberOfTiles) {
-    connection.sendTilePlacement(line, color, numberOfTiles);
+  public void placeTilesRequest(int line, String color) {
+    connection.sendTilePlacement(line, color);
   }
 
-  public void selectTiles(int source, String color, int numberOfTiles) {
-    notifyListeners(new TilesSelectedEvent(source, color, numberOfTiles));
+  public void selectTiles(int source, String color) {
+    selectedTiles.removeAllTiles();
+    int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
+    selectedTiles.addTiles(Tile.getTile(color), numberOfTiles);
+    tilePlates[source].removeTilesOfColor(Tile.getTile(color));
+    notifyListeners(new TilesSelectedEvent(source, color, selectedTiles.size()));
   }
 
 
   /**
    * Places the selected tiles into the selected pattern line.
    *
-   * @param color                 of tile
-   * @param numberOfSelectedTiles that were selected
+   * @param numOfTiles that were selected
    * @param line                  selected to place tiles
    */
-  public void placeTiles(String color, int numberOfSelectedTiles, int line, String playersName) {
+  public void placeTiles(int line, int numOfTiles) {
     int minuspoints = 0;
     if (gameMode.equals("Multiplayer")) {
-      minuspoints = players[0].placeTiles(line, color, numberOfSelectedTiles);
+      minuspoints = players[0].placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
     } else {
       for (Player player : players) {
-        if (player.getPlayerName().equals(playersName)) {
-          minuspoints = player.placeTiles(line, color, numberOfSelectedTiles);
+        if (player.getPlayerName().equals(nickname)) {
+          minuspoints = player.placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
         }
       }
     }
-    notifyListeners(new TilesAddedEvent(color, line, numberOfSelectedTiles, minuspoints));
+    notifyListeners(new TilesAddedEvent(selectedTiles.getContainedColors().get(0).getColor(), line, numOfTiles, minuspoints));
   }
 
   /**
@@ -193,29 +207,33 @@ public class GameModel {
   }
 
   /**
-   * Notifies the subscribed view that another player placed specific tiles.
+   * Notifies the subscribed view that another player selected specific tiles.
    *
-   * @param color                 type of tile
-   * @param numberOfSelectedTiles number of tiles
+   * @param color type of tile
    */
-  public void otherPlayerSelectedTiles(String color, int numberOfSelectedTiles, String playerName,
-                                       int source) {
+  public void otherPlayerSelectedTiles(String color, int source) {
+    int numberOfSelectedTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
+    selectedTiles.addTiles(Tile.getTile(color), numberOfSelectedTiles);
     notifyListeners(
-      new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, playerName, source));
+        new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
   }
 
 
   /**
    * Notifies the subscribed view that another player placed specific tiles.
    *
-   * @param color         type of tile
-   * @param line          which line the tiles were placed
-   * @param numberOfTiles number of tiles
-   * @param minusPoints   number of minus-points
+   * @param lines which lines the tiles were placed
    */
-  public void otherPlayerPlacedTiles(String name, String color, int line, int numberOfTiles,
-                                     int minusPoints) {
-    notifyListeners(new OtherPlayerPlacedTilesEvent(name, color, numberOfTiles, line, minusPoints));
+  public void otherPlayerPlacedTiles(String[] lines) {
+    String actualColor = selectedTiles.getContainedColors().get(0).getColor();
+    int[] intLines = new int[lines.length];
+    for (int i = 0; i < intLines.length; i++) {
+      intLines[i] = Integer.parseInt(lines[i]);
+    }
+    for (int line :
+        intLines) {
+      notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, 1, line, 0)); // I think the amount of points are always sent with the minus points calculated so I just put 0 in the parameter for minuspoints
+    }
   }
 
   /**
@@ -330,4 +348,41 @@ public class GameModel {
     TileCollection[] copyofTilePlates = tilePlates.clone();
     return copyofTilePlates;
   }
+
+  public int[] getValidRows() {
+    int[] copyOfValidRows = validRows.clone();
+    return copyOfValidRows;
+  }
+
+  public void setValidRows(int numberOfValidRows, String[] rows) {
+    validRows = new int[numberOfValidRows];
+    for (int i = 0; i < numberOfValidRows; i++) {
+      validRows[i] = Integer.parseInt(rows[i]);
+    }
+  }
+
+  public int[] getValidPlates(){
+    int[] copyOfValidPlates = validPlates.clone();
+    return copyOfValidPlates;
+  }
+
+  public void setValidPlates(String[] plates) {
+    validPlates= new int[plates.length];
+    for (int i = 0; i < validPlates.length; i++) {
+      validPlates[i] = Integer.parseInt(plates[i]);
+    }
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  public String getCurrentPlayer() {
+    return  currentPlayer;
+  }
+
 }

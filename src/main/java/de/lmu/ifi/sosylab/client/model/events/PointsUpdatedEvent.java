@@ -1,15 +1,17 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
+import java.util.Arrays;
+
 /**
  * TODO Add JavaDoc
  * */
 public class PointsUpdatedEvent extends GameEvents {
-  private String[] playerName;
+  private String[] playerNames;
   private int[] points;
 
-  public PointsUpdatedEvent(String[] playerName, int[] points) {
-    this.playerName = playerName;
-    this.points = points;
+  public PointsUpdatedEvent(String[] playerNames, int[] points) {
+    this.playerNames = Arrays.copyOf(playerNames, playerNames.length);
+    this.points = Arrays.copyOf(points, points.length);
   }
 
   @Override
@@ -18,10 +20,10 @@ public class PointsUpdatedEvent extends GameEvents {
   }
 
   public int[] getPoints() {
-    return points;
+    return Arrays.copyOf(points, points.length);
   }
 
-  public String[] getPlayerName() {
-    return playerName;
+  public String[] getPlayerNames() {
+    return Arrays.copyOf(playerNames, playerNames.length);
   }
 }
