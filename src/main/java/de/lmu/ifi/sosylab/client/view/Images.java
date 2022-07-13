@@ -17,6 +17,8 @@ public class Images {
   private BufferedImage background;
   private BufferedImage icon;
   private BufferedImage tileStarter;
+  private BufferedImage backgroundHomeScreen;
+  private BufferedImage backgroundSetGameMode;
 
   /**
    * Imports images and resizes them if needed.
@@ -39,6 +41,8 @@ public class Images {
     plate = new ImportImage("images/Plate.png").getImg();
     icon = new ImportImage("images/Icon.png").getImg();
     background = new ImportImage("images/Background.png").getImg();
+    backgroundHomeScreen = new ImportImage("images/AzulHomeScreen.png").getImg();
+    backgroundSetGameMode = new ImportImage("images/BackgroundSetGameMode.png").getImg();
     resize();
   }
 
@@ -158,4 +162,10 @@ public class Images {
   public BufferedImage getTileStarter() {
     return tileStarter;
   }
+
+  public BufferedImage getBackgroundHomeScreen(){
+      return backgroundHomeScreen;
+  }
+
+  public BufferedImage getBackgroundSetGameMode(){return backgroundSetGameMode;}
 }

@@ -19,10 +19,7 @@ import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -31,6 +28,7 @@ import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTreeUI;
 
 /**
  * The main view of the chat user interface. It provides and connects all graphical elements
@@ -76,6 +74,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JPanel gameField;
   private int currentBoard;
 
+  private int frameWidth;
+  private int frameHeight;
+
   /**
    * Create a new graphical view that contains all necessary elements for playing the game.
    *
@@ -101,6 +102,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     createView();
 
     pack();
+    frameHeight = this.getContentPane().getHeight();
+    frameWidth = this.getContentPane().getWidth();
   }
 
   /**
@@ -143,9 +146,39 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   public void createSetGameModeView() {
 
     JPanel setGameMode = new JPanel(new BorderLayout());
-    setGameMode.add(new JLabel("Choose mode"), BorderLayout.CENTER);
-    setGameMode.add(hotSeat, BorderLayout.EAST);
-    setGameMode.add(multiPlayer, BorderLayout.WEST);
+      BufferedImage backgroundImg = images.getBackgroundSetGameMode();
+      JLabel background1 = new JLabel(new ImageIcon(backgroundImg));
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      System.out.println(" width = " + screenSize.getWidth() + " height = " + screenSize.getHeight());
+      setGameMode.add(background1);
+    //setGameMode.add(new JLabel("Choose mode"), BorderLayout.CENTER);
+    //setGameMode.add(hotSeat, BorderLayout.EAST);
+    //setGameMode.add(multiPlayer, BorderLayout.WEST);
+      setGameMode.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+         int xPositionMouse = e.getX();
+         int yPositionMouse= e.getY();
+         System.out.println(xPositionMouse + "," + yPositionMouse);
+         if(xPositionMouse<(frameWidth/2)){
+           System.out.println("Multiplayer - Linke Seite geclicked.");
+           showCard(LOGIN_M_CARD);
+           try {
+             controller.setGameMode("Multiplayer");
+           } catch (IOException ex) {
+             throw new RuntimeException(ex);
+           }
+         }else{
+           System.out.println("Hot Seat - Rechte Seite geclicked. ");
+           showCard(LOGIN_H_CARD);
+           try {
+             controller.setGameMode("Hot Seat");
+           } catch (IOException ex) {
+             throw new RuntimeException(ex);
+           }
+         }
+        }
+      });
     add(setGameMode, GAMEMODE_CARD);
 
   }
@@ -197,7 +230,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     login.add(new JLabel("How many Players would you like to play with?"));
     login.add(playerNumberSelection);
-
 
   }
 
