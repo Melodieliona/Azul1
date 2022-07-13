@@ -1,7 +1,6 @@
 package de.lmu.ifi.sosylab.client.model;
 
 import de.lmu.ifi.sosylab.shared.JsonMessage;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -136,7 +134,7 @@ public class GameClientNetworkConnection {
       case TILES_NOT_ALLOWED -> handleTilesNotAllowed(object);
       case TIMER -> handleTimer(object);
       case GAME_CANCEL_REQUEST -> handleGameCancelRequest(object);
-      case GAME_CANCEL-> handleGameCancel(object);
+      case GAME_CANCEL -> handleGameCancel(object);
       default -> handleInvalidJson(object);
     }
   }
@@ -170,13 +168,13 @@ public class GameClientNetworkConnection {
     System.out.println("tile selection received");
     String color = JsonMessage.getTileColor(object);
     int plate = Integer.parseInt(JsonMessage.getFactoryPlate(object));
-      if (model.getNickname().equals(model.getCurrentPlayer())) {
-        System.out.println("approved");
-              model.selectTiles(plate, color);
-        System.out.println("selected");
-      } else {
-          model.otherPlayerSelectedTiles(color, plate);
-      }
+    if (model.getNickname().equals(model.getCurrentPlayer())) {
+      System.out.println("approved");
+      model.selectTiles(plate, color);
+      System.out.println("selected");
+    } else {
+      model.otherPlayerSelectedTiles(color, plate);
+    }
 
   }
 
@@ -188,9 +186,9 @@ public class GameClientNetworkConnection {
   private void handleTilePlacement(JSONObject object) {
     String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
     if (model.getNickname().equals(model.getCurrentPlayer())) {
-        for (int i = 0; i < rows.length; i++) {
-            model.placeTiles(Integer.getInteger(rows[0]), 1);
-        }
+      for (int i = 0; i < rows.length; i++) {
+        model.placeTiles(Integer.getInteger(rows[0]), 1);
+      }
     } else {
       model.otherPlayerPlacedTiles(rows);
     }
@@ -317,10 +315,10 @@ public class GameClientNetworkConnection {
     String[] nicks = JsonMessage.getNickname(object).trim().split("\\s+");
     String[] points = JsonMessage.getScores(object).trim().split("\\s+");
     int[] intPoints = new int[points.length];
-      for (int i = 0; i < points.length; i++) {
-          intPoints[i] = Integer.parseInt(points[i]);
-      }
-    model.pointsUpdate(nicks,intPoints);
+    for (int i = 0; i < points.length; i++) {
+      intPoints[i] = Integer.parseInt(points[i]);
+    }
+    model.pointsUpdate(nicks, intPoints);
   }
 
   /**

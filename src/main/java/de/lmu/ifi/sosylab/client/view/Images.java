@@ -163,9 +163,11 @@ public class Images {
     return tileStarter;
   }
 
-  public BufferedImage getBackgroundHomeScreen(){
-      return backgroundHomeScreen;
+  public BufferedImage getBackgroundHomeScreen() {
+    return backgroundHomeScreen;
   }
 
-  public BufferedImage getBackgroundSetGameMode(){return backgroundSetGameMode;}
+  public BufferedImage getBackgroundSetGameMode() {
+    return backgroundSetGameMode;
+  }
 }

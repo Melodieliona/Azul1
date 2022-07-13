@@ -1,11 +1,15 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
-public class GameCancelRequestEvent extends GameEvents{
+/**
+ * TODO JavaDoc
+ * */
+public class GameCancelRequestEvent extends GameEvents {
   private String nickname;
 
-  public GameCancelRequestEvent(String nickname){
+  public GameCancelRequestEvent(String nickname) {
     this.nickname = nickname;
   }
+
   @Override
   public String getName() {
     return "GameCancelRequest";

@@ -208,7 +208,7 @@ public enum JsonMessage {
    *
    * @return JsonMessage to be sent
    */
-  public static JSONObject gameRestartRequest(){
+  public static JSONObject gameRestartRequest() {
     try {
       JSONObject message = createMessageOfType(GAME_RESTART_REQUEST);
       return message;
@@ -222,7 +222,7 @@ public enum JsonMessage {
    *
    * @return JsonMessage to be sent
    */
-  public static JSONObject gameCancelRequest(){
+  public static JSONObject gameCancelRequest() {
     try {
       JSONObject message = createMessageOfType(GAME_CANCEL_REQUEST);
       return message;

@@ -133,7 +133,7 @@ public class Game {
 
       sendSuccessfulSelection(source, color, amount);
       connection.sendClickableRows(
-        getUser(playerName), getClickableRows(getUser(playerName), color));
+          getUser(playerName), getClickableRows(getUser(playerName), color));
     } else {
       sendInvalidSelection(playerName);
     }

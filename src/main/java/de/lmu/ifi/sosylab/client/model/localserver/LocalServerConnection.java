@@ -386,7 +386,7 @@ public class LocalServerConnection {
    * - "score": The current score of the player as Integer
    * */
   public void sendBoardUpdate(GameBoard[] gameBoards) {
-    for(GameBoard gameBoard : gameBoards) {
+    for (GameBoard gameBoard : gameBoards) {
       try {
         JSONObject sendBoardUpdate = new JSONObject();
         sendBoardUpdate.put("type", "board update");
