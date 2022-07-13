@@ -36,7 +36,7 @@ public class GameModel {
 
   private int[] validPlates;
 
-  private TileCollection selectedTiles;
+  private TileCollection selectedTiles = new TileCollection();
 
   private String nickname;
 

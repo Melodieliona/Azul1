@@ -116,7 +116,7 @@ public class GameController {
   }
 
   public void placeTiles(int numberOfSelectedTiles, int line) {
-    //model.placeTiles(color, numberOfSelectedTiles, line);
+    model.placeTiles(numberOfSelectedTiles, line);
   }
 
 }
