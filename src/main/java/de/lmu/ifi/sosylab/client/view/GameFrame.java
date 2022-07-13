@@ -4,15 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
-import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
-import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.MiddleTilesUpdateEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerPlacedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerSelectedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesSelectedEvent;
-import de.lmu.ifi.sosylab.client.model.events.UserJoinedEvent;
-import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
+import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.Tile;
@@ -73,6 +65,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JPanel middle;
   private JPanel gameField;
   private int currentBoard;
+  private int amount;
+  private String tile_color;
 
   private int frameWidth;
   private int frameHeight;
@@ -128,15 +122,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     //Game
     playerNames = new ArrayList<>();
     //ToDO remove when Names work
-    playerNames.add("TestPlayer");
-    playerNames.add("TestPlayer2");
-    //playerNames.add("TestPlayer3");
-    //playerNames.add("TestPlayer4");
+    //playerNames.add("TestPlayer");
+   // playerNames.add("TestPlayer2");
+   // playerNames.add("TestPlayer3");
+   // playerNames.add("TestPlayer4");
 
 
     collection = new TileCollection[10];
     gameField = new JPanel(new BorderLayout());
-    gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    //gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
    // gameField.setPreferredSize(createGameField().getPreferredSize());
   }
 
@@ -196,9 +190,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     game.setPreferredSize(createGameField().getPreferredSize());
     background.setLayout(new FlowLayout());
 
-    if(playerNames.size()==2){
     gameField = new JPanel(new BorderLayout());
-    gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));} //ToDO herausfinden warum es nur bei 2 Spielern benötigt wird
+    gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f)); //ToDO herausfinden warum es nur bei 2 Spielern benötigt wird
 
     background.add(gameField);
 
@@ -477,13 +470,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             Point checkMouseTip = e.getPoint();
 
             String plates = plate.getComponentAt(checkMouseTip).getParent().getName();
-            String tile = plate.getComponentAt(checkMouseTip).getName();
-            if (plates != null && tile != null) {
-              System.out.println("Plate: " + plates + " Tile: " + tile);
+            tile_color = plate.getComponentAt(checkMouseTip).getName();
+            if (plates != null && tile_color != null) {
+              System.out.println("Plate: " + plates + " Tile: " + tile_color);
               int plateNumber = Integer.parseInt(plates);
-              int amount = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile));
-              boolean confirmation = confirmTileSelection(plateNumber, tile, playerNames.get(currentBoard) );
-              if(confirmation){controller.selectAllTiles(plateNumber,tile,amount,playerNames.get(currentBoard));}
+              amount = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile_color));
+              boolean confirmation = confirmTileSelection(plateNumber, tile_color, playerNames.get(currentBoard) );
+              if(confirmation){controller.selectAllTiles(currentBoard, tile_color);
+                System.out.println(tile_color);}
             }
           }
         });
@@ -535,11 +529,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
         Point checkMouseTip = e.getPoint();
-        String name = pile.getComponentAt(checkMouseTip).getName();
-        if (name != null) {
-          System.out.println("Tile " + name + " was clicked on Plate 0");
-          int amount = collection[0].getAmountTilesOfColor(Tile.getTile(name));
-          controller.selectAllTiles(0, name ,amount, playerNames.get(currentBoard));
+        tile_color = pile.getComponentAt(checkMouseTip).getName();
+        if (tile_color != null) {
+          System.out.println("Tile " + tile_color + " was clicked on Plate 0");
+          amount = collection[0].getAmountTilesOfColor(Tile.getTile(tile_color));
+          controller.selectAllTiles(currentBoard, tile_color);
           System.out.println(playerNames.get(currentBoard));
         }
 
@@ -588,6 +582,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
 
         if (mousePointX == 5 && mousePointY == 2) {
+          controller.placeTiles(amount, 0);
+          System.out.println(amount);
           System.out.println("Clicked First Row");
         }
         if (mousePointX > 3 && mousePointX < 6 && mousePointY == 3) {
@@ -661,6 +657,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof UserLeftEvent) {
 
+    }else if (newValue instanceof PointsUpdatedEvent) {
+      System.out.println(((PointsUpdatedEvent) newValue).getName());
     }
 
   }
