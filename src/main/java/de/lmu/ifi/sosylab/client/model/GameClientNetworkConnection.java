@@ -133,6 +133,8 @@ public class GameClientNetworkConnection {
       case GAME_RESTART -> handleGameRestart(object);
       case TILES_NOT_ALLOWED -> handleTilesNotAllowed(object);
       case TIMER -> handleTimer(object);
+      case GAME_CANCEL_REQUEST -> handleGameCancelRequest(object);
+      case GAME_CANCEL-> handleGameCancel(object);
       default -> handleInvalidJson(object);
     }
   }
@@ -283,6 +285,25 @@ public class GameClientNetworkConnection {
   }
 
   /**
+   * Handles receiving a game cancel request.
+   *
+   * @param object JsonMessage received
+   */
+  private void handleGameCancelRequest(JSONObject object) {
+    String nick = JsonMessage.getNickname(object);
+    //model. the client has just received that the player <nick> wants to restart the game
+  }
+
+  /**
+   * Handles receiving that the game has been canceled.
+   *
+   * @param object JsonMessage received
+   */
+  private void handleGameCancel(JSONObject object) {
+    //model. the client has just received that the game will be restarted
+  }
+
+  /**
    * Handles receiving the current scores.
    *
    * @param object JsonMessage received
@@ -321,7 +342,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleTimer(JSONObject object) {
-    //model.
+    model.timer();
   }
 
 
@@ -400,5 +421,15 @@ public class GameClientNetworkConnection {
   public void sendTilePlacement(int line, String color) { //color should be string
     JSONObject tilePlacement = JsonMessage.placeTiles(color, line);
     send(tilePlacement);
+  }
+
+  public void sendGameRestartRequest() {
+    JSONObject request = JsonMessage.gameRestartRequest();
+    send(request);
+  }
+
+  public void sendGameCancelRequest() {
+    JSONObject request = JsonMessage.gameCancelRequest();
+    send(request);
   }
 }

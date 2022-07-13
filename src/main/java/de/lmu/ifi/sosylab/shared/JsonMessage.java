@@ -19,7 +19,9 @@ public enum JsonMessage {
   FILL_PLATES("fill plates"), POINTS("points"),
   GAME_ENDED("game ended"), GAME_RESTART("game restart"),
   GAME_RESTART_REQUEST("game restart request"), TIMER("timer"),
-  PLAYERS("players"), TILES_NOT_ALLOWED("tiles not allowed");
+  PLAYERS("players"), TILES_NOT_ALLOWED("tiles not allowed"),
+
+  GAME_CANCEL_REQUEST("game cancel request"), GAME_CANCEL("game cancel");
 
 
   public static final String TYPE_FIELD = "type";
@@ -201,6 +203,34 @@ public enum JsonMessage {
     }
   }
 
+  /**
+   * Creates a message to be sent when a player wants to send a game restart request.
+   *
+   * @return JsonMessage to be sent
+   */
+  public static JSONObject gameRestartRequest(){
+    try {
+      JSONObject message = createMessageOfType(GAME_RESTART_REQUEST);
+      return message;
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to create a json object.", e);
+    }
+  }
+
+  /**
+   * Creates a message to be sent when a player wants to send a game cancel request.
+   *
+   * @return JsonMessage to be sent
+   */
+  public static JSONObject gameCancelRequest(){
+    try {
+      JSONObject message = createMessageOfType(GAME_CANCEL_REQUEST);
+      return message;
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to create a json object.", e);
+    }
+  }
+
 
   /**
    * Creates a message of a specified type.
@@ -338,19 +368,6 @@ public enum JsonMessage {
     }
   }
 
-  /**
-   * Gets the content from a JsonMessage.
-   *
-   * @param object JsonMessage
-   * @return content as a string
-   */
-  public static String getContent(JSONObject object) {
-    try {
-      return object.getString(CONTENT_FIELD);
-    } catch (JSONException e) {
-      throw new IllegalArgumentException("Failed to read a json object.", e);
-    }
-  }
 
   /**
    * Gets the type of JsonMessage.

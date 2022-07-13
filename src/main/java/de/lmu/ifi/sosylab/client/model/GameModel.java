@@ -2,21 +2,7 @@ package de.lmu.ifi.sosylab.client.model;
 
 import static java.util.Objects.requireNonNull;
 
-import de.lmu.ifi.sosylab.client.model.events.GameEndedEvent;
-import de.lmu.ifi.sosylab.client.model.events.GameEvents;
-import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
-import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.MiddleTilesUpdateEvent;
-import de.lmu.ifi.sosylab.client.model.events.NextPlayerEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerPlacedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerSelectedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.PointsUpdatedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilePlacementFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TileSelectionFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesSelectedEvent;
-import de.lmu.ifi.sosylab.client.model.events.UserJoinedEvent;
-import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
+import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
@@ -134,8 +120,8 @@ public class GameModel {
   /**
    * Sends a request to the server to select tiles.
    *
-   * @param color         of tile
-   * @param source        source of selected tiles (factory plates)
+   * @param color  of tile
+   * @param source source of selected tiles (factory plates)
    */
   public void selectTilesRequest(int source, String color) {
     int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
@@ -145,13 +131,19 @@ public class GameModel {
   /**
    * Sends a request to the server to place tiles.
    *
-   * @param color         of tile
-   * @param line          desired row/line to place tiles
+   * @param color of tile
+   * @param line  desired row/line to place tiles
    */
   public void placeTilesRequest(int line, String color) {
     connection.sendTilePlacement(line, color);
   }
 
+  /**
+   * Selects tiles.
+   *
+   * @param color  of tile
+   * @param source source of selected tiles (factory plates)
+   */
   public void selectTiles(int source, String color) {
     selectedTiles.removeAllTiles();
     int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
@@ -165,7 +157,7 @@ public class GameModel {
    * Places the selected tiles into the selected pattern line.
    *
    * @param numOfTiles that were selected
-   * @param line                  selected to place tiles
+   * @param line       selected to place tiles
    */
   public void placeTiles(int line, int numOfTiles) {
     int minuspoints = 0;
@@ -272,6 +264,14 @@ public class GameModel {
     notifyListeners(new PointsUpdatedEvent(names, points));
   }
 
+  public void requestGameRestart() {
+    connection.sendGameRestartRequest();
+  }
+
+  public void requestGameCancel() {
+    connection.sendGameCancelRequest();
+  }
+
   /**
    * Notify subscribed listeners that the state of the model has changed. To this end, a specific
    * {@link GameEvents} gets fired such that the attached observers (i.e.,
@@ -307,6 +307,27 @@ public class GameModel {
    */
   public void userLeft(String name) {
     notifyListeners(new UserLeftEvent(name));
+  }
+
+  /**
+   * Notifies the subscribed view that a timer for restart, cancellation or start of the game has been set by the server.
+   */
+  public void timer() {
+    notifyListeners(new TimerEvent());
+  }
+
+  /**
+   * Notifies the subscribed view that a player has request to restart.
+   */
+  public void receivedRestartRequest(String nickname) {
+    notifyListeners(new GameRestartRequestEvent(nickname));
+  }
+
+  /**
+   * Notifies the subscribed view that a player has request to cancel.
+   */
+  public void receivedCancelRequest(String nickname) {
+    notifyListeners(new GameCancelRequestEvent(nickname));
   }
 
 
@@ -361,13 +382,13 @@ public class GameModel {
     }
   }
 
-  public int[] getValidPlates(){
+  public int[] getValidPlates() {
     int[] copyOfValidPlates = validPlates.clone();
     return copyOfValidPlates;
   }
 
   public void setValidPlates(String[] plates) {
-    validPlates= new int[plates.length];
+    validPlates = new int[plates.length];
     for (int i = 0; i < validPlates.length; i++) {
       validPlates[i] = Integer.parseInt(plates[i]);
     }
@@ -382,7 +403,7 @@ public class GameModel {
   }
 
   public String getCurrentPlayer() {
-    return  currentPlayer;
+    return currentPlayer;
   }
 
 }

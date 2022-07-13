@@ -79,7 +79,7 @@ public class GameController {
     return null;
   }
 
-  public void selectAllTiles(int source, String color, int numberOfTiles, String name) {
+  public void selectAllTiles(int source, String color) {
     model.selectTilesRequest(source, color);
   }
 
@@ -115,7 +115,7 @@ public class GameController {
     return null;
   }
 
-  public void placeTiles(String color, int numberOfSelectedTiles, int line) {
+  public void placeTiles(int numberOfSelectedTiles, int line) {
     //model.placeTiles(color, numberOfSelectedTiles, line);
   }
 
