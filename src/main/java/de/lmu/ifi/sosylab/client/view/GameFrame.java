@@ -476,7 +476,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
               int plateNumber = Integer.parseInt(plates);
               amount = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile_color));
               boolean confirmation = confirmTileSelection(plateNumber, tile_color, playerNames.get(currentBoard) );
-              if(confirmation){controller.selectAllTiles(currentBoard, tile_color);
+              if(confirmation){controller.selectAllTiles(plateNumber, tile_color);
                 System.out.println(tile_color);}
             }
           }

@@ -113,6 +113,10 @@ public class GameModel {
    */
   public void nextPlayer(String nickname) {
     currentPlayer = nickname;
+    if(gameMode.equals("Hot Seat"))
+    {
+      setNickname(nickname);
+    }
     notifyListeners(new NextPlayerEvent(nickname));
   }
 
@@ -124,6 +128,7 @@ public class GameModel {
    * @param source source of selected tiles (factory plates)
    */
   public void selectTilesRequest(int source, String color) {
+    System.out.println("tile request model");
     int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     connection.sendTileSelection(source, color, numberOfTiles);
   }
@@ -145,6 +150,7 @@ public class GameModel {
    * @param source source of selected tiles (factory plates)
    */
   public void selectTiles(int source, String color) {
+    System.out.println("tiles selected model");
     selectedTiles.removeAllTiles();
     int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     selectedTiles.addTiles(Tile.getTile(color), numberOfTiles);

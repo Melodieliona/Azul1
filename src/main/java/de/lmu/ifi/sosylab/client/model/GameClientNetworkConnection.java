@@ -111,6 +111,8 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   public void handleGameEvent(JSONObject object) {
+    System.out.println("message received");
+    System.out.println(JsonMessage.typeOf(object));
     switch (JsonMessage.typeOf(object)) {
       case LOGIN_SUCCESS -> {
         System.out.println("logged in"); //for debugging
@@ -165,10 +167,13 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleTileSelection(JSONObject object) {
+    System.out.println("tile selection received");
     String color = JsonMessage.getTileColor(object);
     int plate = Integer.parseInt(JsonMessage.getFactoryPlate(object));
       if (model.getNickname().equals(model.getCurrentPlayer())) {
+        System.out.println("approved");
               model.selectTiles(plate, color);
+        System.out.println("selected");
       } else {
           model.otherPlayerSelectedTiles(color, plate);
       }
@@ -406,6 +411,9 @@ public class GameClientNetworkConnection {
   public void sendTileSelection(int source, String color, int numberOfTiles) {
     JSONObject tileSelection = JsonMessage.selectTile(color, source);
     send(tileSelection);
+    System.out.println(JsonMessage.getTileColor(tileSelection));
+    System.out.println(JsonMessage.getFactoryPlate(tileSelection));
+    System.out.println("tile selection sent");
   }
 
   /**

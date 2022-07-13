@@ -80,6 +80,7 @@ public class GameController {
   }
 
   public void selectAllTiles(int source, String color) {
+    System.out.println("tile request controller");
     model.selectTilesRequest(source, color);
   }
 
