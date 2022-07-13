@@ -240,7 +240,7 @@ public class Game {
       // Calculate and gather final scores
       int[] endScores = new int[userList.size()];
       for (User user : userList) {
-        endScores[userList.indexOf(user)] = getPlayersGameBoard(user.getName()).getFinalScore();
+        endScores[userList.indexOf(user)] = getPlayersGameBoard(user.getName()).getCurrentScore();
       }
 
       // Calculate winner(s)

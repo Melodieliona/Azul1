@@ -16,6 +16,8 @@ public class GameBoard {
 
   private int minusPoints;
 
+  private int currentScore;
+
   private String playerName;
 
 
@@ -26,6 +28,7 @@ public class GameBoard {
     this.playerName = playerName;
     plusPoints = 0;
     minusPoints = 0;
+    currentScore = 0;
 
     tileWall = new Tile[5][5];
 
@@ -109,6 +112,7 @@ public class GameBoard {
       // Add one point for the added wall tile without any points for rows / columns
       plusPoints++;
     }
+    currentScore = plusPoints - minusPoints;
   }
 
   /**
@@ -126,6 +130,7 @@ public class GameBoard {
       case 7 -> minusPoints = 14;
       default -> System.out.println("Error: There cannot be more than 7 tiles on the floor line!");
     }
+    currentScore = plusPoints - minusPoints;
   }
 
   /**
@@ -152,6 +157,13 @@ public class GameBoard {
    * */
   public LayingRow getLayingRow(int row) {
     return layingRows[row];
+  }
+
+  /**
+   * Returns all laying rows.
+   * */
+  public LayingRow[] getLayingRows() {
+    return layingRows;
   }
 
   /**
@@ -219,13 +231,15 @@ public class GameBoard {
 
     // Add calculated points
     plusPoints += (amountOfFullColumns * 7) + (amountOfFullRows * 2) + (completedColors * 10);
+
+    currentScore = plusPoints - minusPoints;
   }
 
   /**
-   * Calculates and returns the final score.
+   * Returns the current (the final at the time this method gets invoked) score of this player.
    * */
-  public int getFinalScore() {
-    return plusPoints - minusPoints;
+  public int getCurrentScore() {
+    return currentScore;
   }
 
   /**

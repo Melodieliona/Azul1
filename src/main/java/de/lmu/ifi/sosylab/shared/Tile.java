@@ -2,14 +2,15 @@ package de.lmu.ifi.sosylab.shared;
 
 /**
  * Represents a single tile.
+ * The order of the enum values matters - don't change it.
  */
 public enum Tile {
   BLUE("blue"),
   YELLOW("yellow"),
-  RED("yellow"),
+  RED("red"),
   BLACK("black"),
   WHITE("white"),
-  STARTING_MARKER("");
+  STARTING_MARKER("start_marker");
 
   final String color;
 

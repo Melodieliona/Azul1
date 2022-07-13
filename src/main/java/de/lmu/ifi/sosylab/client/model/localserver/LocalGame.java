@@ -5,7 +5,6 @@ import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -49,7 +48,6 @@ public class LocalGame {
     this.userList = List.copyOf(users);
     this.connection = connection;
 
-
     bag = new TileCollection();
     bag.addTiles(Tile.BLUE, 20);
     bag.addTiles(Tile.YELLOW, 20);
@@ -58,16 +56,16 @@ public class LocalGame {
     bag.addTiles(Tile.WHITE, 20);
 
     // + 1 for the centerArea
-    tilePlates = new TileCollection[(userList.size() * 2) + 1 + 1];
+    tilePlates = new TileCollection[(this.userList.size() * 2) + 1 + 1];
     for (int i = 0; i < tilePlates.length - 1; i++) {
       tilePlates[i] = new TileCollection();
     }
 
     trash = new TileCollection();
 
-    gameBoards = new GameBoard[userList.size()];
+    gameBoards = new GameBoard[this.userList.size()];
     int i = 0;
-    for (LocalUser user : userList) {
+    for (LocalUser user : this.userList) {
       gameBoards[i] = new GameBoard(user.getName());
       i++;
     }
@@ -75,7 +73,7 @@ public class LocalGame {
     currentSelection = new TileCollection();
 
     // Choose random player to begin with
-    currentPlayer = RANDOM.nextInt(userList.size());
+    currentPlayer = RANDOM.nextInt(this.userList.size());
 
     startsAtNextRound = "";
 
@@ -115,24 +113,23 @@ public class LocalGame {
    * Checks a requested tile selection for validity and if valid changes model accordingly.
    * Remembers who picked the start marker.
    * */
-  protected void handleTileSelection(String playerName, int source, Tile color) {
-
+  protected void handleTileSelection(int source, Tile color) {
     int amount = tilePlates[source].getAmountTilesOfColor(color);
     if (amount > 0 && currentSelection.isEmpty()) {
 
       // Add starting marker to selection if it's the first pick out of the middle.
       if (source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
         currentSelection.addAll(tilePlates[source].removeTilesOfColor(Tile.STARTING_MARKER));
-        startsAtNextRound = playerName;
+        startsAtNextRound = userList.get(currentPlayer).getName();
       }
 
       currentSelection.addAllTiles(tilePlates[source].removeTilesOfColor(color));
       currentSelectionSource = source;
 
       sendSuccessfulSelection(source, color, amount);
-      connection.sendClickableRows(getClickableRows(getUser(playerName), color));
+      connection.sendClickableRows(getClickableRows(userList.get(currentPlayer), color));
     } else {
-      sendInvalidSelection(playerName);
+      sendInvalidSelection(userList.get(currentPlayer).getName());
     }
   }
 
@@ -171,6 +168,8 @@ public class LocalGame {
 
       sendSuccessfulPlacement(currentSelection, targetRow);
       sendFloorLinePlacement(leftOverTiles);
+
+      connection.sendBoardUpdate(gameBoards);
 
       // If at lease one tile is left on plates or the middle, let the next player make a move.
       boolean everythingEmpty = true;
@@ -238,7 +237,7 @@ public class LocalGame {
       // Calculate and gather final scores
       int[] endScores = new int[userList.size()];
       for (LocalUser user : userList) {
-        endScores[userList.indexOf(user)] = getPlayersGameBoard(user.getName()).getFinalScore();
+        endScores[userList.indexOf(user)] = getPlayersGameBoard(user.getName()).getCurrentScore();
       }
 
       // Calculate winner(s)
@@ -378,7 +377,7 @@ public class LocalGame {
   private int[] getClickableRows(LocalUser user, Tile color) {
     List<Integer> rowList = new ArrayList<>();
     GameBoard gameBoard = getPlayersGameBoard(user.getName());
-    for (int i = 1; i < 5; i++) {
+    for (int i = 0; i < 5; i++) {
       if (gameBoard.getLayingRow(i).canAddTilesToLayingRow(color)) {
         rowList.add(i);
       }

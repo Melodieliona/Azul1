@@ -6,7 +6,7 @@ package de.lmu.ifi.sosylab.shared;
 public class LayingRow {
 
   GameBoard board;
-  // The Index of this row (from top to bottom, starting with '1')
+  // The Index of this row (from top to bottom, starting with '0')
   private final int row;
 
 
@@ -87,14 +87,22 @@ public class LayingRow {
    * Returns if this row is already laid out with tiles.
    * */
   public boolean isRowFull() {
-    return count == row;
+    return count == row + 1;
+  }
+
+  /**
+   * Returns if this row is empty.
+   * */
+  public boolean isRowEmpty() {
+    return count == 0;
   }
 
   /**
    * Returns the column, the given tile color lays in.
+   * TODO testing
    * */
   public int columnOfColor(Tile color) {
-    return ((row + color.ordinal()) % 5) + 1;
+    return ((row + color.ordinal()) % 5);
   }
 
   /**
