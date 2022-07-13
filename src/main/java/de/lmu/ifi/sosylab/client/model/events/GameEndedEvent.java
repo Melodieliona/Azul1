@@ -1,5 +1,7 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
+import java.util.Arrays;
+
 /**
  * Todo JavaDoc
  * */
@@ -12,8 +14,8 @@ public class GameEndedEvent extends GameEvents {
    * Todo JavaDoc
    * */
   public GameEndedEvent(String[] players, int[] points, String winner) {
-    this.players = players;
-    this.points = points;
+    this.players = Arrays.copyOf(players, players.length);
+    this.points = Arrays.copyOf(points, points.length);
     this.winner = winner;
   }
 
@@ -23,7 +25,7 @@ public class GameEndedEvent extends GameEvents {
   }
 
   public String[] getPlayers() {
-    return players;
+    return Arrays.copyOf(players, players.length);
   }
 
   public String getWinner() {
@@ -31,6 +33,6 @@ public class GameEndedEvent extends GameEvents {
   }
 
   public int[] getPoints() {
-    return points;
+    return Arrays.copyOf(points, points.length);
   }
 }

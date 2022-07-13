@@ -147,7 +147,7 @@ public class LocalServerConnection {
                 break;
               case TILE_SELECTION:
                 // 0 = middle, 1-9 = plates
-                int plateOrMiddle = (int) jsonObject.get("plate");
+                int plateOrMiddle = jsonObject.getInt("plate");
                 Tile selectionColor = Tile.getTile((String) jsonObject.get("color"));
 
                 game.handleTileSelection(clientNick, plateOrMiddle, selectionColor);
@@ -155,7 +155,7 @@ public class LocalServerConnection {
                 break;
               case TILE_PLACEMENT:
                 // '0' is row 1, '1' is row 2, '2' is row 3, etc...
-                int targetRow = (int) jsonObject.get("row");
+                int targetRow = jsonObject.getInt("row");
                 Tile placementColor = Tile.getTile((String) jsonObject.get("color"));
 
                 game.handleTilePlacement(clientNick, targetRow, placementColor);

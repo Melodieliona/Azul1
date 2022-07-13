@@ -178,8 +178,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleUserLeft(JSONObject object) {
-    String nick = JsonMessage.getNickname(object);
-    model.userLeft(nick);
+    model.userLeft(JsonMessage.getNickname(object));
   }
 
   /**
@@ -188,8 +187,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleUserJoined(JSONObject object) {
-    String nick = JsonMessage.getNickname(object);
-    model.userJoined(nick);
+    model.userJoined(JsonMessage.getNickname(object));
   }
 
   /**
@@ -198,9 +196,8 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleTileSelection(JSONObject object) {
-    String color = JsonMessage.getTileColor(object);
-    int plate = Integer.parseInt(JsonMessage.getFactoryPlate(object));
-    model.otherPlayerSelectedTiles(color, plate);
+    model.otherPlayerSelectedTiles(JsonMessage.getTileColor(object),
+        Integer.parseInt(JsonMessage.getFactoryPlate(object)));
   }
 
   /**
@@ -209,8 +206,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleTilePlacement(JSONObject object) {
-    String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
-    model.otherPlayerPlacedTiles(rows);
+    model.otherPlayerPlacedTiles(JsonMessage.getRows(object).trim().split("\\s+"));
   }
 
   /**
@@ -229,8 +225,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleAllowedTiles(JSONObject object) {
-    String[] plates = JsonMessage.getFactoryPlate(object).trim().split("\\s+");
-    model.setValidPlates(plates);
+    model.setValidPlates(JsonMessage.getFactoryPlate(object).trim().split("\\s+"));
   }
 
   /**
@@ -239,8 +234,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleNextTurn(JSONObject object) {
-    String nick = JsonMessage.getNickname(object);
-    model.nextPlayer(nick);
+    model.nextPlayer(JsonMessage.getNickname(object));
 
   }
 
@@ -273,9 +267,8 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleFillPlates(JSONObject object) {
-    String[] colors = JsonMessage.getTileColor(object).split(",");
-    String[] amounts = JsonMessage.getTiles(object).trim().split(",");
-    model.fillTiles(colors, amounts);
+    model.fillTiles(JsonMessage.getTileColor(object).split(","),
+        JsonMessage.getTiles(object).trim().split(","));
   }
 
   /**
@@ -403,8 +396,7 @@ public class GameClientNetworkConnection {
    * @param numberOfTiles number of tiles
    */
   public void sendTileSelection(int source, String color, int numberOfTiles) {
-    JSONObject tileSelection = JsonMessage.selectTile(color, source);
-    send(tileSelection);
+    send(JsonMessage.selectTile(color, source));
   }
 
   /**
