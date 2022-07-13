@@ -80,7 +80,7 @@ public class GameController {
   }
 
   public void selectAllTiles(int source, String color, int numberOfTiles, String name) {
-    model.selectTilesRequest(source, color, numberOfTiles, name);
+    model.selectTilesRequest(source, color);
   }
 
   public void setTilesToRow(int row) {
