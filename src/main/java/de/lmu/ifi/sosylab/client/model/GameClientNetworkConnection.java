@@ -112,63 +112,28 @@ public class GameClientNetworkConnection {
    */
   public void handleGameEvent(JSONObject object) {
     switch (JsonMessage.typeOf(object)) {
-      case LOGIN_SUCCESS:
+      case LOGIN_SUCCESS -> {
         System.out.println("logged in"); //for debugging
         model.loggedIn();
-        break;
-      case LOGIN_FAILED:
-        model.loginFailed();
-        break;
-      case USER_JOINED:
-        handleUserJoined(object);
-        break;
-      case USER_LEFT:
-        handleUserLeft(object);
-        break;
-      case TILE_SELECTION:
-        handleTileSelection(object);
-        break;
-      case TILE_PLACEMENT:
-        handleTilePlacement(object);
-        break;
-      case ALLOWED_FIELDS:
-        handleAllowedFields(object);
-        break;
-      case ALLOWED_TILES:
-        handleAllowedTiles(object);
-        break;
-      case NEXT_TURN:
-        handleNextTurn(object);
-        break;
-      case MOVE_NOT_ALLOWED:
-        handleMoveNotAllowed(object);
-        break;
-      case BOARD_UPDATE:
-        handleBoardUpdate(object);
-        break;
-      case FILL_PLATES:
-        handleFillPlates(object);
-        break;
-      case POINTS:
-        handlePoints(object);
-        break;
-      case GAME_ENDED:
-        handleGameEnded(object);
-        break;
-      case GAME_RESTART_REQUEST:
-        handleGameRestartRequest(object);
-        break;
-      case GAME_RESTART:
-        handleGameRestart(object);
-        break;
-      case TILES_NOT_ALLOWED:
-        handleTilesNotAllowed(object);
-        break;
-      case TIMER:
-        handleTimer(object);
-        break;
-      default:
-        handleInvalidJson(object);
+      }
+      case LOGIN_FAILED -> model.loginFailed();
+      case USER_JOINED -> handleUserJoined(object);
+      case USER_LEFT -> handleUserLeft(object);
+      case TILE_SELECTION -> handleTileSelection(object);
+      case TILE_PLACEMENT -> handleTilePlacement(object);
+      case ALLOWED_FIELDS -> handleAllowedFields(object);
+      case ALLOWED_TILES -> handleAllowedTiles(object);
+      case NEXT_TURN -> handleNextTurn(object);
+      case MOVE_NOT_ALLOWED -> handleMoveNotAllowed(object);
+      case BOARD_UPDATE -> handleBoardUpdate(object);
+      case FILL_PLATES -> handleFillPlates(object);
+      case POINTS -> handlePoints(object);
+      case GAME_ENDED -> handleGameEnded(object);
+      case GAME_RESTART_REQUEST -> handleGameRestartRequest(object);
+      case GAME_RESTART -> handleGameRestart(object);
+      case TILES_NOT_ALLOWED -> handleTilesNotAllowed(object);
+      case TIMER -> handleTimer(object);
+      default -> handleInvalidJson(object);
     }
   }
 
@@ -200,7 +165,12 @@ public class GameClientNetworkConnection {
   private void handleTileSelection(JSONObject object) {
     String color = JsonMessage.getTileColor(object);
     int plate = Integer.parseInt(JsonMessage.getFactoryPlate(object));
-    model.otherPlayerSelectedTiles(color, plate);
+      if (model.getNickname().equals(model.getCurrentPlayer())) {
+              model.selectTiles(plate, color);
+      } else {
+          model.otherPlayerSelectedTiles(color, plate);
+      }
+
   }
 
   /**
@@ -210,7 +180,13 @@ public class GameClientNetworkConnection {
    */
   private void handleTilePlacement(JSONObject object) {
     String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
-    model.otherPlayerPlacedTiles(rows);
+    if (model.getNickname().equals(model.getCurrentPlayer())) {
+        for (int i = 0; i < rows.length; i++) {
+            model.placeTiles(Integer.getInteger(rows[0]), 1);
+        }
+    } else {
+      model.otherPlayerPlacedTiles(rows);
+    }
   }
 
   /**
@@ -314,7 +290,11 @@ public class GameClientNetworkConnection {
   private void handlePoints(JSONObject object) {
     String[] nicks = JsonMessage.getNickname(object).trim().split("\\s+");
     String[] points = JsonMessage.getScores(object).trim().split("\\s+");
-    //model. the client has just received the actual scores of each player
+    int[] intPoints = new int[points.length];
+      for (int i = 0; i < points.length; i++) {
+          intPoints[i] = Integer.parseInt(points[i]);
+      }
+    model.pointsUpdate(nicks,intPoints);
   }
 
   /**
@@ -417,9 +397,8 @@ public class GameClientNetworkConnection {
     send(amountOfPlayers);
   }
 
-  public void sendTilePlacement(int line, int color, int numberOfTiles) { //color should be string
-    //JSONObject tilePlacement = JsonMessage.placeTiles(color, line); //it actually makes sense to
-    //only send the line since the client already knows how many tiles and the color
-    //send(tilePlacement);
+  public void sendTilePlacement(int line, String color) { //color should be string
+    JSONObject tilePlacement = JsonMessage.placeTiles(color, line);
+    send(tilePlacement);
   }
 }

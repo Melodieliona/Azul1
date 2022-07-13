@@ -52,6 +52,9 @@ public class GameModel {
 
   private TileCollection selectedTiles;
 
+  private String nickname;
+
+
   public GameModel() {
     support = new PropertyChangeSupport(this);
   }
@@ -95,7 +98,7 @@ public class GameModel {
     players = new Player[1];
     players[0] = new Player(name);
     connection.sendLogin(name);
-
+    setNickname(name);
   }
 
   /**
@@ -132,11 +135,10 @@ public class GameModel {
    * Sends a request to the server to select tiles.
    *
    * @param color         of tile
-   * @param numberOfTiles that were selected
    * @param source        source of selected tiles (factory plates)
-   * @param name          name of player
    */
-  public void selectTilesRequest(int source, String color, int numberOfTiles, String name) {
+  public void selectTilesRequest(int source, String color) {
+    int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     connection.sendTileSelection(source, color, numberOfTiles);
   }
 
@@ -144,37 +146,39 @@ public class GameModel {
    * Sends a request to the server to place tiles.
    *
    * @param color         of tile
-   * @param numberOfTiles that were selected
    * @param line          desired row/line to place tiles
    */
-  public void placeTilesRequest(int line, int color, int numberOfTiles) {
-    connection.sendTilePlacement(line, color, numberOfTiles);
+  public void placeTilesRequest(int line, String color) {
+    connection.sendTilePlacement(line, color);
   }
 
-  public void selectTiles(int source, String color, int numberOfTiles) {
-    notifyListeners(new TilesSelectedEvent(source, color, numberOfTiles));
+  public void selectTiles(int source, String color) {
+    selectedTiles.removeAllTiles();
+    int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
+    selectedTiles.addTiles(Tile.getTile(color), numberOfTiles);
+    tilePlates[source].removeTilesOfColor(Tile.getTile(color));
+    notifyListeners(new TilesSelectedEvent(source, color, selectedTiles.size()));
   }
 
 
   /**
    * Places the selected tiles into the selected pattern line.
    *
-   * @param color                 of tile
-   * @param numberOfSelectedTiles that were selected
+   * @param numOfTiles that were selected
    * @param line                  selected to place tiles
    */
-  public void placeTiles(String color, int numberOfSelectedTiles, int line, String playersName) {
+  public void placeTiles(int line, int numOfTiles) {
     int minuspoints = 0;
     if (gameMode.equals("Multiplayer")) {
-      minuspoints = players[0].placeTiles(line, color, numberOfSelectedTiles);
+      minuspoints = players[0].placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
     } else {
       for (Player player : players) {
-        if (player.getPlayerName().equals(playersName)) {
-          minuspoints = player.placeTiles(line, color, numberOfSelectedTiles);
+        if (player.getPlayerName().equals(nickname)) {
+          minuspoints = player.placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
         }
       }
     }
-    notifyListeners(new TilesAddedEvent(color, line, numberOfSelectedTiles, minuspoints));
+    notifyListeners(new TilesAddedEvent(selectedTiles.getContainedColors().get(0).getColor(), line, numOfTiles, minuspoints));
   }
 
   /**
@@ -203,7 +207,7 @@ public class GameModel {
   }
 
   /**
-   * Notifies the subscribed view that another player placed specific tiles.
+   * Notifies the subscribed view that another player selected specific tiles.
    *
    * @param color type of tile
    */
@@ -367,6 +371,18 @@ public class GameModel {
     for (int i = 0; i < validPlates.length; i++) {
       validPlates[i] = Integer.parseInt(plates[i]);
     }
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  public String getCurrentPlayer() {
+    return  currentPlayer;
   }
 
 }
