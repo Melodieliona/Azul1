@@ -20,8 +20,8 @@ public class Board extends JPanel {
   private Images img;
   private String name;
   private BufferedImage board;
-  private GameController controller;
-  private int boardnumber;
+  private int score;
+  private int boardNumber;
 
   /**
    * Creates Board.
@@ -31,14 +31,17 @@ public class Board extends JPanel {
    * @param name           - username.
    * @param img            - imports images.
    */
-  public Board(TileCollection[] tileCollection, int tileSize, String name, Images img, GameController controller, int boardnumber) {
+  public Board(TileCollection[] tileCollection, int tileSize, String name, Images img, int[] score, int boardNumber) {
     this.collection = tileCollection;
     this.tileSize = tileSize;
     this.name = name;
     board = img.getBoard();
     this.img = img;
-    this.controller = controller;
-    this.boardnumber = boardnumber;
+    this.boardNumber = boardNumber;
+    if(score == null){
+      this.score = 0;
+    }else{
+    this.score = score[boardNumber];}
     setPanelSize();
   }
 
@@ -61,8 +64,7 @@ public class Board extends JPanel {
     g2D.setFont(new Font("Arial", Font.PLAIN, 15));
     g2D.setColor(Color.white);
     g2D.drawString(name, 83, 35);
-    int score  = controller.getCurrentScore(boardnumber);
-    g2D.drawString(String.valueOf(controller.getCurrentScore(boardnumber)), 250, 35);
+    g2D.drawString(String.valueOf(score), 250, 35);
     // createTiles(g2D);
   }
 

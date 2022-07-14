@@ -4,15 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
-import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
-import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
-import de.lmu.ifi.sosylab.client.model.events.MiddleTilesUpdateEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerPlacedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.OtherPlayerSelectedTilesEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
-import de.lmu.ifi.sosylab.client.model.events.TilesSelectedEvent;
-import de.lmu.ifi.sosylab.client.model.events.UserJoinedEvent;
-import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
+import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.Tile;
@@ -73,6 +65,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private transient List<User> playerList;
   private transient Game gamesettings = null;
   private int amountOfSelectedTiles;
+  private int[] score;
 
   private final int tileSize = 25;
   private static TileCollection[] collection;
@@ -166,7 +159,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterMinute = 1;
     numberOfPayersHS = 0;
 
-    //Game
+            //Game
     playerNames = new ArrayList<>();
 
     collection = new TileCollection[10];
@@ -599,7 +592,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -board.
    */
   private Component createBoard(int boardNumber) {
-    Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images , controller, boardNumber);
+    Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images , score, boardNumber);
 
     JPanel board = new JPanel();
     board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
@@ -721,7 +714,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     } else if (newValue instanceof UserLeftEvent) {
       //TODO: was soll hier genau passieren?
 
-    }
+    } else if (newValue instanceof PointsUpdatedEvent) {
+    score = ((PointsUpdatedEvent) newValue).getPoints();
+
+  }
 
   }
 

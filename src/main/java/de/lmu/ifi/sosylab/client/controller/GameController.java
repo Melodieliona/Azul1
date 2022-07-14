@@ -97,14 +97,7 @@ public class GameController {
   }
 
   public int getCurrentScore(int board) {
-    model.getScore();
-    //Test
-    int [] testscore = new int[4];
-    testscore[0] = 0;
-    testscore[1] = 2;
-    testscore[2] = 3;
-    testscore[3] = 4;
-    return testscore[board];
+    return 0;
   }
 
   public TileCollection[] getTilePlates() {
