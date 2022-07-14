@@ -4,7 +4,6 @@ import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.LayingRow;
-import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.io.IOException;
 import java.util.List;
@@ -98,22 +97,22 @@ public class GameController {
   }
 
   public int getCurrentScore(int board) {
-    int score = 0;
-    return score;
+    model.getScore();
+    //Test
+    int [] testscore = new int[4];
+    testscore[0] = 0;
+    testscore[1] = 2;
+    testscore[2] = 3;
+    testscore[3] = 4;
+    return testscore[board];
   }
 
   public TileCollection[] getTilePlates() {
-    //0 ist Haufen
     return model.getTilePlates();
   }
 
   public void dispose() {
     model.dispose();
-  }
-
-  public String getTile(int plateNumber, int i) {
-    //dadurch dann auch Farbe holen
-    return null;
   }
 
   public void placeTiles(int numberOfSelectedTiles, int line) {

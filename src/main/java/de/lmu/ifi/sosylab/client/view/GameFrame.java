@@ -72,6 +72,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JButton multiPlayer;
   private transient List<User> playerList;
   private transient Game gamesettings = null;
+  private int amountOfSelectedTiles;
 
   private final int tileSize = 25;
   private static TileCollection[] collection;
@@ -167,12 +168,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     //Game
     playerNames = new ArrayList<>();
-    //ToDO remove when Names work
-    playerNames.add("TestPlayer");
-    playerNames.add("TestPlayer2");
-    //playerNames.add("TestPlayer3");
-    //playerNames.add("TestPlayer4");
-
 
     collection = new TileCollection[10];
     gameField = new JPanel(new BorderLayout());
@@ -211,13 +206,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     BufferedImage img = images.getBackground();
     JLabel background = new JLabel(new ImageIcon(img));
 
+
     game.setPreferredSize(createGameField().getPreferredSize());
     background.setLayout(new FlowLayout());
 
-    if (playerNames.size() == 2) {
-      gameField = new JPanel(new BorderLayout());
-      gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    } //ToDO herausfinden warum es nur bei 2 Spielern benötigt wird
+    gameField = new JPanel(new BorderLayout());
+    gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
 
     background.add(gameField);
 
@@ -524,11 +518,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             if (plates != null && tile != null) {
               System.out.println("Plate: " + plates + " Tile: " + tile);
               int plateNumber = Integer.parseInt(plates);
-              int amount = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile));
-              boolean confirmation = confirmTileSelection(plateNumber, tile, amount, playerNames.get(currentBoard));
+              amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile));
+              System.out.println("This amount is " + amountOfSelectedTiles);
+              boolean confirmation = confirmTileSelection(plateNumber, tile, amountOfSelectedTiles, playerNames.get(currentBoard));
               if (confirmation) {
                 //TODO: next line is thowing an exception
-                //controller.selectAllTiles(plateNumber, tile, amount, playerNames.get(currentBoard));
+                controller.selectAllTiles(plateNumber, tile);
               }
             }
           }
@@ -585,9 +580,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           String name = pile.getComponentAt(checkMouseTip).getName();
           if (name != null) {
             System.out.println("Tile " + name + " was clicked on Plate 0");
-            int amount = collection[0].getAmountTilesOfColor(Tile.getTile(name));
-            // controller.selectAllTiles(0, name, amount, playerNames.get(currentBoard));
-            System.out.println(playerNames.get(currentBoard));
+            amountOfSelectedTiles = collection[0].getAmountTilesOfColor(Tile.getTile(name));
+            controller.selectAllTiles(0, name);
           }
 
         }
@@ -605,7 +599,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -board.
    */
   private Component createBoard(int boardNumber) {
-    Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images);
+    Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images , controller, boardNumber);
 
     JPanel board = new JPanel();
     board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
@@ -636,6 +630,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
 
         if (mousePointX == 5 && mousePointY == 2) {
+          controller.placeTiles(amountOfSelectedTiles, 0);
           System.out.println("Clicked First Row");
         }
         if (mousePointX > 3 && mousePointX < 6 && mousePointY == 3) {
@@ -701,7 +696,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       collection = controller.getTilePlates();
       gameField.removeAll();
       createGameView();
-
+      repaint();
     } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
 
     } else if (newValue instanceof OtherPlayerSelectedTilesEvent) {

@@ -1,5 +1,7 @@
 package de.lmu.ifi.sosylab.client.view;
 
+import de.lmu.ifi.sosylab.client.controller.GameController;
+import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,11 +15,13 @@ import javax.swing.JPanel;
  * TODO Add JavaDoc
  * */
 public class Board extends JPanel {
-  int tileSize;
-  TileCollection[] collection;
-  Images img;
-  String name;
-  BufferedImage board;
+  private int tileSize;
+  private TileCollection[] collection;
+  private Images img;
+  private String name;
+  private BufferedImage board;
+  private GameController controller;
+  private int boardnumber;
 
   /**
    * Creates Board.
@@ -27,12 +31,14 @@ public class Board extends JPanel {
    * @param name           - username.
    * @param img            - imports images.
    */
-  public Board(TileCollection[] tileCollection, int tileSize, String name, Images img) {
+  public Board(TileCollection[] tileCollection, int tileSize, String name, Images img, GameController controller, int boardnumber) {
     this.collection = tileCollection;
     this.tileSize = tileSize;
     this.name = name;
     board = img.getBoard();
     this.img = img;
+    this.controller = controller;
+    this.boardnumber = boardnumber;
     setPanelSize();
   }
 
@@ -55,6 +61,8 @@ public class Board extends JPanel {
     g2D.setFont(new Font("Arial", Font.PLAIN, 15));
     g2D.setColor(Color.white);
     g2D.drawString(name, 83, 35);
+    int score  = controller.getCurrentScore(boardnumber);
+    g2D.drawString(String.valueOf(controller.getCurrentScore(boardnumber)), 250, 35);
     // createTiles(g2D);
   }
 

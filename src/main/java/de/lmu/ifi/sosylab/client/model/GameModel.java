@@ -421,4 +421,9 @@ public class GameModel {
     return currentPlayer;
   }
 
+  public int[] getScore(){
+    int[] points;
+    return null;
+  }
+
 }
