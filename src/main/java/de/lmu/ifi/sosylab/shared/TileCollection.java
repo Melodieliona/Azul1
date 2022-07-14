@@ -133,8 +133,6 @@ public class TileCollection extends ArrayList<Tile> {
       containedColors.add(Tile.STARTING_MARKER);
     }
 
-    //TODO REMOVE THIS
-    System.out.println(containedColors.size());
     return containedColors;
   }
 

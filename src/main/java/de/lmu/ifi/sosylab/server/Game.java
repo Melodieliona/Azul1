@@ -76,11 +76,9 @@ public class Game {
 
     currentSelection = new TileCollection();
 
-    System.out.println(RANDOM.nextInt(userList.size()));
     // Choose random player to begin with
     currentPlayer = RANDOM.nextInt(userList.size());
-    System.out.println(currentPlayer);
-    System.out.println(RANDOM.nextInt(userList.size()));
+
     startsAtNextRound = "";
 
     fillPlates();

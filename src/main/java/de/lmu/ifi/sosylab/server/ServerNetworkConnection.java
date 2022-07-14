@@ -1,6 +1,5 @@
 package de.lmu.ifi.sosylab.server;
 
-import de.lmu.ifi.sosylab.client.model.localserver.LocalGame;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.Tile;
@@ -257,7 +256,7 @@ public class ServerNetworkConnection {
   private void sendUserJoined(String nickname) {
     try {
       for (User user : users) {
-        if (user.getGameNumber() == nextGameNumber) {
+        if (user.getGameNumber() == nextGameNumber && !(user.getName().equals(nickname))) {
           JSONObject userJoinedJson = new JSONObject();
           userJoinedJson.put("type", "user joined");
           userJoinedJson.put("nick", nickname);
@@ -602,18 +601,26 @@ public class ServerNetworkConnection {
     gameStartTimerRunning = true;
     sendStartTimer();
 
-    System.out.println("Timer set on 10sec for testing...");
+    System.out.println("Timer set on 5sec for testing...");
 
     Thread timerThread = new Thread(() -> {
       try {
-        Thread.sleep(1000 * 60);
+        Thread.sleep(1000 * 5);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
+
+      List<User> usersInGame = new ArrayList<>();
+      for (User user : users) {
+        if (user.getGameNumber() == nextGameNumber) {
+          usersInGame.add(user);
+        }
+      }
       // Check if game hasn't already been started (because a 4th user joined) and if there are
       // enough users for a game (at least 2)
-      System.out.println("Timer elapsed! Game will start now...");
-      if ((games.size() == nextGameNumber + 1) && (users.size() > 1)) {
+      System.out.println("Timer elapsed! Game will start now with "
+          + usersInGame.size() + " players.");
+      if ((games.size() + 1 == nextGameNumber) && (usersInGame.size() > 1)) {
         gameStartTimerRunning = false;
         startGame();
       }
