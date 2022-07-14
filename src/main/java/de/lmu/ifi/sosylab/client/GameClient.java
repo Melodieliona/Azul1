@@ -5,6 +5,8 @@ import de.lmu.ifi.sosylab.client.model.GameClientNetworkConnection;
 import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.view.GameFrame;
 
+import java.io.IOException;
+
 /**
  * Starts the chat-client.
  */
@@ -13,7 +15,7 @@ public class GameClient {
   /**
    * Creates model, controller and starts the GUI.
    * */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
 
     GameModel model = new GameModel();
     GameController controller = new GameController(model);

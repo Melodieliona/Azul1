@@ -58,6 +58,7 @@ public class Images {
     tileYellow = resizeImage(tileYellow, 25, 25);
     tileWhite = resizeImage(tileWhite, 25, 25);
     tileStarter = resizeImage(tileStarter, 25, 25);
+    backgroundSetGameMode = resizeImage(backgroundSetGameMode, 300, 400);
   }
 
   /**

@@ -68,6 +68,15 @@ public class GameModel {
     }
   }
 
+  public String getGameMode() {
+    return gameMode;
+  }
+
+  public int getNumberOfPlayers(){
+    int numberOfPlayers = players.length;
+    return numberOfPlayers;
+  }
+
   /**
    * Add a network connector to this model.
    *
