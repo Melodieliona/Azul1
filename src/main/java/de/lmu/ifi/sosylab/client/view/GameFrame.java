@@ -66,6 +66,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private transient Game gamesettings = null;
   private int amountOfSelectedTiles;
   private int[] score;
+  private String tile_color;
 
   private final int tileSize = 25;
   private static TileCollection[] collection;
@@ -507,16 +508,16 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             Point checkMouseTip = e.getPoint();
 
             String plates = plate.getComponentAt(checkMouseTip).getParent().getName();
-            String tile = plate.getComponentAt(checkMouseTip).getName();
-            if (plates != null && tile != null) {
-              System.out.println("Plate: " + plates + " Tile: " + tile);
+            tile_color = plate.getComponentAt(checkMouseTip).getName();
+            if (plates != null && tile_color != null) {
+              System.out.println("Plate: " + plates + " Tile: " + tile_color);
               int plateNumber = Integer.parseInt(plates);
-              amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile));
+              amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile_color));
               System.out.println("This amount is " + amountOfSelectedTiles);
-              boolean confirmation = confirmTileSelection(plateNumber, tile, amountOfSelectedTiles, playerNames.get(currentBoard));
+              boolean confirmation = confirmTileSelection(plateNumber, tile_color, amountOfSelectedTiles, playerNames.get(currentBoard));
               if (confirmation) {
                 //TODO: next line is thowing an exception
-                controller.selectAllTiles(plateNumber, tile);
+                controller.selectAllTiles(plateNumber, tile_color);
               }
             }
           }
@@ -570,11 +571,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         public void mouseClicked(MouseEvent e) {
           super.mouseClicked(e);
           Point checkMouseTip = e.getPoint();
-          String name = pile.getComponentAt(checkMouseTip).getName();
-          if (name != null) {
-            System.out.println("Tile " + name + " was clicked on Plate 0");
-            amountOfSelectedTiles = collection[0].getAmountTilesOfColor(Tile.getTile(name));
-            controller.selectAllTiles(0, name);
+          tile_color = pile.getComponentAt(checkMouseTip).getName();
+          if (tile_color != null) {
+            System.out.println("Tile " + tile_color + " was clicked on Plate 0");
+            amountOfSelectedTiles = collection[0].getAmountTilesOfColor(Tile.getTile(tile_color));
+            controller.selectAllTiles(0, tile_color);
           }
 
         }
@@ -628,18 +629,23 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         }
         if (mousePointX > 3 && mousePointX < 6 && mousePointY == 3) {
           System.out.println("Clicked Second Row");
+          controller.placeTiles(amountOfSelectedTiles, 1);
         }
         if (mousePointX > 2 && mousePointX < 6 && mousePointY == 4) {
           System.out.println("Clicked Third Row");
+          controller.placeTiles(amountOfSelectedTiles, 2);
         }
         if (mousePointX > 1 && mousePointX < 6 && mousePointY == 5) {
           System.out.println("Clicked Forth Row");
+          controller.placeTiles(amountOfSelectedTiles, 3);
         }
         if (mousePointX > 0 && mousePointX < 6 && mousePointY == 6) {
           System.out.println("Clicked Fifth Row");
+          controller.placeTiles(amountOfSelectedTiles, 4);
         }
         if (mousePointX > 0 && mousePointX < 8 && mousePointY == 8) {
           System.out.println("Minus Points");
+          controller.placeTiles(amountOfSelectedTiles, 5);
         }
       }
     });
