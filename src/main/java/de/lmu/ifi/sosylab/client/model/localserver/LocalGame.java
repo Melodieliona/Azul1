@@ -311,9 +311,8 @@ public class LocalGame {
 
   private void sendFloorLinePlacement(TileCollection leftOverTiles) {
     LocalUser currentPlayer = userList.get(this.currentPlayer);
-    connection.sendFloorLineUpdate(userList, currentPlayer, leftOverTiles);
+    connection.sendFloorLineUpdate(currentPlayer, leftOverTiles);
   }
-
 
   /**
    * Sets the player whose turn it is to make a move next.

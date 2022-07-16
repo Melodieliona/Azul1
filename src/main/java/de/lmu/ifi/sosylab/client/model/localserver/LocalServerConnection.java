@@ -327,10 +327,8 @@ public class LocalServerConnection {
    * Sends a message with all tiles that have been added to the floor line
    * to all other players of that game.
    * */
-  public void sendFloorLineUpdate(
-      List<LocalUser> userlist, LocalUser currentUser, TileCollection newFloorLineTiles) {
+  public void sendFloorLineUpdate(LocalUser currentUser, TileCollection newFloorLineTiles) {
     try {
-      for (LocalUser user : userlist) {
         JSONObject sendNewFloorLineTiles = new JSONObject();
         sendNewFloorLineTiles.put("type", "floorline_placement");
         sendNewFloorLineTiles.put("nick", currentUser.getName());
@@ -350,7 +348,6 @@ public class LocalServerConnection {
 
         writer.write(sendNewFloorLineTiles + System.lineSeparator());
         writer.flush();
-      }
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
@@ -570,24 +567,6 @@ public class LocalServerConnection {
       writer.write(finalScoresJson + System.lineSeparator());
       writer.flush();
 
-    } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
-    }
-  }
-
-  /**
-   * Broadcasts that a user has disconnected from the server to all still connected clients.
-   *
-   * @param clientNick Name of the disconnected user.
-   */
-  private void sendUserLeft(String clientNick) {
-    try {
-      JSONObject postMessageJson = new JSONObject();
-      postMessageJson.put("type", "user left");
-      postMessageJson.put("nick", clientNick);
-
-      writer.write(postMessageJson + System.lineSeparator());
-      writer.flush();
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
