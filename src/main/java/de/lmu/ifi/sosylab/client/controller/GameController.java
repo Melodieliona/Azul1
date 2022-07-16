@@ -68,11 +68,6 @@ public class GameController {
     model.setGameMode(gameMode);
   }
 
-  //TODO
-  public Player getPlayer(int player) {
-    return /*model.getPlayer(player)*/ null;
-  }
-
   public List<User> getUserList() {
     //TODO get User List through Connection, is there a method getUsers in Server?
     return null;
@@ -112,6 +107,10 @@ public class GameController {
     model.placeTiles(numberOfSelectedTiles, line);
   }
 
+  public Player getPlayer(int player){
+    Player[] players = model.getPlayers();
+    return players[player];
+  }
 }
 
 

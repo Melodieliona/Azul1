@@ -439,4 +439,8 @@ public void updateBoard(String[] rows, String[] columns, String nick, String poi
     return null;
   }
 
+  public Player[] getPlayers() {
+    return players;
+  }
+
 }

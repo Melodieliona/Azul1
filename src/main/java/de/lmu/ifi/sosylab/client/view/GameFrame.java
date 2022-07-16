@@ -469,7 +469,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                 goBackOneCard();
             }
         });
-
     }
 
     private Component createGameField() {
@@ -639,7 +638,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
      * @return -board.
      */
     private Component createBoard(int boardNumber) {
-        Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images, score, boardNumber);
+        Board b = new Board(controller, tileSize, playerNames.get(boardNumber), images, score, boardNumber);
 
         JPanel board = new JPanel();
         board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
