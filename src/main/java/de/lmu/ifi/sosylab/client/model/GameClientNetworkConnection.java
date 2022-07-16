@@ -241,11 +241,10 @@ public class GameClientNetworkConnection {
    */
   private void handleBoardUpdate(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
-    String rowsToBeCleared = JsonMessage.getRows(object);
-    String[] patternRow = JsonMessage.getPatternRows(object).trim().split("\\s+");
+    String[] patternRow = JsonMessage.getRows(object).trim().split("\\s+");
     String[] patternColumns = JsonMessage.getPatternColumns(object).trim().split("\\s+");
-    //model. the client has just received an update of the board because the round has ended,
-    // meaning that some rows should be cleared and tiles may need to be placed in the pattern.
+    String points = JsonMessage.getScores(object);
+    model.updateBoard(patternRow, patternColumns, nick, points);
   }
 
   /**
@@ -275,7 +274,7 @@ public class GameClientNetworkConnection {
    */
   private void handleGameRestartRequest(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
-    //model. the client has just received that the player <nick> wants to restart the game
+    model.receivedRestartRequest(nick);
   }
 
   /**
@@ -284,7 +283,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleGameRestart(JSONObject object) {
-    //model. the client has just received that the game will be restarted
+    model.restartGame();
   }
 
   /**
@@ -294,7 +293,7 @@ public class GameClientNetworkConnection {
    */
   private void handleGameCancelRequest(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
-    //model. the client has just received that the player <nick> wants to restart the game
+    model.receivedCancelRequest(nick);
   }
 
   /**
@@ -303,7 +302,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleGameCancel(JSONObject object) {
-    //model. the client has just received that the game will be restarted
+    model.cancelGame();
   }
 
   /**

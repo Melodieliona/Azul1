@@ -378,7 +378,7 @@ public class LocalServerConnection {
    * - "pattern columns": x-coords of laid wall tiles -
    *   (corresponding values of "row" are y-coords)
    * - "colors": Colors of the laid wall tiles
-   * - "score": The current score of the player as Integer
+   * - "score": The current score of the player
    * */
   public void sendBoardUpdate(GameBoard[] gameBoards) {
     for (GameBoard gameBoard : gameBoards) {
@@ -427,7 +427,7 @@ public class LocalServerConnection {
         sendBoardUpdate.put("row", emptyLayingRows.toString());
         sendBoardUpdate.put("pattern columns", filledWallCols.toString());
         sendBoardUpdate.put("colors", wallTileColors.toString());
-        sendBoardUpdate.put("points", gameBoard.getCurrentScore());
+        sendBoardUpdate.put("points", String.valueOf(gameBoard.getCurrentScore()));
 
         writer.write(sendBoardUpdate + System.lineSeparator());
         writer.flush();

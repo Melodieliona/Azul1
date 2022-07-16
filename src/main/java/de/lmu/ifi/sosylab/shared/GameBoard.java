@@ -40,6 +40,18 @@ public class GameBoard {
     floorLine = new TileCollection();
   }
 
+  public GameBoard(String playerName, int plusPoints, int minusPoints, int currentScore, Tile[][] tileWall, LayingRow[] layingRows, TileCollection floorLine) {
+    this.playerName = playerName;
+    this.plusPoints = plusPoints;
+    this.minusPoints = minusPoints;
+    this.currentScore = currentScore;
+
+    this.tileWall = tileWall;
+
+    this.layingRows =layingRows;
+    this.floorLine = floorLine;
+  }
+
   /**
    * Puts a tile of given color at the right spot on a wall row.
    * */
@@ -249,4 +261,15 @@ public class GameBoard {
     return playerName;
   }
 
+  public int getMinusPoints() {
+    return minusPoints;
+  }
+
+  public int getPlusPoints() {
+    return plusPoints;
+  }
+
+  public TileCollection getFloorLine() {
+    return floorLine;
+  }
 }
