@@ -355,11 +355,10 @@ public class LocalServerConnection {
 
   //TODO Score update needed separately? Is already sent after every round with board update
   /**
-   * Sends their updated score to all players of a game before the next round starts.
+   * Sends the updated score to the player who just made a move.
    * */
   public void sendScoreUpdate(int score) {
     try {
-
       JSONObject sendScoreUpdate = new JSONObject();
 
       sendScoreUpdate.put("score", 12345);
