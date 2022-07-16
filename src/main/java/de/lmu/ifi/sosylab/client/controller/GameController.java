@@ -96,8 +96,8 @@ public class GameController {
     return null;
   }
 
-  public int getCurrentScore(int board) {
-    return 0;
+  public String getCurrentPlayer() {
+    return model.getCurrentPlayer();
   }
 
   public TileCollection[] getTilePlates() {
