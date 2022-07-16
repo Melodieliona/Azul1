@@ -477,17 +477,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             case 1 -> {
                 gameField.add(createBoard(0), BorderLayout.NORTH);
                 gameField.add(createBoard(1), BorderLayout.SOUTH);
+                this.setSize(350,900);
             }
             case 2 -> {
                 gameField.add(createBoard(0), BorderLayout.NORTH);
                 gameField.add(createBoard(1), BorderLayout.WEST);
                 gameField.add(createBoard(2), BorderLayout.SOUTH);
+                this.setSize(700,920);
             }
             case 3 -> {
                 gameField.add(createBoard(0), BorderLayout.NORTH);
                 gameField.add(createBoard(1), BorderLayout.SOUTH);
                 gameField.add(createBoard(2), BorderLayout.WEST);
                 gameField.add(createBoard(3), BorderLayout.EAST);
+                this.setSize(1020,880);
             }
         }
         gameField.add(createMiddle(), BorderLayout.CENTER);
