@@ -401,12 +401,18 @@ public class LocalServerConnection {
             for (int col = 0; col < 5; col++) {
               if (wall[col][rowIterator] != null) {
                 filledWallCols.append(col);
+                if (colIterator < 4) {
+                  filledWallCols.append(",");
+                }
+              }
+
+              if (wall[col][rowIterator] != null) {
                 wallTileColors.append(wall[col][rowIterator].getColor());
+                if (colIterator < 4) {
+                  wallTileColors.append(",");
+                }
               }
-              if (colIterator < 4) {
-                filledWallCols.append(",");
-                wallTileColors.append(",");
-              }
+
               colIterator++;
             }
 
