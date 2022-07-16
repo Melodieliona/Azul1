@@ -76,7 +76,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private Images images;
     private JPanel middle;
     private JPanel gameField;
-    private int currentBoard;
+    private String currentPlayer;
     private int frameWidth;
     private int frameHeight;
     private String currentCard;
@@ -551,6 +551,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
                         Point checkMouseTip = e.getPoint();
+                        currentPlayer = controller.getCurrentPlayer();
 
                         String plates = plate.getComponentAt(checkMouseTip).getParent().getName();
                         tile_color = plate.getComponentAt(checkMouseTip).getName();
@@ -559,7 +560,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                             int plateNumber = Integer.parseInt(plates);
                             amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile_color));
                             System.out.println("This amount is " + amountOfSelectedTiles);
-                            boolean confirmation = confirmTileSelection(plateNumber, tile_color, amountOfSelectedTiles, playerNames.get(currentBoard));
+                            boolean confirmation = confirmTileSelection(plateNumber, tile_color, amountOfSelectedTiles, currentPlayer);
                             if (confirmation) {
                                 //TODO: next line is thowing an exception
                                 controller.selectAllTiles(plateNumber, tile_color);
@@ -664,7 +665,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                 Point checkMouseTip = e.getPoint();
                 int mousePointX = checkMouseTip.x / tileSize;
                 int mousePointY = checkMouseTip.y / tileSize;
-                currentBoard = boardNumber;
+                currentPlayer = controller.getCurrentPlayer();
 
                 if (playerNames.get(boardNumber).equals(controller.getCurrentPlayer())) {
 
