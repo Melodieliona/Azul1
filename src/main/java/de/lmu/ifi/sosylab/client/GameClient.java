@@ -1,10 +1,8 @@
 package de.lmu.ifi.sosylab.client;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
-import de.lmu.ifi.sosylab.client.model.GameClientNetworkConnection;
 import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.view.GameFrame;
-
 import java.io.IOException;
 
 /**

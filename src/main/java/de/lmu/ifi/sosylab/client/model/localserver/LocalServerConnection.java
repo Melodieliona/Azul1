@@ -329,25 +329,25 @@ public class LocalServerConnection {
    * */
   public void sendFloorLineUpdate(LocalUser currentUser, TileCollection newFloorLineTiles) {
     try {
-        JSONObject sendNewFloorLineTiles = new JSONObject();
-        sendNewFloorLineTiles.put("type", "floorline_placement");
-        sendNewFloorLineTiles.put("nick", currentUser.getName());
-        sendNewFloorLineTiles.put("amount", newFloorLineTiles.size());
+      JSONObject sendNewFloorLineTiles = new JSONObject();
+      sendNewFloorLineTiles.put("type", "floorline_placement");
+      sendNewFloorLineTiles.put("nick", currentUser.getName());
+      sendNewFloorLineTiles.put("amount", newFloorLineTiles.size());
 
-        // Formats tiles like this: {.."floortile0": "BLUE", "floortile1": "RED"..}
-        // Index is relative to the newly added tiles ~ floortile0 is not the first tile on the
-        // floor line, but the first tile to be added to it now.
-        // If the starting marker was added, it will be "floortile0"
-        int tileIndex = 0;
+      // Formats tiles like this: {.."floortile0": "BLUE", "floortile1": "RED"..}
+      // Index is relative to the newly added tiles ~ floortile0 is not the first tile on the
+      // floor line, but the first tile to be added to it now.
+      // If the starting marker was added, it will be "floortile0"
+      int tileIndex = 0;
 
-        for (Tile tile : newFloorLineTiles) {
-          String tileNumber = "floortile" + tileIndex;
-          sendNewFloorLineTiles.put(tileNumber, tile.name());
-          tileIndex++;
-        }
+      for (Tile tile : newFloorLineTiles) {
+        String tileNumber = "floortile" + tileIndex;
+        sendNewFloorLineTiles.put(tileNumber, tile.name());
+        tileIndex++;
+      }
 
-        writer.write(sendNewFloorLineTiles + System.lineSeparator());
-        writer.flush();
+      writer.write(sendNewFloorLineTiles + System.lineSeparator());
+      writer.flush();
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }

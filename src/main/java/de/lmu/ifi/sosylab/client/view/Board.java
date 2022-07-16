@@ -1,7 +1,5 @@
 package de.lmu.ifi.sosylab.client.view;
 
-import de.lmu.ifi.sosylab.client.controller.GameController;
-import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -31,17 +29,19 @@ public class Board extends JPanel {
    * @param name           - username.
    * @param img            - imports images.
    */
-  public Board(TileCollection[] tileCollection, int tileSize, String name, Images img, int[] score, int boardNumber) {
+  public Board(TileCollection[] tileCollection, int tileSize, String name, Images img, int[] score,
+               int boardNumber) {
     this.collection = tileCollection;
     this.tileSize = tileSize;
     this.name = name;
     board = img.getBoard();
     this.img = img;
     this.boardNumber = boardNumber;
-    if(score == null){
+    if (score == null) {
       this.score = 0;
-    }else{
-    this.score = score[boardNumber];}
+    } else {
+      this.score = score[boardNumber];
+    }
     setPanelSize();
   }
 

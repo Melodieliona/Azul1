@@ -157,7 +157,7 @@ public class ServerNetworkConnection {
                   }
                 }
               }
-              
+
               case TILE_SELECTION -> {
                 // 0 = middle, 1-9 = plates
                 int plateOrMiddle = jsonObject.getInt("plate");
@@ -407,7 +407,7 @@ public class ServerNetworkConnection {
    * - "score": The current score of the player as Integer
    * */
   public void sendBoardUpdate(List<User> userList, GameBoard[] gameBoards) {
-    for(User user : userList) {
+    for (User user : userList) {
       for (GameBoard gameBoard : gameBoards) {
         if (gameBoard.getPlayerName().equals(user.getName())) {
 
