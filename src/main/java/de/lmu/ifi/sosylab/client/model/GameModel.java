@@ -314,6 +314,7 @@ public class GameModel {
    * Notifies the subscribed view that a new player joined the game.
    */
   public void userJoined(String name) {
+    System.out.println("Handle user joined in Network Connection");
     notifyListeners(new UserJoinedEvent(name));
   }
 

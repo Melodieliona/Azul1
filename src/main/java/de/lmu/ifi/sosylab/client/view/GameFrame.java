@@ -65,7 +65,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JButton hotSeat;
   private JButton multiPlayer;
   private JComboBox songs;
-  private static final String[] songList = {"CHILL BEAT" , "RETRO CITY" , "MELODIC RHYTHM"};
+  private static final String[] songList = {"CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
   private transient List<User> playerList;
   private transient Game gamesettings = null;
   private int amountOfSelectedTiles;
@@ -166,7 +166,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterMinute = 1;
     numberOfPayersHS = 0;
 
-            //Game
+    //Game
     playerNames = new ArrayList<>();
 
     collection = new TileCollection[10];
@@ -226,7 +226,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     JPanel login = new JPanel(new BorderLayout());
     login.setPreferredSize(new Dimension(200, 100));
-    JPanel south = new JPanel(new GridLayout(1,2));
+    JPanel south = new JPanel(new GridLayout(1, 2));
     south.add(play);
     south.add(back);
     login.add(south, BorderLayout.SOUTH);
@@ -294,7 +294,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     JPanel east = new JPanel();
     east.setLayout(new GridLayout(numberOfPlayers, 1));
     JPanel south = new JPanel();
-    south.setLayout(new GridLayout(1,2));
+    south.setLayout(new GridLayout(1, 2));
     JPanel center = new JPanel();
     center.setBackground(Color.CYAN);
     south.setBackground(Color.CYAN);
@@ -396,15 +396,18 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       @Override
       public void actionPerformed(ActionEvent e) {
         String selectedSong = songs.getSelectedItem().toString();
-        switch (selectedSong){
-          case "CHILL BEAT": playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
-          break;
-          case "MELODIC RHYTHM": playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
-          break;
-          case "RETRO CITY": playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
-          break;
+        switch (selectedSong) {
+          case "CHILL BEAT":
+            playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
+            break;
+          case "MELODIC RHYTHM":
+            playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
+            break;
+          case "RETRO CITY":
+            playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
+            break;
         }
-       songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
+        songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
       }
     });
 
@@ -420,26 +423,28 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     play.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
+        System.out.println(model.getGameMode());
 
-        if(model.getGameMode().equals("Multiplayer")){
+        if (model.getGameMode().equals("Multiplayer")) {
           controller.logInMultiplayer(nickName.getText());
-        } else
-        if(numberOfPayersHS == 2){
-          playerNames.add(firstNicknameHS.getText());
-          playerNames.add(secondNicknameHS.getText());
+        } else if (model.getGameMode().equals("Hot Seat")) {
+          if (numberOfPayersHS == 2) {
+            playerNames.add(firstNicknameHS.getText());
+            playerNames.add(secondNicknameHS.getText());
 
-        } else if (numberOfPayersHS == 3) {
-          playerNames.add(firstNicknameHS.getText());
-          playerNames.add(secondNicknameHS.getText());
-          playerNames.add(thirdNicknameHS.getText());
+          } else if (numberOfPayersHS == 3) {
+            playerNames.add(firstNicknameHS.getText());
+            playerNames.add(secondNicknameHS.getText());
+            playerNames.add(thirdNicknameHS.getText());
 
-        } else if (numberOfPayersHS == 4) {
-          playerNames.add(firstNicknameHS.getText());
-          playerNames.add(secondNicknameHS.getText());
-          playerNames.add(thirdNicknameHS.getText());
-          playerNames.add(fourthNicknameHS.getText());
+          } else if (numberOfPayersHS == 4) {
+            playerNames.add(firstNicknameHS.getText());
+            playerNames.add(secondNicknameHS.getText());
+            playerNames.add(thirdNicknameHS.getText());
+            playerNames.add(fourthNicknameHS.getText());
+          }
+          controller.logInHotSeat(playerNames);
         }
-        controller.logInHotSeat(playerNames);
       }
     });
 
@@ -615,7 +620,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -board.
    */
   private Component createBoard(int boardNumber) {
-    Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images , score, boardNumber);
+    Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images, score, boardNumber);
 
     JPanel board = new JPanel();
     board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
@@ -743,9 +748,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       //TODO: was soll hier genau passieren?
 
     } else if (newValue instanceof PointsUpdatedEvent) {
-    score = ((PointsUpdatedEvent) newValue).getPoints();
+      score = ((PointsUpdatedEvent) newValue).getPoints();
 
-  }
+    }
 
   }
 
@@ -782,21 +787,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   }
 
-  public static void playMusic(String path){
-    Thread musicThread = new Thread(()->
+  public static void playMusic(String path) {
+    Thread musicThread = new Thread(() ->
     {
-      try
-      {
+      try {
         AudioInputStream music = AudioSystem.getAudioInputStream(new File(path).getAbsoluteFile());
         Clip clip = AudioSystem.getClip();
         clip.open(music);
         clip.loop(Clip.LOOP_CONTINUOUSLY);
         clip.start();
 
-      } catch (Exception e)
-      {
+      } catch (Exception e) {
         e.printStackTrace();
-        JOptionPane.showMessageDialog(null,"ERROR PLAYING MUSIC !");
+        JOptionPane.showMessageDialog(null, "ERROR PLAYING MUSIC !");
       }
 
     });
