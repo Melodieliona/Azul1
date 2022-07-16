@@ -356,7 +356,6 @@ public class LocalServerConnection {
     }
   }
 
-
   //TODO Score update needed separately? Is already sent after every round with board update
   /**
    * Sends their updated score to all players of a game before the next round starts.
@@ -431,7 +430,7 @@ public class LocalServerConnection {
 
         sendBoardUpdate.put("row", emptyLayingRows.toString());
         sendBoardUpdate.put("pattern columns", filledWallCols.toString());
-        sendBoardUpdate.put("colors", wallTileColors);
+        sendBoardUpdate.put("colors", wallTileColors.toString());
         sendBoardUpdate.put("points", gameBoard.getCurrentScore());
 
         writer.write(sendBoardUpdate + System.lineSeparator());

@@ -119,3 +119,7 @@ At any point a move that is not allowed may be sent to the server. For example, 
 We recommend Java 17 for this project.
 It was tested on Windows 10 and macOS with openjdk-17.0.3,
 so no other guarantees can be made.
+
+## How to compile
+
+TODO

@@ -98,7 +98,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     this.controller = requireNonNull(controller);
     this.model = requireNonNull(model);
 
-    this.frameWidth = 300;
+    this.frameWidth = 450;
     this.frameHeight = 450;
     this.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
 

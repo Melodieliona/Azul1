@@ -81,6 +81,8 @@ public class LocalGame {
     connection.sendFilledPlates(tilePlates);
 
     sendNextPlayer();
+
+    connection.sendBoardUpdate(gameBoards);
   }
 
 
