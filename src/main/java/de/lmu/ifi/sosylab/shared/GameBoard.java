@@ -67,14 +67,14 @@ public class GameBoard {
    * Adds selected tiles to the floor line. Returns all tiles that didn't fit on the floor line.
    * Updates minus points after new tiles are placed on the floor line.
    * */
-  public TileCollection addToFloorLine(TileCollection minusPointTiles) {
+  public TileCollection addToFloorLine(TileCollection floorLineTiles) {
     TileCollection tilesDidntFit = new TileCollection();
-    for (Tile tile : minusPointTiles) {
-      if (floorLine.size() == 7) {
+    for (Tile tile : floorLineTiles) {
+      if (floorLine.size() < 7) {
+        floorLine.add(tile);
+      } else {
         tilesDidntFit.add(tile);
-        continue;
       }
-      floorLine.add(tile);
     }
     updateMinusPoints();
 

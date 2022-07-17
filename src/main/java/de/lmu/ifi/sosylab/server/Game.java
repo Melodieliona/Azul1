@@ -159,16 +159,17 @@ public class Game {
       TileCollection leftOverTiles = new TileCollection();
       leftOverTiles.addAll(currentSelection);
       leftOverTiles.removeAll(placedTiles);
-
-      if (placedTiles.size() < currentSelection.size()) {
+      if (leftOverTiles.size() > 0) {
         TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(leftOverTiles);
-        leftOverTiles.removeAll(didNotFitOnFloorLine);
         trash.addAll(didNotFitOnFloorLine);
+
+        leftOverTiles.removeAll(didNotFitOnFloorLine);
       }
 
+      //Move unselected tiles to the middle
       moveTilesToMiddle();
 
-      sendSuccessfulPlacement(currentSelection, targetRow);
+      sendSuccessfulPlacement(placedTiles, targetRow);
       sendFloorLinePlacement(leftOverTiles);
 
       currentSelection.clear();

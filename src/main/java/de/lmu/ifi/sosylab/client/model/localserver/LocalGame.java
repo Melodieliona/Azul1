@@ -150,6 +150,7 @@ public class LocalGame {
 
     // Check if at least one tile of the given color can be added to the row
     if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
+
       //Attempt to place tiles
       TileCollection placedTiles =
           gameBoard.getLayingRow(targetRow).layTilesOnRow(currentSelection);
@@ -160,15 +161,17 @@ public class LocalGame {
       leftOverTiles.addAll(currentSelection);
       leftOverTiles.removeAll(placedTiles);
 
-      if (placedTiles.size() < currentSelection.size()) {
+      if (leftOverTiles.size() > 0) {
         TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(leftOverTiles);
-        leftOverTiles.removeAll(didNotFitOnFloorLine);
         trash.addAll(didNotFitOnFloorLine);
+
+        leftOverTiles.removeAll(didNotFitOnFloorLine);
       }
 
+      //Move unselected tiles to the middle
       moveTilesToMiddle();
 
-      sendSuccessfulPlacement(currentSelection, targetRow);
+      sendSuccessfulPlacement(placedTiles, targetRow);
       sendFloorLinePlacement(leftOverTiles);
 
       currentSelection.clear();
