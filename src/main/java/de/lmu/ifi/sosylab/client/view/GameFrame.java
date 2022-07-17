@@ -73,7 +73,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private int amountOfSelectedTiles;
   private int[] score;
   private String tile_color;
-  private Images images;
+  private transient Images images;
   private JPanel middle;
   private JPanel gameField;
   private String currentPlayer;
