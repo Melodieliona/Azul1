@@ -1,6 +1,8 @@
 package de.lmu.ifi.sosylab.shared;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A game board containing the score, tile wall and laying rows of one player.
@@ -278,9 +280,7 @@ public class GameBoard {
   }
 
   public TileCollection getFloorLine() {
-    TileCollection copyOfFloorLine = new TileCollection();
-    copyOfFloorLine.addAll(floorLine);
-    return copyOfFloorLine;
+    return floorLine;
   }
 
   public void setCurrentScore(int points) {

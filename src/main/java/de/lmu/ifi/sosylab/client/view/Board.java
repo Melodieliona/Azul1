@@ -155,7 +155,9 @@ public class Board extends JPanel {
    */
   private void createMinusPoints(Graphics2D g2D) {
     try {
-      TileCollection minusPoints = controller.getPlayer(boardNumber).getBoard().getFloorLine();
+      Player player = controller.getPlayer(boardNumber);
+      TileCollection minusPoints = new TileCollection();
+      minusPoints.addAll(player.getBoard().getFloorLine());
       g2D.drawRect(30,30,30,30);
       System.out.println("MinusPunktLeiste: " + minusPoints.size());
 

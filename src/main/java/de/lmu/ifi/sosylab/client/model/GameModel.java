@@ -389,15 +389,23 @@ public class GameModel {
   }
 
   public void updateFloorLine(String nick, String[] colors) {
+    System.out.println("updating floor line");
     int numberOfTiles = colors.length;
+    System.out.println("number of tiles in floor line "+numberOfTiles);
     TileCollection tiles = new TileCollection();
     for (Player player :
         players) {
+      System.out.println("looking for player");
       if (player.getPlayerName().equals(nick)) {
+        System.out.println("player found");
         for (int i = 0; i < numberOfTiles; i++) {
+          System.out.println("adding tiles");
           tiles.addTiles(Tile.getTile(colors[i]), 1);
+          System.out.println("tile added to floor line");
         }
         player.getBoard().addToFloorLine(tiles);
+        System.out.println("now all tiles actually added to floorline");
+        System.out.println("Size of the floor line: "+player.getBoard().getFloorLine().size());
       }
     }
     notifyListeners(new FloorLineEvent());
