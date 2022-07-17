@@ -5,7 +5,6 @@ import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -47,7 +46,7 @@ public class Game {
    * Initializes all necessary data for a game with a given amount of users.
    * */
   public Game(int gameNumber, List<User> userList, ServerNetworkConnection connection) {
-    this.userList = userList;
+    this.userList = List.copyOf(userList);
     this.gameNumber = gameNumber;
     this.connection = connection;
 

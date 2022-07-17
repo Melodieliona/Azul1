@@ -439,17 +439,26 @@ public class GameClientNetworkConnection {
     send(amountOfPlayers);
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void sendTilePlacement(int numberOfTiles, int line) {
     JSONObject tilePlacement = JsonMessage.placeTiles(
         model.getSelectedTiles().getContainedColors().get(0).getColor(), line);
     send(tilePlacement);
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void sendGameRestartRequest() {
     JSONObject request = JsonMessage.gameRestartRequest();
     send(request);
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void sendGameCancelRequest() {
     JSONObject request = JsonMessage.gameCancelRequest();
     send(request);

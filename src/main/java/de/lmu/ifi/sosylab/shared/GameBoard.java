@@ -1,5 +1,7 @@
 package de.lmu.ifi.sosylab.shared;
 
+import java.util.Arrays;
+
 /**
  * A game board containing the score, tile wall and laying rows of one player.
  * */
@@ -166,7 +168,8 @@ public class GameBoard {
    * Returns this game board's tile wall.
    * */
   public Tile[][] getTileWall() {
-    return tileWall;
+    //TODO Test if copy is correct
+    return Arrays.stream(tileWall).map(Tile[]::clone).toArray(Tile[][]::new);
   }
 
   /**
