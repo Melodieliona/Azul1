@@ -430,15 +430,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       public void actionPerformed(ActionEvent e) {
         String selectedSong = songs.getSelectedItem().toString();
         switch (selectedSong) {
-          case "CHILL BEAT":
+          case "CHILL BEAT" ->
             playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
-            break;
-          case "MELODIC RHYTHM":
+          case "MELODIC RHYTHM" ->
             playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
-            break;
-          case "RETRO CITY":
+          case "RETRO CITY" ->
             playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
-            break;
+          default -> {}
         }
         songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
       }
@@ -508,6 +506,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         gameField.add(createBoard(2), BorderLayout.WEST);
         gameField.add(createBoard(3), BorderLayout.EAST);
         this.setSize(1020, 880);
+      }
+      default -> {
       }
     }
     gameField.add(createMiddle(), BorderLayout.CENTER);
