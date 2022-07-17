@@ -7,6 +7,7 @@ import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.SwingWorker;
 
@@ -116,7 +117,10 @@ public class GameController {
   }
 
   public Player getPlayer(int player) {
-    Player[] players = model.getPlayers();
+    Player[] players = new Player[model.getPlayers().size()];
+    for (int i = 0; i < model.getPlayers().size(); i++) {
+      players[i] = new Player(model.getPlayers().get(i).getPlayerName());
+    }
     return players[player];
   }
 }

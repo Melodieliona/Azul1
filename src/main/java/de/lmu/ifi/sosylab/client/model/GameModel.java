@@ -466,8 +466,9 @@ public class GameModel {
     return null;
   }
 
-  public Player[] getPlayers() {
-    return (Player[]) players.toArray().clone();
+  public ArrayList<Player> getPlayers() {
+    ArrayList<Player> copyOfPlayers = new ArrayList<>(players);
+    return  copyOfPlayers;
   }
 
   public TileCollection getSelectedTiles() {

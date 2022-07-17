@@ -797,15 +797,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     } else if (newValue instanceof UserJoinedEvent) {
       int numberOfActivePlayers = model.getNumberOfPlayers();
       System.out.println("Number of active players provided from the model are: " + numberOfActivePlayers);
-
-      if (numberOfActivePlayers > 1 && numberOfActivePlayers < 5) {
+      showGame();
+      /*if (numberOfActivePlayers > 1 && numberOfActivePlayers < 5) {
         timer.stop();
         showGame();
 
       } else {
-        waitForEnoughPlayers();
-        showCard(COUNTER_CARD);
-      }
+        //waitForEnoughPlayers();
+        //showCard(COUNTER_CARD);
+      }*/
 
 
     } else if (newValue instanceof UserLeftEvent) {
