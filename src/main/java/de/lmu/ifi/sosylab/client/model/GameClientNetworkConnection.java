@@ -113,7 +113,6 @@ public class GameClientNetworkConnection {
     System.out.println(JsonMessage.typeOf(object));
     switch (JsonMessage.typeOf(object)) {
       case LOGIN_SUCCESS -> {
-        System.out.println("logged in"); //for debugging
         handleLogin(object);
       }
       case LOGIN_FAILED -> model.loginFailed();

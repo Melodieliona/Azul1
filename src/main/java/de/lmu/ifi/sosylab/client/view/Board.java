@@ -85,8 +85,8 @@ public class Board extends JPanel {
         for (int b = 0; b < rows[i].getRow().size(); b++) {
           int x = 5 - b;
           int y = i + 2;
-
           String color = String.valueOf(rows[i].getColor());
+
           x = x * tileSize;
           y = y * tileSize;
 

@@ -278,7 +278,9 @@ public class GameBoard {
   }
 
   public TileCollection getFloorLine() {
-    return (TileCollection) floorLine.clone();
+    TileCollection copyOfFloorLine = new TileCollection();
+    copyOfFloorLine.addAll(floorLine);
+    return copyOfFloorLine;
   }
 
   public void setCurrentScore(int points) {

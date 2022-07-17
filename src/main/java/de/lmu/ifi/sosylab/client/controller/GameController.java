@@ -10,13 +10,11 @@ import java.util.List;
 import javax.swing.SwingWorker;
 
 /**
- * Todo JavaDoc
+ * The controller of the Azul-UI.
  */
 public class GameController {
 
-  /**
-   * The controller of the chat-UI.
-   */
+
 
   GameModel model;
 
@@ -116,11 +114,7 @@ public class GameController {
   }
 
   public Player getPlayer(int player) {
-    Player[] players = new Player[model.getPlayers().size()];
-    for (int i = 0; i < model.getPlayers().size(); i++) {
-      players[i] = new Player(model.getPlayers().get(i).getPlayerName());
-    }
-    return players[player];
+    return model.getPlayers().get(player);
   }
 }
 

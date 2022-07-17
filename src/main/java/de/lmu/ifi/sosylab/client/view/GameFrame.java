@@ -30,8 +30,8 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The main view of the chat user interface. It provides and connects all graphical elements
- * that are necessary for a chat application. It provides a user a screen for logging in, and
+ * The main view of the game user interface. It provides and connects all graphical elements
+ * that are necessary for a game application. It provides a user a screen for logging in, and
  * in case of success shows afterwards the necessary elements for playing the game.
  */
 public class GameFrame extends JFrame implements PropertyChangeListener {

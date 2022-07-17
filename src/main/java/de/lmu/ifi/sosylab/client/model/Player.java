@@ -28,8 +28,9 @@ public class Player {
   public void placeTiles(int line, String color, int numberOfTiles) {
     TileCollection tiles = new TileCollection();
     tiles.addTiles(Tile.getTile(color), numberOfTiles);
-    System.out.println(tiles.size());
     board.getLayingRow(line).layTilesOnRow(tiles);
+    System.out.println("Size of the collection in line "+line+": "+board.getLayingRow(line).getRow().size());
+    System.out.println("Player: "+playerName+ " has placed "+numberOfTiles+" "+ color+" in line "+line);
   }
 
   public String getPlayerName() {
@@ -40,4 +41,5 @@ public class Player {
     GameBoard copyOfGameBoard = new GameBoard(board);
     return copyOfGameBoard;
   }
+
 }
