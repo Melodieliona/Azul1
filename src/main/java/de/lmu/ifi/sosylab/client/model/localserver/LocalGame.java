@@ -159,7 +159,9 @@ public class LocalGame {
       // Put tiles in the trash, that don't fit on the floor line
       TileCollection leftOverTiles = new TileCollection();
       leftOverTiles.addAll(currentSelection);
-      leftOverTiles.removeAll(placedTiles);
+      for(Tile tile : placedTiles) {
+        leftOverTiles.remove(tile);
+      }
 
       if (leftOverTiles.size() > 0) {
         TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(leftOverTiles);
@@ -320,6 +322,9 @@ public class LocalGame {
 
   private void sendFloorLinePlacement(TileCollection leftOverTiles) {
     LocalUser currentPlayer = userList.get(this.currentPlayer);
+    System.out.println("\n");
+    System.out.println("sendFlooreLinePlacement: " + leftOverTiles.toString());
+    System.out.println("\n");
     connection.sendFloorLineUpdate(currentPlayer, leftOverTiles);
   }
 

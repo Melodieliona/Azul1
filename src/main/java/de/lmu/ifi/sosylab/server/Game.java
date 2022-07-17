@@ -149,6 +149,7 @@ public class Game {
 
     // Check if at least one tile of the given color can be added to the row
     if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
+
       //Attempt to place tiles
       TileCollection placedTiles =
           gameBoard.getLayingRow(targetRow).layTilesOnRow(currentSelection);
@@ -157,7 +158,10 @@ public class Game {
       // Put tiles in the trash, that don't fit on the floor line
       TileCollection leftOverTiles = new TileCollection();
       leftOverTiles.addAll(currentSelection);
-      leftOverTiles.removeAll(placedTiles);
+      for(Tile tile : placedTiles) {
+        leftOverTiles.remove(tile);
+      }
+
       if (leftOverTiles.size() > 0) {
         TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(leftOverTiles);
         trash.addAll(didNotFitOnFloorLine);
