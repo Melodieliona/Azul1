@@ -768,24 +768,28 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       showCard(LOGIN_M_CARD);
 
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
+      System.out.println("FRAME: MiddleTileUpdate");
       collection = controller.getTilePlates();
       gameField.removeAll();
       createGameView();
       repaint();
       currentPlayer = controller.getCurrentPlayer();
     } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
+      System.out.println("FRAME: otherPlayerPlacedTilesEvent");
       gameField.removeAll();
       createGameView();
       repaint();
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof OtherPlayerSelectedTilesEvent) {
+      System.out.println("FRAME: PlayerSelectedTielsEvent");
       gameField.removeAll();
       createGameView();
       repaint();
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilesAddedEvent) {
+      System.out.println("FRAME: TilesAddedEvent");
       gameField.removeAll();
       createGameView();
       repaint();
@@ -817,6 +821,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       score = ((PointsUpdatedEvent) newValue).getPoints();
 
     } else if (newValue instanceof BoardUpdatedEvent) {
+      gameField.removeAll();
+      createGameView();
+      repaint();
+      currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof GameCanceledEvent) {
 
@@ -827,6 +835,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     } else if (newValue instanceof GameRestartRequestEvent) {
 
     } else if (newValue instanceof NextPlayerEvent) {
+      currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TimerEvent) {
 

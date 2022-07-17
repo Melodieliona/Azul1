@@ -4,6 +4,9 @@ import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
+import de.lmu.ifi.sosylab.shared.TileCollection;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serial;
@@ -69,6 +72,7 @@ public class Board extends JPanel {
     g2D.drawString(String.valueOf(score), 250, 35);
     createTilesLeft(g2D);
     createTilesRight(g2D);
+    createMinusPoints(g2D);
     createFrame(g2D);
   }
 
@@ -81,6 +85,8 @@ public class Board extends JPanel {
     try {
       Player player = controller.getPlayer(boardNumber);
       LayingRow[] rows = player.getBoard().getLayingRows();
+      System.out.println(player.getPlayerName());
+
       for (int i = 0; i < rows.length; i++) {
         for (int b = 0; b < rows[i].getRow().size(); b++) {
           int x = 5 - b;
@@ -103,7 +109,7 @@ public class Board extends JPanel {
       }
 
     } catch (NullPointerException e) {
-      System.out.println("Collection ist noch leer! (Board)");
+      System.out.println("LayingRows ist noch leer! (Board)");
     }
   }
 
@@ -138,7 +144,7 @@ public class Board extends JPanel {
         }
       }
     } catch (NullPointerException e) {
-      System.out.println("Collection ist noch leer! (Board)");
+      //System.out.println("Tile[][] ist noch leer! (Board)");
     }
   }
 
@@ -149,15 +155,17 @@ public class Board extends JPanel {
    */
   private void createMinusPoints(Graphics2D g2D) {
     try {
-      int minusPoints = controller.getPlayer(boardNumber).getBoard().getMinusPoints();
-      System.out.println(minusPoints);
+      TileCollection minusPoints = controller.getPlayer(boardNumber).getBoard().getFloorLine();
+      g2D.drawRect(30,30,30,30);
+      System.out.println("MinusPunktLeiste: " + minusPoints.size());
 
-      /* for (int i = 0; i < collection.length; i++) {
-        for (int b = 0; b < collection[i].size(); b++) {
-          int x = 1 + b;
+      for (int i = 0; i < minusPoints.size(); i++) {
+        System.out.println("Hello");
+          int x = 1 + i;
           int y = 8;
 
-          String color = String.valueOf(collection[i].get(b));
+          String color = String.valueOf(minusPoints.get(i));
+        System.out.println(color);
           x = x * tileSize;
           y = y * tileSize;
 
@@ -172,16 +180,15 @@ public class Board extends JPanel {
           }
 
         }
-      }*/
     } catch (NullPointerException e) {
-      System.out.println("Collection ist noch leer! (Board)");
+      System.out.println("MinusPoints ist noch leer! (Board)");
     }
   }
 
   private void createFrame(Graphics2D g2D) {
     if (name.equals(controller.getCurrentPlayer())) {
       g2D.setColor(Color.GREEN);
-      g2D.drawRect(0, 0, this.getWidth() - 1, this.getHeight() - 1);
+      g2D.drawRect(0, 0, board.getWidth() - 1, board.getHeight() - 1);
     }
   }
 }
