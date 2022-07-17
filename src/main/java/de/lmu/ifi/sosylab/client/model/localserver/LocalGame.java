@@ -5,7 +5,6 @@ import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -322,9 +321,6 @@ public class LocalGame {
 
   private void sendFloorLinePlacement(TileCollection leftOverTiles) {
     LocalUser currentPlayer = userList.get(this.currentPlayer);
-    System.out.println("\n");
-    System.out.println("sendFlooreLinePlacement: " + leftOverTiles.toString());
-    System.out.println("\n");
     connection.sendFloorLineUpdate(currentPlayer, leftOverTiles);
   }
 
