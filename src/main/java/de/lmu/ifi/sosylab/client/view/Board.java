@@ -4,8 +4,6 @@ import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
-import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;

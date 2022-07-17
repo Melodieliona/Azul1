@@ -144,7 +144,8 @@ public class GameBoard {
       case 5 -> minusPoints = 8;
       case 6 -> minusPoints = 11;
       case 7 -> minusPoints = 14;
-      default -> System.out.println("Error: There cannot be more than 7 tiles on the floor line!");
+      default -> throw new IllegalArgumentException("Tried to set minus points for more than 7 " +
+        "tiles on the floor line. 7 tiles is the maximum amount.");
     }
     currentScore = plusPoints - minusPoints;
   }

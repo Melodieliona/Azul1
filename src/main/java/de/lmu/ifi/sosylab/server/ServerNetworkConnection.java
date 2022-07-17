@@ -1,6 +1,5 @@
 package de.lmu.ifi.sosylab.server;
 
-import de.lmu.ifi.sosylab.client.model.localserver.LocalUser;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.LayingRow;
@@ -53,7 +52,9 @@ public class ServerNetworkConnection {
     try {
       serverSocket = new ServerSocket(port);
     } catch (IOException e) {
-      System.out.println("Cannot create socket with port " + port + ".");
+      System.out.println("Cannot create socket with port " + port + ".\n"
+        + "Likely the port is already in use.");
+
       return;
     }
 
@@ -70,7 +71,7 @@ public class ServerNetworkConnection {
           serverSocket.close();
         }
       } catch (IOException e) {
-        System.out.println(e.getMessage());
+        e.printStackTrace();
       }
     });
 
@@ -118,7 +119,6 @@ public class ServerNetworkConnection {
             // Get Info out of the message
             switch (JsonMessage.typeOf(jsonObject)) {
               case LOGIN -> {
-                System.out.println("login request");
                 clientNick = (String) jsonObject.get("nick");
                 clientGameNumber = nextGameNumber;
                 boolean nickAlreadyUsed = false;
@@ -224,7 +224,6 @@ public class ServerNetworkConnection {
    */
   private void sendLoginSuccess(OutputStreamWriter writer) {
     try {
-      System.out.println("log in"); // for debugging
       JSONObject sendLoginSuccessJson = new JSONObject();
       sendLoginSuccessJson.put("type", "login success");
 
@@ -255,7 +254,7 @@ public class ServerNetworkConnection {
       writer.write(sendLoginSuccessJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -264,14 +263,13 @@ public class ServerNetworkConnection {
    */
   private void sendLoginFailed(OutputStreamWriter writer) {
     try {
-      System.out.println("login failed"); // for debugging
       JSONObject sendLoginFailedJson = new JSONObject();
       sendLoginFailedJson.put("type", "login failed");
 
       writer.write(sendLoginFailedJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -291,7 +289,7 @@ public class ServerNetworkConnection {
         }
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -306,7 +304,7 @@ public class ServerNetworkConnection {
       user.getWriter().write(sendNextPlayerJson + System.lineSeparator());
       user.getWriter().flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -321,7 +319,7 @@ public class ServerNetworkConnection {
       user.getWriter().write(sendNextPlayerJson + System.lineSeparator());
       user.getWriter().flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
 
   }
@@ -345,7 +343,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -369,7 +367,7 @@ public class ServerNetworkConnection {
         System.out.println("Sent tile placement JSON...");
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -403,7 +401,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -419,7 +417,7 @@ public class ServerNetworkConnection {
       user.getWriter().write(sendScoreUpdate + System.lineSeparator());
       user.getWriter().flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -488,7 +486,7 @@ public class ServerNetworkConnection {
             user.getWriter().write(sendBoardUpdate + System.lineSeparator());
             user.getWriter().flush();
           } catch (IOException | JSONException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
           }
         }
       }
@@ -541,7 +539,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -568,7 +566,7 @@ public class ServerNetworkConnection {
       user.getWriter().flush();
 
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -586,7 +584,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -622,7 +620,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -642,7 +640,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -661,7 +659,7 @@ public class ServerNetworkConnection {
         }
       }
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -689,6 +687,7 @@ public class ServerNetworkConnection {
     sendStartTimer();
 
     System.out.println("Timer set on 5sec for testing...");
+    //TODO Set timer on 60sec after testing/debugging is complete
 
     Thread timerThread = new Thread(() -> {
       try {
@@ -703,6 +702,7 @@ public class ServerNetworkConnection {
           usersInGame.add(user);
         }
       }
+
       // Check if game hasn't already been started (because a 4th user joined) and if there are
       // enough users for a game (at least 2)
       System.out.println("Timer elapsed! Game will start now with "
