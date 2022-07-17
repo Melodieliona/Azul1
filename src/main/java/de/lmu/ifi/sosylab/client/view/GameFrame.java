@@ -67,7 +67,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private transient List<String> playerNames;
   private JButton hotSeat;
   private JButton multiPlayer;
-  private JComboBox songs;
+  private JComboBox<String> songs;
   private transient List<User> playerList;
   private transient Game gamesettings = null;
   private int amountOfSelectedTiles;
@@ -177,7 +177,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     hotSeat.setFont(standardFont);
     multiPlayer = new JButton("MULTIPLAYER");
     multiPlayer.setFont(standardFont);
-    songs = new JComboBox(songList);
+    songs = new JComboBox<>(songList);
     back = new JButton("Back");
     back.setFont(standardFont);
     loginLabel = new JLabel("Login with your nick name:");
