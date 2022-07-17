@@ -159,7 +159,7 @@ public class LocalServerConnection {
                 int targetRow = jsonObject.getInt("row");
                 Tile placementColor = Tile.getTile((String) jsonObject.get("color"));
 
-                game.handleTilePlacement(clientNick, targetRow, placementColor);
+                game.handleTilePlacement(targetRow, placementColor);
 
                 break;
               default:
