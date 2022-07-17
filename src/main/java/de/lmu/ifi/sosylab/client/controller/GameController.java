@@ -78,18 +78,6 @@ public class GameController {
     model.selectTilesRequest(source, color);
   }
 
-  public void setTilesToRow(int row) {
-  }
-
-  //left
-  public LayingRow[] getLayingRow(int rowNumber) {
-    return null;
-  }
-
-  //right
-  public Object[][] getTileWall() {
-    return null;
-  }
 
   public String getCurrentPlayer() {
     return model.getCurrentPlayer();
