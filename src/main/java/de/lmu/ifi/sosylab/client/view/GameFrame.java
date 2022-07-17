@@ -743,8 +743,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     if (newValue instanceof LoggedInEvent) {
       int numberOfActivePlayers = model.getNumberOfPlayers();
-      System.out.println("Number of active players provided from the model are: " + numberOfActivePlayers);
-      System.out.println("Game mode is:" + model.getGameMode());
       if (model.getGameMode().equals("Multiplayer")) {
 
         //int numberOfActivePlayers = model.getNumberOfPlayers();

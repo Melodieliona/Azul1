@@ -55,7 +55,6 @@ public class GameClientNetworkConnection {
           continue;
         }
         try {
-          System.out.println("setting up connection");
           setupConnection(socket);
         } catch (IOException e) {
           e.printStackTrace();
@@ -109,7 +108,6 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   public void handleGameEvent(JSONObject object) {
-    System.out.println("message received");
     System.out.println(JsonMessage.typeOf(object));
     switch (JsonMessage.typeOf(object)) {
       case LOGIN_SUCCESS -> {
@@ -393,7 +391,6 @@ public class GameClientNetworkConnection {
    * @param nickname The name of the user with whom to log in.
    */
   public void sendLogin(String nickname) {
-    System.out.println("login sent");
     JSONObject login = JsonMessage.login(nickname);
     send(login);
   }
@@ -407,7 +404,6 @@ public class GameClientNetworkConnection {
     try {
       writer.write(message + System.lineSeparator());
       writer.flush();
-      System.out.println("message sent **********");
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -423,9 +419,6 @@ public class GameClientNetworkConnection {
   public void sendTileSelection(int source, String color, int numberOfTiles) {
     JSONObject tileSelection = JsonMessage.selectTile(color, source);
     send(tileSelection);
-    System.out.println(JsonMessage.getTileColor(tileSelection));
-    System.out.println(JsonMessage.getFactoryPlate(tileSelection));
-    System.out.println("tile selection sent");
   }
 
   /**

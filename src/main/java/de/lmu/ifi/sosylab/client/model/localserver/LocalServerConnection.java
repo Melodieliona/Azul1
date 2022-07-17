@@ -501,11 +501,13 @@ public class LocalServerConnection {
       sendFillPlates.put("color", tileColors.toString());
       sendFillPlates.put("tiles", tileAmounts.toString());
 
-      System.out.println("\n");
-      System.out.println("LocalServer: Sending the values below in fillPlates JSON");
-      System.out.println("Colors: " + tileColors);
-      System.out.println("Amounts: " + tileAmounts);
-      System.out.println("\n");
+      //TODO remove this
+      //for debugging
+      //System.out.println("\n");
+      //System.out.println("LocalServer: Sending the values below in fillPlates JSON");
+      //System.out.println("Colors: " + tileColors);
+      //System.out.println("Amounts: " + tileAmounts);
+      //System.out.println("\n");
 
       writer.write(sendFillPlates + System.lineSeparator());
       writer.flush();

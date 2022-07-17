@@ -97,10 +97,11 @@ public class GameModel {
    * TODO Javadoc
    */
   public void logInHotSeat(String[] playersName) {
+    //TODO remove this
     //testing
-    for (int i = 0; i < playersName.length; i++) {
-      System.out.println(playersName[i]);
-    }
+    //for (int i = 0; i < playersName.length; i++) {
+    //  System.out.println(playersName[i]);
+    //}
 
     connection.sendPlayers(playersName.length);
     for (int i = 0; i < playersName.length; i++) {
@@ -117,7 +118,6 @@ public class GameModel {
     currentPlayer = nickname;
     if (gameMode.equals("Hot seat")) {
       this.nickname = nickname;
-      System.out.println("Nickname " + nickname);
     }
     notifyListeners(new NextPlayerEvent(nickname));
   }
