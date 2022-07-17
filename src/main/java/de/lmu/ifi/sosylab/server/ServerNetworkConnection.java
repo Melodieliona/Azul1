@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosylab.server;
 
+import de.lmu.ifi.sosylab.client.model.localserver.LocalUser;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.LayingRow;
@@ -226,6 +227,30 @@ public class ServerNetworkConnection {
       System.out.println("log in"); // for debugging
       JSONObject sendLoginSuccessJson = new JSONObject();
       sendLoginSuccessJson.put("type", "login success");
+
+      //Add number of waiting players
+      int currentAmountOfWaitingPlayers = 0;
+      for(User user : users) {
+        if(user.getGameNumber() == nextGameNumber) {
+          currentAmountOfWaitingPlayers++;
+        }
+      }
+      sendLoginSuccessJson.put("amount", currentAmountOfWaitingPlayers);
+
+      //Add names of waiting players
+      StringBuilder nicknames = new StringBuilder();
+      int userCounter = 0;
+      for (User user : users) {
+        if (user.getGameNumber() == nextGameNumber) {
+          nicknames.append(user.getName());
+          if (userCounter < users.size() - 1) {
+            nicknames.append(",");
+          }
+          userCounter++;
+        }
+      }
+
+      sendLoginSuccessJson.put("nick", nicknames.toString());
 
       writer.write(sendLoginSuccessJson + System.lineSeparator());
       writer.flush();

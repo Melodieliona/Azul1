@@ -110,8 +110,7 @@ public class LocalServerConnection {
             switch (JsonMessage.typeOf(jsonObject)) {
               case PLAYERS:
                 if (amountOfExpectedUsers == 0) {
-                  amountOfExpectedUsers = Integer.parseInt(jsonObject.getString("amounts"));
-                  System.out.println("Amount of players: " + amountOfExpectedUsers);
+                  amountOfExpectedUsers = Integer.parseInt(jsonObject.getString("amount"));
                 }
                 break;
               case LOGIN:
@@ -205,12 +204,28 @@ public class LocalServerConnection {
 
   /**
    * Sends a login confirmation.
+   * Also tells the current number of players.
    */
   private void sendLoginSuccess() {
     try {
-      System.out.println("log in"); // for debugging
       JSONObject sendLoginSuccessJson = new JSONObject();
       sendLoginSuccessJson.put("type", "login success");
+
+      //Add number of waiting players
+      sendLoginSuccessJson.put("amount", users.size());
+
+      //Add names of waiting players
+      StringBuilder nicknames = new StringBuilder();
+      int userCounter = 0;
+      for(LocalUser user : users) {
+        nicknames.append(user.getName());
+        if(userCounter < users.size() - 1) {
+          nicknames.append(",");
+        }
+        userCounter++;
+      }
+
+      sendLoginSuccessJson.put("nick", nicknames.toString());
 
       writer.write(sendLoginSuccessJson + System.lineSeparator());
       writer.flush();
