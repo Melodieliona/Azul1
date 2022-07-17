@@ -24,8 +24,6 @@ public class GameModel {
 
   private GameClientNetworkConnection connection;
 
-  private int numberOfPlayers = 0;
-
   private ArrayList<Player> players = new ArrayList<>();
 
   private TileCollection[] tilePlates;
@@ -75,7 +73,7 @@ public class GameModel {
   }
 
   public int getNumberOfPlayers() {
-    return numberOfPlayers;
+    return players.size();
   }
 
   /**
@@ -104,9 +102,8 @@ public class GameModel {
       System.out.println(playersName[i]);
     }
 
-    numberOfPlayers = playersName.length;
-    connection.sendPlayers(numberOfPlayers);
-    for (int i = 0; i < numberOfPlayers; i++) {
+    connection.sendPlayers(playersName.length);
+    for (int i = 0; i < playersName.length; i++) {
       connection.sendLogin(playersName[i]);
     }
   }
@@ -301,11 +298,12 @@ public class GameModel {
   }
 
   public void loggedIn(String[] nicknames) {
-    for (String nickname :
-        nicknames) {
-      players.add(new Player(nickname));
+    if (gameMode.equals("Multiplayer")) {
+      for (String nickname :
+          nicknames) {
+        players.add(new Player(nickname));
+      }
     }
-    numberOfPlayers = players.size();
     notifyListeners(new LoggedInEvent());
     isLoggedin = true;
   }
@@ -322,7 +320,6 @@ public class GameModel {
    */
   public void userJoined(String name) {
     players.add(new Player(name));
-    numberOfPlayers = players.size();
     notifyListeners(new UserJoinedEvent(name));
   }
 
