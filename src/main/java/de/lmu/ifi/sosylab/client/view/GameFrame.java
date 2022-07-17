@@ -76,7 +76,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     private Images images;
     private JPanel middle;
     private JPanel gameField;
-    private int currentBoard;
+    private String currentPlayer;
     private int frameWidth;
     private int frameHeight;
     private String currentCard;
@@ -469,7 +469,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                 goBackOneCard();
             }
         });
-
     }
 
     private Component createGameField() {
@@ -477,17 +476,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             case 1 -> {
                 gameField.add(createBoard(0), BorderLayout.NORTH);
                 gameField.add(createBoard(1), BorderLayout.SOUTH);
+                this.setSize(350,900);
             }
             case 2 -> {
                 gameField.add(createBoard(0), BorderLayout.NORTH);
                 gameField.add(createBoard(1), BorderLayout.WEST);
                 gameField.add(createBoard(2), BorderLayout.SOUTH);
+                this.setSize(700,920);
             }
             case 3 -> {
                 gameField.add(createBoard(0), BorderLayout.NORTH);
                 gameField.add(createBoard(1), BorderLayout.SOUTH);
                 gameField.add(createBoard(2), BorderLayout.WEST);
                 gameField.add(createBoard(3), BorderLayout.EAST);
+                this.setSize(1020,880);
             }
         }
         gameField.add(createMiddle(), BorderLayout.CENTER);
@@ -548,6 +550,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
                         Point checkMouseTip = e.getPoint();
+                        currentPlayer = controller.getCurrentPlayer();
 
                         String plates = plate.getComponentAt(checkMouseTip).getParent().getName();
                         tile_color = plate.getComponentAt(checkMouseTip).getName();
@@ -556,7 +559,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                             int plateNumber = Integer.parseInt(plates);
                             amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile_color));
                             System.out.println("This amount is " + amountOfSelectedTiles);
-                            boolean confirmation = confirmTileSelection(plateNumber, tile_color, amountOfSelectedTiles, playerNames.get(currentBoard));
+                            boolean confirmation = confirmTileSelection(plateNumber, tile_color, amountOfSelectedTiles, currentPlayer);
                             if (confirmation) {
                                 //TODO: next line is thowing an exception
                                 controller.selectAllTiles(plateNumber, tile_color);
@@ -635,7 +638,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
      * @return -board.
      */
     private Component createBoard(int boardNumber) {
-        Board b = new Board(collection, tileSize, playerNames.get(boardNumber), images, score, boardNumber);
+        Board b = new Board(controller, tileSize, playerNames.get(boardNumber), images, score, boardNumber);
 
         JPanel board = new JPanel();
         board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
@@ -661,7 +664,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
                 Point checkMouseTip = e.getPoint();
                 int mousePointX = checkMouseTip.x / tileSize;
                 int mousePointY = checkMouseTip.y / tileSize;
-                currentBoard = boardNumber;
+                currentPlayer = controller.getCurrentPlayer();
 
                 if (playerNames.get(boardNumber).equals(controller.getCurrentPlayer())) {
 
@@ -740,10 +743,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             createGameView();
             repaint();
         } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
+            gameField.removeAll();
+            createGameView();
+            repaint();
 
         } else if (newValue instanceof OtherPlayerSelectedTilesEvent) {
+            gameField.removeAll();
+            createGameView();
+            repaint();
 
         } else if (newValue instanceof TilesAddedEvent) {
+            gameField.removeAll();
+            createGameView();
+            repaint();
 
         } else if (newValue instanceof TilesSelectedEvent) {
 

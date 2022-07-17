@@ -2,6 +2,7 @@ package de.lmu.ifi.sosylab.server;
 
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.JsonMessage;
+import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.io.BufferedReader;
@@ -115,11 +116,10 @@ public class ServerNetworkConnection {
 
             // Get Info out of the message
             switch (JsonMessage.typeOf(jsonObject)) {
-              case LOGIN:
+              case LOGIN -> {
                 System.out.println("login request");
                 clientNick = (String) jsonObject.get("nick");
                 clientGameNumber = nextGameNumber;
-
                 boolean nickAlreadyUsed = false;
                 for (User user : users) {
                   if (user.getGameNumber() == nextGameNumber) {
@@ -132,7 +132,6 @@ public class ServerNetworkConnection {
 
                 if (nickAlreadyUsed) {
                   sendLoginFailed(writer);
-                  break;
                 } else {
                   // Acknowledge successful login
                   sendLoginSuccess(writer);
@@ -156,34 +155,35 @@ public class ServerNetworkConnection {
                   } else if ((numberOfUsersInNextGame > 1) && !gameStartTimerRunning) {
                     startTimer();
                   }
-
                 }
-                break;
-              case TILE_SELECTION:
+              }
+
+              case TILE_SELECTION -> {
                 // 0 = middle, 1-9 = plates
                 int plateOrMiddle = jsonObject.getInt("plate");
                 Tile selectionColor = Tile.getTile((String) jsonObject.get("color"));
-
                 for (Game game : games) {
                   if (game.getGameNumber() == clientGameNumber) {
                     game.handleTileSelection(clientNick, plateOrMiddle, selectionColor);
                     break;
                   }
                 }
-                break;
-              case TILE_PLACEMENT:
+              }
+
+              case TILE_PLACEMENT -> {
                 // '0' is row 1, '1' is row 2, '2' is row 3, etc...
                 int targetRow = jsonObject.getInt("row");
                 Tile placementColor = Tile.getTile((String) jsonObject.get("color"));
-
                 for (Game game : games) {
                   if (game.getGameNumber() == clientGameNumber) {
                     game.handleTilePlacement(clientNick, targetRow, placementColor);
                     break;
                   }
                 }
-                break;
-              default: break;
+              }
+
+              default -> {
+              }
             }
           }
         } catch (IOException | JSONException e) {
@@ -381,30 +381,90 @@ public class ServerNetworkConnection {
   }
 
   /**
-   * Sends their updated score to all players of a game before the next round starts.
+   * Sends the updated score to the player who just made a move.
    * */
-  public void sendScoreUpdate(int minusPoints) {
+  public void sendScoreUpdate(User user, int score) {
+    try {
+      JSONObject sendScoreUpdate = new JSONObject();
 
-    // TODO
+      sendScoreUpdate.put("score", 12345);
+
+      user.getWriter().write(sendScoreUpdate + System.lineSeparator());
+      user.getWriter().flush();
+    } catch (IOException | JSONException e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   /**
    * Send board state to all players at the very beginning and after a round ended.
    * Contains:
-   * - the current score of each player
-   * - whose turn it is next (..?..)
+   * - "nick": Name of the player, this play board belongs to
+   * - "row": Empty laying rows
+   * - "pattern columns": x-coords of laid wall tiles -
+   *   (corresponding values of "row" are y-coords)
+   * - "colors": Colors of the laid wall tiles
+   * - "score": The current score of the player as Integer
    * */
   public void sendBoardUpdate(List<User> userList, GameBoard[] gameBoards) {
-    try {
-      for (User user : userList) {
-        JSONObject sendBoardUpdate = new JSONObject();
-        sendBoardUpdate.put("type", "board update");
+    for (User user : userList) {
+      for (GameBoard gameBoard : gameBoards) {
+        if (gameBoard.getPlayerName().equals(user.getName())) {
 
-        user.getWriter().write(sendBoardUpdate + System.lineSeparator());
-        user.getWriter().flush();
+          try {
+            JSONObject sendBoardUpdate = new JSONObject();
+            sendBoardUpdate.put("type", "board update");
+            sendBoardUpdate.put("nick", gameBoard.getPlayerName());
+
+            //Add empty laying rows and wall tile columns / colors
+            int rowIterator = 0;
+            Tile[][] wall = gameBoard.getTileWall();
+            StringBuilder emptyLayingRows = new StringBuilder();
+            StringBuilder filledWallCols = new StringBuilder();
+            StringBuilder wallTileColors = new StringBuilder();
+            for (LayingRow layingRow : gameBoard.getLayingRows()) {
+              if (layingRow.isRowEmpty()) {
+                emptyLayingRows.append(layingRow.getRowNumber());
+
+                int colIterator = 0;
+                for (int col = 0; col < 5; col++) {
+                  if (wall[col][rowIterator] != null) {
+                    filledWallCols.append(col);
+                    wallTileColors.append(wall[col][rowIterator].getColor());
+                  }
+                  if (colIterator < 4) {
+                    filledWallCols.append(",");
+                    wallTileColors.append(",");
+                  }
+                  colIterator++;
+                }
+
+                if (rowIterator < 4) {
+                  emptyLayingRows.append(",");
+                  filledWallCols.append("/");
+                  wallTileColors.append("/");
+                }
+              }
+              rowIterator++;
+            }
+
+            //TODO DELETE sout's
+            System.out.println("Gesendete leere Reihen: " + emptyLayingRows);
+            System.out.println("Gesendete Wand-Spalten: " + filledWallCols);
+            System.out.println("Gesendete Wand-Farben: " + wallTileColors);
+
+            sendBoardUpdate.put("row", emptyLayingRows.toString());
+            sendBoardUpdate.put("pattern columns", filledWallCols.toString());
+            sendBoardUpdate.put("colors", wallTileColors.toString());
+            sendBoardUpdate.put("points", gameBoard.getCurrentScore());
+
+            user.getWriter().write(sendBoardUpdate + System.lineSeparator());
+            user.getWriter().flush();
+          } catch (IOException | JSONException e) {
+            System.out.println(e.getMessage());
+          }
+        }
       }
-    } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
     }
   }
 

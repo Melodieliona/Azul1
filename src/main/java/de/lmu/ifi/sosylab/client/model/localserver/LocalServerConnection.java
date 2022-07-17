@@ -327,30 +327,27 @@ public class LocalServerConnection {
    * Sends a message with all tiles that have been added to the floor line
    * to all other players of that game.
    * */
-  public void sendFloorLineUpdate(
-      List<LocalUser> userlist, LocalUser currentUser, TileCollection newFloorLineTiles) {
+  public void sendFloorLineUpdate(LocalUser currentUser, TileCollection newFloorLineTiles) {
     try {
-      for (LocalUser user : userlist) {
-        JSONObject sendNewFloorLineTiles = new JSONObject();
-        sendNewFloorLineTiles.put("type", "floorline_placement");
-        sendNewFloorLineTiles.put("nick", currentUser.getName());
-        sendNewFloorLineTiles.put("amount", newFloorLineTiles.size());
+      JSONObject sendNewFloorLineTiles = new JSONObject();
+      sendNewFloorLineTiles.put("type", "floorline_placement");
+      sendNewFloorLineTiles.put("nick", currentUser.getName());
+      sendNewFloorLineTiles.put("amount", newFloorLineTiles.size());
 
-        // Formats tiles like this: {.."floortile0": "BLUE", "floortile1": "RED"..}
-        // Index is relative to the newly added tiles ~ floortile0 is not the first tile on the
-        // floor line, but the first tile to be added to it now.
-        // If the starting marker was added, it will be "floortile0"
-        int tileIndex = 0;
+      // Formats tiles like this: {.."floortile0": "BLUE", "floortile1": "RED"..}
+      // Index is relative to the newly added tiles ~ floortile0 is not the first tile on the
+      // floor line, but the first tile to be added to it now.
+      // If the starting marker was added, it will be "floortile0"
+      int tileIndex = 0;
 
-        for (Tile tile : newFloorLineTiles) {
-          String tileNumber = "floortile" + tileIndex;
-          sendNewFloorLineTiles.put(tileNumber, tile.name());
-          tileIndex++;
-        }
-
-        writer.write(sendNewFloorLineTiles + System.lineSeparator());
-        writer.flush();
+      for (Tile tile : newFloorLineTiles) {
+        String tileNumber = "floortile" + tileIndex;
+        sendNewFloorLineTiles.put(tileNumber, tile.name());
+        tileIndex++;
       }
+
+      writer.write(sendNewFloorLineTiles + System.lineSeparator());
+      writer.flush();
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }
@@ -358,11 +355,10 @@ public class LocalServerConnection {
 
   //TODO Score update needed separately? Is already sent after every round with board update
   /**
-   * Sends their updated score to all players of a game before the next round starts.
+   * Sends the updated score to the player who just made a move.
    * */
   public void sendScoreUpdate(int score) {
     try {
-
       JSONObject sendScoreUpdate = new JSONObject();
 
       sendScoreUpdate.put("score", 12345);
@@ -382,7 +378,7 @@ public class LocalServerConnection {
    * - "pattern columns": x-coords of laid wall tiles -
    *   (corresponding values of "row" are y-coords)
    * - "colors": Colors of the laid wall tiles
-   * - "score": The current score of the player as Integer
+   * - "score": The current score of the player
    * */
   public void sendBoardUpdate(GameBoard[] gameBoards) {
     for (GameBoard gameBoard : gameBoards) {
@@ -405,12 +401,18 @@ public class LocalServerConnection {
             for (int col = 0; col < 5; col++) {
               if (wall[col][rowIterator] != null) {
                 filledWallCols.append(col);
+                if (colIterator < 4) {
+                  filledWallCols.append(",");
+                }
+              }
+
+              if (wall[col][rowIterator] != null) {
                 wallTileColors.append(wall[col][rowIterator].getColor());
+                if (colIterator < 4) {
+                  wallTileColors.append(",");
+                }
               }
-              if (colIterator < 4) {
-                filledWallCols.append(",");
-                wallTileColors.append(",");
-              }
+
               colIterator++;
             }
 
@@ -431,7 +433,7 @@ public class LocalServerConnection {
         sendBoardUpdate.put("row", emptyLayingRows.toString());
         sendBoardUpdate.put("pattern columns", filledWallCols.toString());
         sendBoardUpdate.put("colors", wallTileColors.toString());
-        sendBoardUpdate.put("points", gameBoard.getCurrentScore());
+        sendBoardUpdate.put("points", String.valueOf(gameBoard.getCurrentScore()));
 
         writer.write(sendBoardUpdate + System.lineSeparator());
         writer.flush();
@@ -570,24 +572,6 @@ public class LocalServerConnection {
       writer.write(finalScoresJson + System.lineSeparator());
       writer.flush();
 
-    } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
-    }
-  }
-
-  /**
-   * Broadcasts that a user has disconnected from the server to all still connected clients.
-   *
-   * @param clientNick Name of the disconnected user.
-   */
-  private void sendUserLeft(String clientNick) {
-    try {
-      JSONObject postMessageJson = new JSONObject();
-      postMessageJson.put("type", "user left");
-      postMessageJson.put("nick", clientNick);
-
-      writer.write(postMessageJson + System.lineSeparator());
-      writer.flush();
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());
     }

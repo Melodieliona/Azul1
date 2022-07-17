@@ -42,9 +42,7 @@ public enum JsonMessage {
 
   public static final String PATTERN_COLUMNS_FIELD = "pattern columns";
 
-  public static final String SCORES_FIELD = "scores";
-
-  public static final String CONTENT_FIELD = "content";
+  public static final String SCORES_FIELD = "points";
 
   public static final String AMOUNTS = "amounts";
 
@@ -312,33 +310,6 @@ public enum JsonMessage {
     }
   }
 
-  /**
-   * Gets the columns of the fields where tiles should be placed from a JsonMessage.
-   *
-   * @param object JsonMessage
-   * @return columns as a string
-   */
-  public static String getColumns(JSONObject object) {
-    try {
-      return object.getString(COLUMNS_FIELD);
-    } catch (JSONException e) {
-      throw new IllegalArgumentException("Failed to read a json object.", e);
-    }
-  }
-
-  /**
-   * Gets the rows of the pattern fields where tiles should be placed from a JsonMessage.
-   *
-   * @param object JsonMessage
-   * @return rows as a string
-   */
-  public static String getPatternRows(JSONObject object) {
-    try {
-      return object.getString(PATTERN_ROWS_FIELD);
-    } catch (JSONException e) {
-      throw new IllegalArgumentException("Failed to read a json object.", e);
-    }
-  }
 
   /**
    * Gets the columns of the pattern fields where tiles should be placed from a JsonMessage.

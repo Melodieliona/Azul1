@@ -175,17 +175,13 @@ public class GameModel {
    * @param line       selected to place tiles
    */
   public void placeTiles(int line, int numOfTiles) {
-    int minuspoints = 0;
-    if (gameMode.equals("Multiplayer")) {
-      minuspoints = players[0].placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
-    } else {
-      for (Player player : players) {
-        if (player.getPlayerName().equals(nickname)) {
-          minuspoints = player.placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
-        }
+    for (Player player:
+         players) {
+      if (player.getPlayerName().equals(currentPlayer)){
+        player.placeTiles(line,selectedTiles.getContainedColors().get(0).getColor(),numOfTiles);
       }
     }
-    notifyListeners(new TilesAddedEvent(selectedTiles.getContainedColors().get(0).getColor(), line, numOfTiles, minuspoints));
+    notifyListeners(new TilesAddedEvent(selectedTiles.getContainedColors().get(0).getColor(), line, numOfTiles, 0));
   }
 
   /**
@@ -219,8 +215,10 @@ public class GameModel {
    * @param color type of tile
    */
   public void otherPlayerSelectedTiles(String color, int source) {
+    selectedTiles.removeAllTiles();
     int numberOfSelectedTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     selectedTiles.addTiles(Tile.getTile(color), numberOfSelectedTiles);
+    tilePlates[source].removeTilesOfColor(Tile.getTile(color));
     notifyListeners(
         new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
   }
@@ -287,6 +285,14 @@ public class GameModel {
     connection.sendGameCancelRequest();
   }
 
+  public void cancelGame() {
+    notifyListeners(new GameCanceledEvent());
+  }
+
+  public void restartGame() {
+    notifyListeners(new GameRestartedEvent());
+  }
+
   /**
    * Notify subscribed listeners that the state of the model has changed. To this end, a specific
    * {@link GameEvents} gets fired such that the attached observers (i.e.,
@@ -346,6 +352,13 @@ public class GameModel {
     notifyListeners(new GameCancelRequestEvent(nickname));
   }
 
+  /**
+   *
+   */
+public void updateBoard(String[] rows, String[] columns, String nick, String points){
+  
+  notifyListeners(new BoardUpdatedEvent());
+}
 
   /**
    * Add a {@link PropertyChangeListener} to the model for getting notified about any changes that
@@ -425,6 +438,10 @@ public class GameModel {
   public int[] getScore(){
     int[] points;
     return null;
+  }
+
+  public Player[] getPlayers() {
+    return players;
   }
 
 }
