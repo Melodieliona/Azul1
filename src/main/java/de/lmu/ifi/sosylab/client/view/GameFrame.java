@@ -550,7 +550,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           String color = String.valueOf(collection[plateNumber].get(i));
           PaintTile tile = new PaintTile(color, images);
           tile.setName(color);
-          System.out.println(color);
           if (i == 2) {
             x = 1;
             y = 3;
@@ -637,9 +636,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           if (tile_color != null) {
             System.out.println("Tile " + tile_color + " was clicked on Plate 0");
             amountOfSelectedTiles = collection[0].getAmountTilesOfColor(Tile.getTile(tile_color));
-            controller.selectAllTiles(0, tile_color);
+            boolean confirmation = confirmTileSelection(0, tile_color, amountOfSelectedTiles, currentPlayer);
+            if (confirmation) {
+              controller.selectAllTiles(0, tile_color);
+            }
           }
-
         }
       });
     } catch (NullPointerException e) {
@@ -687,26 +688,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
           if (mousePointX == 5 && mousePointY == 2) {
             controller.placeTiles(amountOfSelectedTiles, 0);
-            System.out.println("Clicked First Row");
           }
           if (mousePointX > 3 && mousePointX < 6 && mousePointY == 3) {
-            System.out.println("Clicked Second Row");
             controller.placeTiles(amountOfSelectedTiles, 1);
           }
           if (mousePointX > 2 && mousePointX < 6 && mousePointY == 4) {
-            System.out.println("Clicked Third Row");
             controller.placeTiles(amountOfSelectedTiles, 2);
           }
           if (mousePointX > 1 && mousePointX < 6 && mousePointY == 5) {
-            System.out.println("Clicked Forth Row");
             controller.placeTiles(amountOfSelectedTiles, 3);
           }
           if (mousePointX > 0 && mousePointX < 6 && mousePointY == 6) {
-            System.out.println("Clicked Fifth Row");
             controller.placeTiles(amountOfSelectedTiles, 4);
           }
           if (mousePointX > 0 && mousePointX < 8 && mousePointY == 8) {
-            System.out.println("Minus Points");
             controller.placeTiles(amountOfSelectedTiles, 5);
           }
         }

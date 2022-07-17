@@ -84,7 +84,6 @@ public class Board extends JPanel {
     try {
       Player player = controller.getPlayer(boardNumber);
       LayingRow[] rows = player.getBoard().getLayingRows();
-      System.out.println(player.getPlayerName());
 
       for (int i = 0; i < rows.length; i++) {
         for (int b = 0; b < rows[i].getRow().size(); b++) {
@@ -157,7 +156,6 @@ public class Board extends JPanel {
       Player player = controller.getPlayer(boardNumber);
       TileCollection minusPoints = new TileCollection();
       minusPoints.addAll(player.getBoard().getFloorLine());
-      g2D.drawRect(30, 30, 30, 30);
 
       for (int i = 0; i < minusPoints.size(); i++) {
           int x = 1 + i;
@@ -193,7 +191,6 @@ public class Board extends JPanel {
   private void createValidRows(Graphics2D g2D) {
     try {
       if (controller.getCurrentPlayer().equals(controller.getPlayer(boardNumber).getPlayerName())) {
-        System.out.println("EQUAlY");
         int[] valid = controller.getValidRow();
         for (int i = 0; i < controller.getValidRow().length; i++) {
           System.out.println(valid[i]);
