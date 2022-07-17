@@ -157,6 +157,11 @@ public class GameModel {
     int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     selectedTiles.addTiles(Tile.getTile(color), numberOfTiles);
     tilePlates[source].removeTilesOfColor(Tile.getTile(color));
+    if (source != 0) {
+      tilePlates[0].addAll(tilePlates[source]);
+    } else {
+      if(tilePlates[0].contains(Tile.STARTING_MARKER)) selectedTiles.add(Tile.STARTING_MARKER);
+    }
     notifyListeners(new TilesSelectedEvent(source, color, selectedTiles.size()));
   }
 
@@ -212,6 +217,11 @@ public class GameModel {
     int numberOfSelectedTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     selectedTiles.addTiles(Tile.getTile(color), numberOfSelectedTiles);
     tilePlates[source].removeTilesOfColor(Tile.getTile(color));
+    if (source != 0) {
+      tilePlates[0].addAll(tilePlates[source]);
+    } else {
+      if(tilePlates[0].contains(Tile.STARTING_MARKER)) selectedTiles.add(Tile.STARTING_MARKER);
+    }
     notifyListeners(
         new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
   }
@@ -463,7 +473,7 @@ public class GameModel {
 
   public ArrayList<Player> getPlayers() {
     ArrayList<Player> copyOfPlayers = new ArrayList<>(players);
-    return  copyOfPlayers;
+    return copyOfPlayers;
   }
 
   public TileCollection getSelectedTiles() {
