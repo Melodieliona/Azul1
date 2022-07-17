@@ -353,7 +353,7 @@ public class GameClientNetworkConnection {
 
   private void handleFloorLineUpdate(JSONObject object){
     String nick = JsonMessage.getNickname(object);
-    int amount = Integer.parseInt(JsonMessage.getTiles(object));
+    int amount = Integer.parseInt(JsonMessage.getAmounts(object));
     String[] colors = new String[amount];
     for (int i = 0; i < amount; i++) {
       colors[i] = JsonMessage.getFloorTile(object, i);
