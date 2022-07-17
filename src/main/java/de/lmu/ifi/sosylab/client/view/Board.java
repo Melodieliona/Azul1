@@ -18,7 +18,7 @@ public class Board extends JPanel {
   private static final long serialVersionUID = 1L;
   private int tileSize;
   private GameController controller;
-  private Images img;
+  private transient Images img;
   private String name;
   private transient BufferedImage board;
   private int boardNumber;
