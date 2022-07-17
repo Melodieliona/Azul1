@@ -72,7 +72,7 @@ public class GameModel {
     return gameMode;
   }
 
-  public int getNumberOfPlayers(){
+  public int getNumberOfPlayers() {
     int numberOfPlayers = players.length;
     return numberOfPlayers;
   }
@@ -122,8 +122,7 @@ public class GameModel {
    */
   public void nextPlayer(String nickname) {
     currentPlayer = nickname;
-    if(gameMode.equals("Hot Seat"))
-    {
+    if (gameMode.equals("Hot Seat")) {
       setNickname(nickname);
     }
     notifyListeners(new NextPlayerEvent(nickname));
@@ -145,11 +144,11 @@ public class GameModel {
   /**
    * Sends a request to the server to place tiles.
    *
-   * @param color of tile
-   * @param line  desired row/line to place tiles
+   * @param numberOfTiles of tile
+   * @param line          desired row/line to place tiles
    */
-  public void placeTilesRequest(int line, String color) {
-    connection.sendTilePlacement(line, color);
+  public void placeTilesRequest(int numberOfTiles, int line) {
+    connection.sendTilePlacement(numberOfTiles, line);
   }
 
   /**
@@ -175,10 +174,10 @@ public class GameModel {
    * @param line       selected to place tiles
    */
   public void placeTiles(int line, int numOfTiles) {
-    for (Player player:
-         players) {
-      if (player.getPlayerName().equals(currentPlayer)){
-        player.placeTiles(line,selectedTiles.getContainedColors().get(0).getColor(),numOfTiles);
+    for (Player player :
+        players) {
+      if (player.getPlayerName().equals(currentPlayer)) {
+        player.placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
       }
     }
     notifyListeners(new TilesAddedEvent(selectedTiles.getContainedColors().get(0).getColor(), line, numOfTiles, 0));
@@ -355,10 +354,10 @@ public class GameModel {
   /**
    *
    */
-public void updateBoard(String[] rows, String[] columns, String nick, String points){
-  
-  notifyListeners(new BoardUpdatedEvent());
-}
+  public void updateBoard(String[] rows, String[] columns, String nick, String points) {
+
+    notifyListeners(new BoardUpdatedEvent());
+  }
 
   /**
    * Add a {@link PropertyChangeListener} to the model for getting notified about any changes that
@@ -435,13 +434,18 @@ public void updateBoard(String[] rows, String[] columns, String nick, String poi
     return currentPlayer;
   }
 
-  public int[] getScore(){
+  public int[] getScore() {
     int[] points;
     return null;
   }
 
   public Player[] getPlayers() {
     return players;
+  }
+
+  public TileCollection getSelectedTiles() {
+    TileCollection copyOfSelectedTiles = (TileCollection) selectedTiles.clone();
+    return copyOfSelectedTiles;
   }
 
 }

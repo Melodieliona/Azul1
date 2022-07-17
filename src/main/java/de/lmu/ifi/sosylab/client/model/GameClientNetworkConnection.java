@@ -1,6 +1,7 @@
 package de.lmu.ifi.sosylab.client.model;
 
 import de.lmu.ifi.sosylab.shared.JsonMessage;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -423,8 +425,8 @@ public class GameClientNetworkConnection {
     send(amountOfPlayers);
   }
 
-  public void sendTilePlacement(int line, String color) { //color should be string
-    JSONObject tilePlacement = JsonMessage.placeTiles(color, line);
+  public void sendTilePlacement(int numberOfTiles, int line) { //color should be string
+    JSONObject tilePlacement = JsonMessage.placeTiles(model.getSelectedTiles().getContainedColors().get(0).getColor(), line);
     send(tilePlacement);
   }
 

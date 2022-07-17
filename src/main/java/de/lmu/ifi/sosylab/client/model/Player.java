@@ -29,6 +29,7 @@ public class Player {
   public void placeTiles(int line, String color, int numberOfTiles) {
     TileCollection tiles = new TileCollection();
     tiles.addTiles(Tile.getTile(color), numberOfTiles);
+    System.out.println(tiles.size());
     board.getLayingRow(line).layTilesOnRow(tiles);
   }
 
