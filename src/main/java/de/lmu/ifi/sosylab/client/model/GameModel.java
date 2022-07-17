@@ -160,7 +160,7 @@ public class GameModel {
     if (source != 0) {
       tilePlates[0].addAll(tilePlates[source]);
     } else {
-      if(tilePlates[0].contains(Tile.STARTING_MARKER)) selectedTiles.add(Tile.STARTING_MARKER);
+      if (tilePlates[0].contains(Tile.STARTING_MARKER)) selectedTiles.add(Tile.STARTING_MARKER);
     }
     notifyListeners(new TilesSelectedEvent(source, color, selectedTiles.size()));
   }
@@ -220,7 +220,7 @@ public class GameModel {
     if (source != 0) {
       tilePlates[0].addAll(tilePlates[source]);
     } else {
-      if(tilePlates[0].contains(Tile.STARTING_MARKER)) selectedTiles.add(Tile.STARTING_MARKER);
+      if (tilePlates[0].contains(Tile.STARTING_MARKER)) selectedTiles.add(Tile.STARTING_MARKER);
     }
     notifyListeners(
         new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
@@ -252,7 +252,7 @@ public class GameModel {
    * @param amounts array, a single index has all amounts for a given color
    */
   public void fillTiles(String[] colors, String[] amounts) { //array of tilecollection as parameters
-      tilePlates = new TileCollection[colors.length];
+    tilePlates = new TileCollection[colors.length];
     for (int n = 0; n < tilePlates.length; n++) {
       tilePlates[n] = new TileCollection();
       String hcolors = colors[n];
@@ -394,11 +394,10 @@ public class GameModel {
     for (Player player :
         players) {
       if (player.getPlayerName().equals(nick)) {
-        GameBoard board = player.getBoard();
         for (int i = 0; i < numberOfTiles; i++) {
           tiles.addTiles(Tile.getTile(colors[i]), 1);
         }
-        board.addToFloorLine(tiles);
+        player.getBoard().addToFloorLine(tiles);
       }
     }
     notifyListeners(new FloorLineEvent());
