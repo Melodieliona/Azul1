@@ -174,7 +174,8 @@ public class LocalGame {
       currentSelection.clear();
       currentSelectionSource = -1;
 
-      connection.sendBoardUpdate(gameBoards);
+      //for debugging
+      //connection.sendBoardUpdate(gameBoards);
 
       // If at lease one tile is left on plates or the middle, let the next player make a move.
       boolean everythingEmpty = true;
