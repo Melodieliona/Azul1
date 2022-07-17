@@ -11,6 +11,7 @@ import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * TODO Javadoc
@@ -25,7 +26,7 @@ public class GameModel {
 
   private int numberOfPlayers = 0;
 
-  private Player[] players;
+  private ArrayList<Player> players = new ArrayList<>();
 
   private TileCollection[] tilePlates;
 
@@ -91,8 +92,7 @@ public class GameModel {
    */
   public void logInMultiplayer(String name) {
     numberOfPlayers++;
-    players = new Player[1];
-    players[0] = new Player(name);
+    players.add(new Player(name));
     connection.sendLogin(name);
     setNickname(name);
   }
@@ -107,10 +107,9 @@ public class GameModel {
     }
 
     numberOfPlayers = playersName.length;
-    players = new Player[numberOfPlayers];
     connection.sendPlayers(numberOfPlayers);
     for (int i = 0; i < numberOfPlayers; i++) {
-      players[i] = new Player(playersName[i]);
+      players.add(new Player(playersName[i]));
       connection.sendLogin(playersName[i]);
     }
   }
@@ -226,7 +225,7 @@ public class GameModel {
   /**
    * Notifies the subscribed view that another player placed specific tiles.
    *
-   * @param row which lines the tiles were placed
+   * @param row    which lines the tiles were placed
    * @param amount amount of tiles
    */
   public void otherPlayerPlacedTiles(int row, int amount) {
@@ -237,7 +236,7 @@ public class GameModel {
         player.placeTiles(row, selectedTiles.getContainedColors().get(0).getColor(), amount);
       }
     }
-      notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, amount, row, 0)); // I think the amount of points are always sent with the minus points calculated so I just put 0 in the parameter for minuspoints
+    notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, amount, row, 0)); // I think the amount of points are always sent with the minus points calculated so I just put 0 in the parameter for minuspoints
   }
 
   /**
@@ -303,7 +302,12 @@ public class GameModel {
     support.firePropertyChange(event.getName(), null, event);
   }
 
-  public void loggedIn() {
+  public void loggedIn(String[] nicknames) {
+    for (String nickname :
+        nicknames) {
+      players.add(new Player(nickname));
+    }
+    numberOfPlayers += players.size();
     notifyListeners(new LoggedInEvent());
     isLoggedin = true;
   }
@@ -320,6 +324,7 @@ public class GameModel {
    */
   public void userJoined(String name) {
     numberOfPlayers++;
+    players.add(new Player(name));
     notifyListeners(new UserJoinedEvent(name));
   }
 
@@ -352,18 +357,18 @@ public class GameModel {
   }
 
   /**
-   *Updates the information regarding the board of a given player as well as their score.
+   * Updates the information regarding the board of a given player as well as their score.
    *
-   * @param rows the laying lines that should be cleared as well as the line of the wall were the tile will be palced
-   * @param nick the nickname of the player
+   * @param rows   the laying lines that should be cleared as well as the line of the wall were the tile will be palced
+   * @param nick   the nickname of the player
    * @param points the current score of the player
    * @param colors the colors of the tiles that will go in the wall
    */
   public void updateBoard(String[] rows, String[] columns, String nick, String points, String[] colors) {
     int numberOfTiles = rows.length;
-    for (Player player:
-         players) {
-      if (player.getPlayerName().equals(nick)){
+    for (Player player :
+        players) {
+      if (player.getPlayerName().equals(nick)) {
         GameBoard board = player.getBoard();
         board.setCurrentScore(Integer.parseInt(points));
         for (int i = 0; i < numberOfTiles; i++) {
@@ -377,7 +382,7 @@ public class GameModel {
     notifyListeners(new BoardUpdatedEvent());
   }
 
-  public void updateFloorLine(String nick, String[] colors){
+  public void updateFloorLine(String nick, String[] colors) {
 
   }
 
@@ -462,7 +467,7 @@ public class GameModel {
   }
 
   public Player[] getPlayers() {
-    return players;
+    return (Player[]) players.toArray().clone();
   }
 
   public TileCollection getSelectedTiles() {

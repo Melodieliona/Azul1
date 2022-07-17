@@ -116,7 +116,7 @@ public class GameClientNetworkConnection {
     switch (JsonMessage.typeOf(object)) {
       case LOGIN_SUCCESS -> {
         System.out.println("logged in"); //for debugging
-        model.loggedIn();
+        handleLogin(object);
       }
       case LOGIN_FAILED -> model.loginFailed();
       case USER_JOINED -> handleUserJoined(object);
@@ -360,6 +360,11 @@ public class GameClientNetworkConnection {
     model.updateFloorLine(nick, colors);
   }
 
+  public void handleLogin(JSONObject object){
+    String[] nicknames = JsonMessage.getNickname(object).trim().split(",");
+    model.loggedIn(nicknames);
+  }
+
   /**
    * Stop the network-connection.
    */
@@ -435,7 +440,7 @@ public class GameClientNetworkConnection {
     send(amountOfPlayers);
   }
 
-  public void sendTilePlacement(int numberOfTiles, int line) { //color should be string
+  public void sendTilePlacement(int numberOfTiles, int line) {
     JSONObject tilePlacement = JsonMessage.placeTiles(model.getSelectedTiles().getContainedColors().get(0).getColor(), line);
     send(tilePlacement);
   }
