@@ -6,17 +6,21 @@ import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serial;
 import javax.swing.*;
 
 /**
  * TODO Add JavaDoc
  */
 public class Board extends JPanel {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
   private int tileSize;
   private GameController controller;
   private Images img;
   private String name;
-  private BufferedImage board;
+  private transient BufferedImage board;
   private int boardNumber;
 
   /**
