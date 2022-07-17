@@ -340,6 +340,8 @@ public class ServerNetworkConnection {
 
         user.getWriter().write(sendMoveJson + System.lineSeparator());
         user.getWriter().flush();
+
+        System.out.println("Sent tile placement JSON...");
       }
     } catch (IOException | JSONException e) {
       System.out.println(e.getMessage());

@@ -5,6 +5,7 @@ import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -139,13 +140,13 @@ public class LocalGame {
   /**
    * Checks a requested tile placement for validity and if valid changes model accordingly.
    * */
-  protected void handleTilePlacement(String playerName, int targetRow, Tile color) {
+  protected void handleTilePlacement(int targetRow, Tile color) {
     if (currentSelection.isEmpty()) {
-      sendInvalidPlacement(playerName);
+      sendInvalidPlacement(userList.get(currentPlayer).getName());
       return;
     }
 
-    GameBoard gameBoard = getPlayersGameBoard(playerName);
+    GameBoard gameBoard = getPlayersGameBoard(userList.get(currentPlayer).getName());
 
     // Check if at least one tile of the given color can be added to the row
     if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
@@ -155,7 +156,8 @@ public class LocalGame {
 
       // Try to add left over tiles to the floor line
       // Put tiles in the trash, that don't fit on the floor line
-      TileCollection leftOverTiles = currentSelection;
+      TileCollection leftOverTiles = new TileCollection();
+      leftOverTiles.addAll(currentSelection);
       leftOverTiles.removeAll(placedTiles);
 
       if (placedTiles.size() < currentSelection.size()) {
@@ -166,13 +168,14 @@ public class LocalGame {
 
       moveTilesToMiddle();
 
-      currentSelection.clear();
-      currentSelectionSource = -1;
-
       sendSuccessfulPlacement(currentSelection, targetRow);
       sendFloorLinePlacement(leftOverTiles);
 
-      connection.sendBoardUpdate(gameBoards);
+      currentSelection.clear();
+      currentSelectionSource = -1;
+
+      //for debugging
+      //connection.sendBoardUpdate(gameBoards);
 
       // If at lease one tile is left on plates or the middle, let the next player make a move.
       boolean everythingEmpty = true;
@@ -189,7 +192,7 @@ public class LocalGame {
       }
 
     } else {
-      sendInvalidPlacement(playerName);
+      sendInvalidPlacement(userList.get(currentPlayer).getName());
     }
   }
 
@@ -345,7 +348,7 @@ public class LocalGame {
     if (currentSelectionSource != 0) {
       int amountOfLeftTiles = tilePlates[currentSelectionSource].size();
       for (int i = 0; i < amountOfLeftTiles; i++) {
-        tilePlates[0].add(tilePlates[currentSelectionSource].remove(i));
+        tilePlates[0].add(tilePlates[currentSelectionSource].remove(0));
       }
     }
   }
