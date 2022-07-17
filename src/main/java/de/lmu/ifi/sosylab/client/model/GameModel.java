@@ -56,7 +56,7 @@ public class GameModel {
       connection = new GameClientNetworkConnection(this);
       setConnection(connection);
       connection.start(8080);
-    } else {
+    } else if (gMode.equals("Hot Seat")) {
       gameMode = "Hot seat";
 
       // Start local server
@@ -73,7 +73,6 @@ public class GameModel {
   }
 
   public int getNumberOfPlayers() {
-    int numberOfPlayers = players.length;
     return numberOfPlayers;
   }
 
@@ -90,6 +89,7 @@ public class GameModel {
    * TODO Javadoc
    */
   public void logInMultiplayer(String name) {
+    numberOfPlayers++;
     players = new Player[1];
     players[0] = new Player(name);
     connection.sendLogin(name);
@@ -106,7 +106,6 @@ public class GameModel {
     }
 
     numberOfPlayers = playersName.length;
-    gameMode = "Hot Seat";
     players = new Player[numberOfPlayers];
     connection.sendPlayers(numberOfPlayers);
     for (int i = 0; i < numberOfPlayers; i++) {
@@ -175,7 +174,7 @@ public class GameModel {
    */
   public void placeTiles(int line, int numOfTiles) {
     for (Player player :
-        players) {
+            players) {
       if (player.getPlayerName().equals(currentPlayer)) {
         player.placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
       }
@@ -219,7 +218,7 @@ public class GameModel {
     selectedTiles.addTiles(Tile.getTile(color), numberOfSelectedTiles);
     tilePlates[source].removeTilesOfColor(Tile.getTile(color));
     notifyListeners(
-        new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
+            new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
   }
 
 
@@ -235,7 +234,7 @@ public class GameModel {
       intLines[i] = Integer.parseInt(lines[i]);
     }
     for (int line :
-        intLines) {
+            intLines) {
       notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, 1, line, 0)); // I think the amount of points are always sent with the minus points calculated so I just put 0 in the parameter for minuspoints
     }
   }
@@ -319,7 +318,7 @@ public class GameModel {
    * Notifies the subscribed view that a new player joined the game.
    */
   public void userJoined(String name) {
-    System.out.println("Handle user joined in Network Connection");
+    numberOfPlayers++;
     notifyListeners(new UserJoinedEvent(name));
   }
 

@@ -50,8 +50,6 @@ public class GameController {
    * Todo JavaDoc
    */
   public void logInHotSeat(List<String> playersName) {
-    System.out.println("login HS controller");
-
     new SwingWorker<Boolean, Void>() {
 
       @Override
