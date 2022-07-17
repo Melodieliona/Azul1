@@ -20,7 +20,6 @@ public class Player {
   public Player(String name) {
     playerName = name;
     board = new GameBoard(name);
-    System.out.println("created player");
   }
 
   /**

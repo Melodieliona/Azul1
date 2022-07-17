@@ -222,9 +222,10 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleNextTurn(JSONObject object) {
+    System.out.println("handling next turn");
     String nick = JsonMessage.getNickname(object);
+    System.out.println("got nickname");
     model.nextPlayer(nick);
-
   }
 
   /**

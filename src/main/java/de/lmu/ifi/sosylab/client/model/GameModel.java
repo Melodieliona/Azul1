@@ -91,8 +91,6 @@ public class GameModel {
    * TODO Javadoc
    */
   public void logInMultiplayer(String name) {
-    numberOfPlayers++;
-    players.add(new Player(name));
     connection.sendLogin(name);
     setNickname(name);
   }
@@ -109,7 +107,6 @@ public class GameModel {
     numberOfPlayers = playersName.length;
     connection.sendPlayers(numberOfPlayers);
     for (int i = 0; i < numberOfPlayers; i++) {
-      players.add(new Player(playersName[i]));
       connection.sendLogin(playersName[i]);
     }
   }
@@ -121,8 +118,9 @@ public class GameModel {
    */
   public void nextPlayer(String nickname) {
     currentPlayer = nickname;
-    if (gameMode.equals("Hot Seat")) {
-      setNickname(nickname);
+    if (gameMode.equals("Hot seat")) {
+      this.nickname = nickname;
+      System.out.println("Nickname " + nickname);
     }
     notifyListeners(new NextPlayerEvent(nickname));
   }
@@ -307,7 +305,7 @@ public class GameModel {
         nicknames) {
       players.add(new Player(nickname));
     }
-    numberOfPlayers += players.size();
+    numberOfPlayers = players.size();
     notifyListeners(new LoggedInEvent());
     isLoggedin = true;
   }
@@ -323,8 +321,8 @@ public class GameModel {
    * Notifies the subscribed view that a new player joined the game.
    */
   public void userJoined(String name) {
-    numberOfPlayers++;
     players.add(new Player(name));
+    numberOfPlayers = players.size();
     notifyListeners(new UserJoinedEvent(name));
   }
 
