@@ -14,4 +14,8 @@ public class GameRestartRequestEvent extends GameEvents {
   public String getName() {
     return "GameRestartRequestEvent";
   }
+
+  public String getNickname() {
+    return nickname;
+  }
 }

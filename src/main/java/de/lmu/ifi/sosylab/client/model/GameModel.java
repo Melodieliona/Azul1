@@ -252,7 +252,7 @@ public class GameModel {
    * @param amounts array, a single index has all amounts for a given color
    */
   public void fillTiles(String[] colors, String[] amounts) { //array of tilecollection as parameters
-    tilePlates = new TileCollection[colors.length];
+      tilePlates = new TileCollection[colors.length];
     for (int n = 0; n < tilePlates.length; n++) {
       tilePlates[n] = new TileCollection();
       String hcolors = colors[n];
@@ -382,13 +382,26 @@ public class GameModel {
           board.layWallTile(line, tile);
           board.getLayingRow(line).clearRow();
         }
+        board.clearFloorLine();
       }
     }
     notifyListeners(new BoardUpdatedEvent());
   }
 
   public void updateFloorLine(String nick, String[] colors) {
-
+    int numberOfTiles = colors.length;
+    TileCollection tiles = new TileCollection();
+    for (Player player :
+        players) {
+      if (player.getPlayerName().equals(nick)) {
+        GameBoard board = player.getBoard();
+        for (int i = 0; i < numberOfTiles; i++) {
+          tiles.addTiles(Tile.getTile(colors[i]), 1);
+        }
+        board.addToFloorLine(tiles);
+      }
+    }
+    notifyListeners(new FloorLineEvent());
   }
 
   /**
