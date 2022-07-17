@@ -38,7 +38,7 @@ public class Player {
   }
 
   public GameBoard getBoard() {
-    GameBoard copyOfGameBoard = new GameBoard(board.getPlayerName(), board.getPlusPoints(), board.getMinusPoints(), board.getCurrentScore(), board.getTileWall(), board.getLayingRows(), board.getFloorLine());
+    GameBoard copyOfGameBoard = new GameBoard(board);
     return copyOfGameBoard;
   }
 }

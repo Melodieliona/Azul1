@@ -137,6 +137,7 @@ public class GameClientNetworkConnection {
       case TIMER -> handleTimer(object);
       case GAME_CANCEL_REQUEST -> handleGameCancelRequest(object);
       case GAME_CANCEL -> handleGameCancel(object);
+      case FLOOR_LINE_UPDATE -> handleFloorLineUpdate(object);
       default -> handleInvalidJson(object);
     }
   }
@@ -186,13 +187,12 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleTilePlacement(JSONObject object) {
-    String[] rows = JsonMessage.getRows(object).trim().split("\\s+");
+    int row = Integer.parseInt(JsonMessage.getRows(object));
+    int amount = Integer.parseInt(JsonMessage.getAmounts(object));
     if (model.getNickname().equals(model.getCurrentPlayer())) {
-      for (int i = 0; i < rows.length; i++) {
-        model.placeTiles(Integer.getInteger(rows[0]), 1);
-      }
+        model.placeTiles(row, amount);
     } else {
-      model.otherPlayerPlacedTiles(rows);
+      model.otherPlayerPlacedTiles(row, amount);
     }
   }
 
@@ -243,10 +243,11 @@ public class GameClientNetworkConnection {
    */
   private void handleBoardUpdate(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
-    String[] patternRow = JsonMessage.getRows(object).trim().split("\\s+");
-    String[] patternColumns = JsonMessage.getPatternColumns(object).trim().split("\\s+");
+    String[] patternRow = JsonMessage.getRows(object).trim().split("/");
+    String[] patternColumns = JsonMessage.getPatternColumns(object).trim().split("/");
     String points = JsonMessage.getScores(object);
-    model.updateBoard(patternRow, patternColumns, nick, points);
+    String[] colors = JsonMessage.getTileColor(object).trim().split("/");
+    model.updateBoard(patternRow, patternColumns, nick, points, colors);
   }
 
   /**
@@ -349,6 +350,15 @@ public class GameClientNetworkConnection {
     model.timer();
   }
 
+  private void handleFloorLineUpdate(JSONObject object){
+    String nick = JsonMessage.getNickname(object);
+    int amount = Integer.parseInt(JsonMessage.getTiles(object));
+    String[] colors = new String[amount];
+    for (int i = 0; i < amount; i++) {
+      colors[i] = JsonMessage.getFloorTile(object, i);
+    }
+    model.updateFloorLine(nick, colors);
+  }
 
   /**
    * Stop the network-connection.

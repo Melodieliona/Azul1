@@ -2,6 +2,7 @@ package de.lmu.ifi.sosylab.shared;
 
 import java.util.Arrays;
 import java.util.Optional;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,8 +21,7 @@ public enum JsonMessage {
   GAME_ENDED("game ended"), GAME_RESTART("game restart"),
   GAME_RESTART_REQUEST("game restart request"), TIMER("timer"),
   PLAYERS("players"), TILES_NOT_ALLOWED("tiles not allowed"),
-
-  GAME_CANCEL_REQUEST("game cancel request"), GAME_CANCEL("game cancel");
+  GAME_CANCEL_REQUEST("game cancel request"), GAME_CANCEL("game cancel"), FLOOR_LINE_UPDATE("floor line update");
 
 
   public static final String TYPE_FIELD = "type";
@@ -44,7 +44,9 @@ public enum JsonMessage {
 
   public static final String SCORES_FIELD = "points";
 
-  public static final String AMOUNTS = "amounts";
+  public static final String AMOUNTS = "amount";
+
+  public static final String FLOORTILE = "floortile";
 
   private final String jsonName;
 
@@ -339,6 +341,21 @@ public enum JsonMessage {
     }
   }
 
+  public static String getFloorTile(JSONObject object, int index){
+      try {
+        return object.getString(FLOORTILE+index);
+      } catch (JSONException e) {
+        throw new IllegalArgumentException("Failed to read a json object.", e);
+      }
+  }
+
+  public static String getAmounts(JSONObject object) {
+    try {
+      return object.getString(AMOUNTS);
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
 
   /**
    * Gets the type of JsonMessage.

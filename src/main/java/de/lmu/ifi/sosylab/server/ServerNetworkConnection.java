@@ -358,7 +358,7 @@ public class ServerNetworkConnection {
     try {
       for (User user : userlist) {
         JSONObject sendNewFloorLineTiles = new JSONObject();
-        sendNewFloorLineTiles.put("type", "floorline_placement");
+        sendNewFloorLineTiles.put("type", "floor line update");
         sendNewFloorLineTiles.put("nick", currentUser.getName());
         sendNewFloorLineTiles.put("amount", newFloorLineTiles.size());
 

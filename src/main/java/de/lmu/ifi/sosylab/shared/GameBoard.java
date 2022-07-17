@@ -40,16 +40,16 @@ public class GameBoard {
     floorLine = new TileCollection();
   }
 
-  public GameBoard(String playerName, int plusPoints, int minusPoints, int currentScore, Tile[][] tileWall, LayingRow[] layingRows, TileCollection floorLine) {
-    this.playerName = playerName;
-    this.plusPoints = plusPoints;
-    this.minusPoints = minusPoints;
-    this.currentScore = currentScore;
+  public GameBoard(GameBoard board) {
+    this.playerName = board.getPlayerName();
+    this.plusPoints = board.getPlusPoints();
+    this.minusPoints = board.getMinusPoints();
+    this.currentScore = board.getCurrentScore();
 
-    this.tileWall = tileWall;
+    this.tileWall = board.getTileWall();
 
-    this.layingRows =layingRows;
-    this.floorLine = floorLine;
+    this.layingRows = board.getLayingRows();
+    this.floorLine = board.getFloorLine();
   }
 
   /**
@@ -270,6 +270,11 @@ public class GameBoard {
   }
 
   public TileCollection getFloorLine() {
-    return floorLine;
+    TileCollection copyOfFloorLine = (TileCollection) floorLine.clone();
+    return copyOfFloorLine;
+  }
+
+  public void setCurrentScore(int points) {
+    currentScore = points;
   }
 }

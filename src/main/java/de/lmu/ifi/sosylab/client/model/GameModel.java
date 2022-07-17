@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
+import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 
@@ -174,7 +175,7 @@ public class GameModel {
    */
   public void placeTiles(int line, int numOfTiles) {
     for (Player player :
-            players) {
+        players) {
       if (player.getPlayerName().equals(currentPlayer)) {
         player.placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
       }
@@ -218,25 +219,25 @@ public class GameModel {
     selectedTiles.addTiles(Tile.getTile(color), numberOfSelectedTiles);
     tilePlates[source].removeTilesOfColor(Tile.getTile(color));
     notifyListeners(
-            new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
+        new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
   }
 
 
   /**
    * Notifies the subscribed view that another player placed specific tiles.
    *
-   * @param lines which lines the tiles were placed
+   * @param row which lines the tiles were placed
+   * @param amount amount of tiles
    */
-  public void otherPlayerPlacedTiles(String[] lines) {
+  public void otherPlayerPlacedTiles(int row, int amount) {
     String actualColor = selectedTiles.getContainedColors().get(0).getColor();
-    int[] intLines = new int[lines.length];
-    for (int i = 0; i < intLines.length; i++) {
-      intLines[i] = Integer.parseInt(lines[i]);
+    for (Player player :
+        players) {
+      if (player.getPlayerName().equals(currentPlayer)) {
+        player.placeTiles(row, selectedTiles.getContainedColors().get(0).getColor(), amount);
+      }
     }
-    for (int line :
-            intLines) {
-      notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, 1, line, 0)); // I think the amount of points are always sent with the minus points calculated so I just put 0 in the parameter for minuspoints
-    }
+      notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, amount, row, 0)); // I think the amount of points are always sent with the minus points calculated so I just put 0 in the parameter for minuspoints
   }
 
   /**
@@ -351,11 +352,33 @@ public class GameModel {
   }
 
   /**
+   *Updates the information regarding the board of a given player as well as their score.
    *
+   * @param rows the laying lines that should be cleared as well as the line of the wall were the tile will be palced
+   * @param nick the nickname of the player
+   * @param points the current score of the player
+   * @param colors the colors of the tiles that will go in the wall
    */
-  public void updateBoard(String[] rows, String[] columns, String nick, String points) {
-
+  public void updateBoard(String[] rows, String[] columns, String nick, String points, String[] colors) {
+    int numberOfTiles = rows.length;
+    for (Player player:
+         players) {
+      if (player.getPlayerName().equals(nick)){
+        GameBoard board = player.getBoard();
+        board.setCurrentScore(Integer.parseInt(points));
+        for (int i = 0; i < numberOfTiles; i++) {
+          int line = Integer.parseInt(rows[i]);
+          Tile tile = Tile.getTile(colors[i]);
+          board.layWallTile(line, tile);
+          board.getLayingRow(line).clearRow();
+        }
+      }
+    }
     notifyListeners(new BoardUpdatedEvent());
+  }
+
+  public void updateFloorLine(String nick, String[] colors){
+
   }
 
   /**
