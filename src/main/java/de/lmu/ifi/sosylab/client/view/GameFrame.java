@@ -573,10 +573,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             String plates = plate.getComponentAt(checkMouseTip).getParent().getName();
             tile_color = plate.getComponentAt(checkMouseTip).getName();
             if (plates != null && tile_color != null) {
-              System.out.println("Plate: " + plates + " Tile: " + tile_color);
               int plateNumber = Integer.parseInt(plates);
               amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile_color));
-              System.out.println("This amount is " + amountOfSelectedTiles);
               boolean confirmation = confirmTileSelection(plateNumber, tile_color, amountOfSelectedTiles, currentPlayer);
               if (confirmation) {
                 //TODO: next line is thowing an exception
@@ -656,7 +654,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -board.
    */
   private Component createBoard(int boardNumber) {
-    Board b = new Board(controller, tileSize, playerNames.get(boardNumber), images, score, boardNumber);
+    Board b = new Board(controller, tileSize, playerNames.get(boardNumber), images, boardNumber);
 
     JPanel board = new JPanel();
     board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
@@ -774,20 +772,24 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       gameField.removeAll();
       createGameView();
       repaint();
+      currentPlayer = controller.getCurrentPlayer();
     } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
       gameField.removeAll();
       createGameView();
       repaint();
+      currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof OtherPlayerSelectedTilesEvent) {
       gameField.removeAll();
       createGameView();
       repaint();
+      currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilesAddedEvent) {
       gameField.removeAll();
       createGameView();
       repaint();
+      currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilesSelectedEvent) {
 

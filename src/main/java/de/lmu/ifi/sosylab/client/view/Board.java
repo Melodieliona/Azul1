@@ -19,7 +19,6 @@ public class Board extends JPanel {
   private Images img;
   private String name;
   private BufferedImage board;
-  private int score;
   private int boardNumber;
 
   /**
@@ -29,18 +28,13 @@ public class Board extends JPanel {
    * @param name     - username.
    * @param img      - imports images.
    */
-  public Board(GameController controller, int tileSize, String name, Images img, int[] score, int boardNumber) {
+  public Board(GameController controller, int tileSize, String name, Images img, int boardNumber) {
     this.controller = controller;
     this.tileSize = tileSize;
     this.name = name;
     board = img.getBoard();
     this.img = img;
     this.boardNumber = boardNumber;
-    if (score == null) {
-      this.score = 0;
-    } else {
-      this.score = score[boardNumber];
-    }
     setPanelSize();
   }
 
@@ -63,9 +57,17 @@ public class Board extends JPanel {
     g2D.setFont(new Font("Arial", Font.PLAIN, 15));
     g2D.setColor(Color.white);
     g2D.drawString(name, 83, 35);
+    int score;
+    try {
+      score = controller.getPlayer(boardNumber).getBoard().getCurrentScore();
+    } catch (NullPointerException e){
+      score = 0;
+    }
+
     g2D.drawString(String.valueOf(score), 250, 35);
     createTilesLeft(g2D);
-    // createTiles(g2D);
+    createTilesRight(g2D);
+    createFrame(g2D);
   }
 
   /**
@@ -143,11 +145,12 @@ public class Board extends JPanel {
    *
    * @param g2D -graphics.
    */
- /* private void createMinusPoints(Graphics2D g2D) {
+  private void createMinusPoints(Graphics2D g2D) {
     try {
-      Player player = controller.getPlayer(boardNumber);
+      int minusPoints = controller.getPlayer(boardNumber).getBoard().getMinusPoints();
+      System.out.println(minusPoints);
 
-      for (int i = 0; i < collection.length; i++) {
+     /* for (int i = 0; i < collection.length; i++) {
         for (int b = 0; b < collection[i].size(); b++) {
           int x = 1 + b;
           int y = 8;
@@ -167,10 +170,16 @@ public class Board extends JPanel {
           }
 
         }
-      }
+      }*/
     } catch (NullPointerException e) {
       System.out.println("Collection ist noch leer! (Board)");
     }
-  }*/
+  }
 
+  private void createFrame(Graphics2D g2D){
+    if (name.equals(controller.getCurrentPlayer())){
+      g2D.setColor(Color.GREEN);
+      g2D.drawRect(0,0,this.getWidth()-1,this.getHeight()-1);
+    }
+  }
 }

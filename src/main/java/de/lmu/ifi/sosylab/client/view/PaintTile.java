@@ -10,8 +10,8 @@ import javax.swing.JPanel;
  * Creates the different tiles.
  */
 public class PaintTile extends JPanel {
-  String color;
-  Images img;
+  private String color;
+  private Images img;
 
   /**
    * TODO Zusammenfassung
@@ -43,6 +43,5 @@ public class PaintTile extends JPanel {
       case "STARTING_MARKER" -> g2D.drawImage(img.getTileStarter(), 0, 0, null);
       default -> throw new IllegalArgumentException("Invalid color.");
     }
-    //   repaint();
   }
 }
