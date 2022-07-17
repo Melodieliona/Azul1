@@ -40,6 +40,10 @@ public class GameBoard {
     floorLine = new TileCollection();
   }
 
+  /**
+   * Initializes a gameboard with values of another given gameboard.
+   * Used to make copies of a gameboard.
+   * */
   public GameBoard(GameBoard board) {
     this.playerName = board.getPlayerName();
     this.plusPoints = board.getPlusPoints();
