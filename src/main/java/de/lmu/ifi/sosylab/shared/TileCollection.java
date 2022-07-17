@@ -19,13 +19,13 @@ public class TileCollection extends ArrayList<Tile> {
     super();
   }
 
-
   /**
    * Adds a given amount of Tiles of same color.
    */
   public void addTiles(Tile color, int amount) {
     for (int i = 0; i < amount; i++) {
       this.add(color);
+      System.out.println(i+1+" added");
     }
   }
 

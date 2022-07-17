@@ -5,6 +5,7 @@ import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.io.IOException;
 import java.util.List;
 import javax.swing.SwingWorker;
@@ -78,6 +79,18 @@ public class GameController {
     model.selectTilesRequest(source, color);
   }
 
+  public void setTilesToRow(int row) {
+  }
+
+  //left
+  public LayingRow[] getLayingRow(int rowNumber) {
+    return null;
+  }
+
+  //right
+  public Object[][] getTileWall() {
+    return null;
+  }
 
   public String getCurrentPlayer() {
     return model.getCurrentPlayer();
@@ -92,10 +105,10 @@ public class GameController {
   }
 
   public void placeTiles(int numberOfSelectedTiles, int line) {
-    model.placeTiles(numberOfSelectedTiles, line);
+    model.placeTilesRequest(numberOfSelectedTiles, line);
   }
 
-  public Player getPlayer(int player){
+  public Player getPlayer(int player) {
     Player[] players = model.getPlayers();
     return players[player];
   }

@@ -2,7 +2,7 @@ package de.lmu.ifi.sosylab.shared;
 
 /**
  * One row, that needs to be laid out with tiles in order to place a tile on the wall.
- * */
+ */
 public class LayingRow {
 
   GameBoard board;
@@ -28,7 +28,7 @@ public class LayingRow {
   /**
    * Adds given tiles to the row.
    * Returns all tiles that were successfully placed.
-   * */
+   */
   public TileCollection layTilesOnRow(TileCollection collection) {
     if (color == null) {
       if (collection.get(0) != Tile.STARTING_MARKER) {
@@ -51,7 +51,7 @@ public class LayingRow {
 
   /**
    * Clears the row and returns all thrown away tiles (all except the one that stays on the wall).
-   * */
+   */
   public TileCollection clearRow() {
     TileCollection trashedTiles = new TileCollection();
     trashedTiles.addTiles(color, count - 1);
@@ -62,6 +62,7 @@ public class LayingRow {
   }
 
   // TODO Maybe delete later if unused
+
   /**
    * Returns all tiles that are currently laid on this row.
    */
@@ -75,24 +76,24 @@ public class LayingRow {
 
   /**
    * Determines if it's allowed to lay tiles of a given color in this row.
-   * */
+   */
   public boolean canAddTilesToLayingRow(Tile color) {
     Tile[][] tileWall = board.getTileWall();
 
     return (tileWall[columnOfColor(color)][row] == null)
-      && (this.color == null || this.color == color) && !this.isRowFull();
+        && (this.color == null || this.color == color) && !this.isRowFull();
   }
 
   /**
    * Returns if this row is already laid out with tiles.
-   * */
+   */
   public boolean isRowFull() {
     return count == row + 1;
   }
 
   /**
    * Returns if this row is empty.
-   * */
+   */
   public boolean isRowEmpty() {
     return count == 0;
   }
@@ -100,23 +101,24 @@ public class LayingRow {
   /**
    * Returns the column, the given tile color lays in.
    * TODO testing
-   * */
+   */
   public int columnOfColor(Tile color) {
     return ((row + color.ordinal()) % 5);
   }
 
   /**
    * Returns the color of which tiles can be placed on this row.
-   * */
+   */
   public Tile getColor() {
     return color;
   }
 
 
   // TODO Maybe delete later if unused
+
   /**
    * Returns the number of this row.
-   * */
+   */
   public int getRowNumber() {
     return row;
   }
