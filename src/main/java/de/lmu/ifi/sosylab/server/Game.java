@@ -158,7 +158,7 @@ public class Game {
       // Put tiles in the trash, that don't fit on the floor line
       TileCollection leftOverTiles = new TileCollection();
       leftOverTiles.addAll(currentSelection);
-      for(Tile tile : placedTiles) {
+      for (Tile tile : placedTiles) {
         leftOverTiles.remove(tile);
       }
 

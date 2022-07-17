@@ -5,8 +5,6 @@ import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serial;
@@ -158,30 +156,30 @@ public class Board extends JPanel {
       Player player = controller.getPlayer(boardNumber);
       TileCollection minusPoints = new TileCollection();
       minusPoints.addAll(player.getBoard().getFloorLine());
-      g2D.drawRect(30,30,30,30);
+      g2D.drawRect(30, 30, 30, 30);
       System.out.println("MinusPunktLeiste: " + minusPoints.size());
 
       for (int i = 0; i < minusPoints.size(); i++) {
         System.out.println("Hello");
-          int x = 1 + i;
-          int y = 8;
+        int x = 1 + i;
+        int y = 8;
 
-          String color = String.valueOf(minusPoints.get(i));
+        String color = String.valueOf(minusPoints.get(i));
         System.out.println(color);
-          x = x * tileSize;
-          y = y * tileSize;
+        x = x * tileSize;
+        y = y * tileSize;
 
-          switch (color) {
-            case "BLUE" -> g2D.drawImage(img.getTileBlue(), x, y, null);
-            case "YELLOW" -> g2D.drawImage(img.getTileYellow(), x, y, null);
-            case "RED" -> g2D.drawImage(img.getTileRed(), x, y, null);
-            case "BLACK" -> g2D.drawImage(img.getTileBlack(), x, y, null);
-            case "WHITE" -> g2D.drawImage(img.getTileWhite(), x, y, null);
-            case "STARTING_MARKER" -> g2D.drawImage(img.getTileStarter(), x, y, null);
-            default -> throw new IllegalArgumentException("Invalid color.");
-          }
-
+        switch (color) {
+          case "BLUE" -> g2D.drawImage(img.getTileBlue(), x, y, null);
+          case "YELLOW" -> g2D.drawImage(img.getTileYellow(), x, y, null);
+          case "RED" -> g2D.drawImage(img.getTileRed(), x, y, null);
+          case "BLACK" -> g2D.drawImage(img.getTileBlack(), x, y, null);
+          case "WHITE" -> g2D.drawImage(img.getTileWhite(), x, y, null);
+          case "STARTING_MARKER" -> g2D.drawImage(img.getTileStarter(), x, y, null);
+          default -> throw new IllegalArgumentException("Invalid color.");
         }
+
+      }
     } catch (NullPointerException e) {
       System.out.println("MinusPoints ist noch leer! (Board)");
     }
