@@ -64,6 +64,7 @@ public class Board extends JPanel {
     g2D.setColor(Color.white);
     g2D.drawString(name, 83, 35);
     g2D.drawString(String.valueOf(score), 250, 35);
+    createTilesLeft(g2D);
     // createTiles(g2D);
   }
 
