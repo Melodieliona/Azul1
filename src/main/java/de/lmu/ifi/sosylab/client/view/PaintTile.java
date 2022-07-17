@@ -4,14 +4,18 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serial;
 import javax.swing.JPanel;
 
 /**
  * Creates the different tiles.
  */
 public class PaintTile extends JPanel {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
   private String color;
-  private Images img;
+  private transient Images img;
 
   /**
    * TODO Zusammenfassung
