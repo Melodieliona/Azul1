@@ -345,7 +345,7 @@ public class LocalServerConnection {
   public void sendFloorLineUpdate(LocalUser currentUser, TileCollection newFloorLineTiles) {
     try {
       JSONObject sendNewFloorLineTiles = new JSONObject();
-      sendNewFloorLineTiles.put("type", "floorline_placement");
+      sendNewFloorLineTiles.put("type", "floor line update");
       sendNewFloorLineTiles.put("nick", currentUser.getName());
       sendNewFloorLineTiles.put("amount", newFloorLineTiles.size());
 
