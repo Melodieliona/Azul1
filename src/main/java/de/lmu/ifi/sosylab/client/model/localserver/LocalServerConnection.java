@@ -217,9 +217,9 @@ public class LocalServerConnection {
       //Add names of waiting players
       StringBuilder nicknames = new StringBuilder();
       int userCounter = 0;
-      for(LocalUser user : users) {
+      for (LocalUser user : users) {
         nicknames.append(user.getName());
-        if(userCounter < users.size() - 1) {
+        if (userCounter < users.size() - 1) {
           nicknames.append(",");
         }
         userCounter++;

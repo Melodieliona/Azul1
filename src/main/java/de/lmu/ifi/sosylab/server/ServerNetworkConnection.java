@@ -53,7 +53,7 @@ public class ServerNetworkConnection {
       serverSocket = new ServerSocket(port);
     } catch (IOException e) {
       System.out.println("Cannot create socket with port " + port + ".\n"
-        + "Likely the port is already in use.");
+          + "Likely the port is already in use.");
 
       return;
     }
@@ -229,8 +229,8 @@ public class ServerNetworkConnection {
 
       //Add number of waiting players
       int currentAmountOfWaitingPlayers = 0;
-      for(User user : users) {
-        if(user.getGameNumber() == nextGameNumber) {
+      for (User user : users) {
+        if (user.getGameNumber() == nextGameNumber) {
           currentAmountOfWaitingPlayers++;
         }
       }

@@ -1,7 +1,7 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Add JavaDoc
+ * This event is triggered at the end of every round.
  */
 public class BoardUpdatedEvent extends GameEvents {
   @Override

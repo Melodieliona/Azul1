@@ -6,9 +6,9 @@ import java.util.Arrays;
  * Todo JavaDoc
  * */
 public class GameEndedEvent extends GameEvents {
-  private String[] players;
-  private int[] points;
-  private String winner;
+  private final String[] players;
+  private final int[] points;
+  private final String winner;
   
   /**
    * Todo JavaDoc

@@ -1,7 +1,6 @@
 package de.lmu.ifi.sosylab.client.model;
 
 import de.lmu.ifi.sosylab.shared.JsonMessage;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -190,7 +188,7 @@ public class GameClientNetworkConnection {
     int row = Integer.parseInt(JsonMessage.getRows(object));
     int amount = Integer.parseInt(JsonMessage.getAmounts(object));
     if (model.getNickname().equals(model.getCurrentPlayer())) {
-        model.placeTiles(row, amount);
+      model.placeTiles(row, amount);
     } else {
       model.otherPlayerPlacedTiles(row, amount);
     }
@@ -351,7 +349,7 @@ public class GameClientNetworkConnection {
     model.timer();
   }
 
-  private void handleFloorLineUpdate(JSONObject object){
+  private void handleFloorLineUpdate(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
     int amount = Integer.parseInt(JsonMessage.getAmounts(object));
     String[] colors = new String[amount];
@@ -361,7 +359,7 @@ public class GameClientNetworkConnection {
     model.updateFloorLine(nick, colors);
   }
 
-  public void handleLogin(JSONObject object){
+  public void handleLogin(JSONObject object) {
     String[] nicknames = JsonMessage.getNickname(object).trim().split(",");
     model.loggedIn(nicknames);
   }
@@ -442,7 +440,8 @@ public class GameClientNetworkConnection {
   }
 
   public void sendTilePlacement(int numberOfTiles, int line) {
-    JSONObject tilePlacement = JsonMessage.placeTiles(model.getSelectedTiles().getContainedColors().get(0).getColor(), line);
+    JSONObject tilePlacement = JsonMessage.placeTiles(
+        model.getSelectedTiles().getContainedColors().get(0).getColor(), line);
     send(tilePlacement);
   }
 

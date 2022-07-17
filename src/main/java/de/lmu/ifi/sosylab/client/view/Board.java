@@ -4,9 +4,9 @@ import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import javax.swing.*;
 
 /**
  * TODO Add JavaDoc
@@ -58,7 +58,7 @@ public class Board extends JPanel {
     int score;
     try {
       score = controller.getPlayer(boardNumber).getBoard().getCurrentScore();
-    } catch (NullPointerException e){
+    } catch (NullPointerException e) {
       score = 0;
     }
 
@@ -148,7 +148,7 @@ public class Board extends JPanel {
       int minusPoints = controller.getPlayer(boardNumber).getBoard().getMinusPoints();
       System.out.println(minusPoints);
 
-     /* for (int i = 0; i < collection.length; i++) {
+      /* for (int i = 0; i < collection.length; i++) {
         for (int b = 0; b < collection[i].size(); b++) {
           int x = 1 + b;
           int y = 8;
@@ -174,10 +174,10 @@ public class Board extends JPanel {
     }
   }
 
-  private void createFrame(Graphics2D g2D){
-    if (name.equals(controller.getCurrentPlayer())){
+  private void createFrame(Graphics2D g2D) {
+    if (name.equals(controller.getCurrentPlayer())) {
       g2D.setColor(Color.GREEN);
-      g2D.drawRect(0,0,this.getWidth()-1,this.getHeight()-1);
+      g2D.drawRect(0, 0, this.getWidth() - 1, this.getHeight() - 1);
     }
   }
 }
