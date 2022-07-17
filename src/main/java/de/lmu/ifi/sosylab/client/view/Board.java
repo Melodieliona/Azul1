@@ -72,6 +72,7 @@ public class Board extends JPanel {
     createTilesRight(g2D);
     createMinusPoints(g2D);
     createFrame(g2D);
+    createValidRows(g2D);
   }
 
   /**
@@ -157,15 +158,12 @@ public class Board extends JPanel {
       TileCollection minusPoints = new TileCollection();
       minusPoints.addAll(player.getBoard().getFloorLine());
       g2D.drawRect(30, 30, 30, 30);
-      System.out.println("MinusPunktLeiste: " + minusPoints.size());
 
       for (int i = 0; i < minusPoints.size(); i++) {
-        System.out.println("Hello");
-        int x = 1 + i;
-        int y = 8;
-
+          int x = 1 + i;
+          int y = 8;
         String color = String.valueOf(minusPoints.get(i));
-        System.out.println(color);
+
         x = x * tileSize;
         y = y * tileSize;
 
@@ -189,6 +187,29 @@ public class Board extends JPanel {
     if (name.equals(controller.getCurrentPlayer())) {
       g2D.setColor(Color.GREEN);
       g2D.drawRect(0, 0, board.getWidth() - 1, board.getHeight() - 1);
+    }
+  }
+
+  private void createValidRows(Graphics2D g2D) {
+    try {
+      if (controller.getCurrentPlayer().equals(controller.getPlayer(boardNumber).getPlayerName())) {
+        System.out.println("EQUAlY");
+        int[] valid = controller.getValidRow();
+        for (int i = 0; i < controller.getValidRow().length; i++) {
+          System.out.println(valid[i]);
+          int validNumber = valid[i];
+          switch (validNumber) {
+            case 0 -> g2D.drawRect(5 * 25, 2 * 25, 25, 25);
+            case 1 -> g2D.drawRect(4 * 25, 3 * 25, 50, 25);
+            case 2 -> g2D.drawRect(3 * 25, 4 * 25, 75, 25);
+            case 3 -> g2D.drawRect(2 * 25, 5 * 25, 100, 25);
+            case 4 -> g2D.drawRect(1 * 25, 6 * 25, 125, 25);
+            default -> throw new IllegalArgumentException("Invalid Row.");
+          }
+        }
+      }
+    } catch (NullPointerException e) {
+      System.out.println("ValidRows ist noch leer! (Board)");
     }
   }
 }

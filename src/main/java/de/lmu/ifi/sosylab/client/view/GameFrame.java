@@ -74,7 +74,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private int[] score;
   private String tile_color;
   private transient Images images;
-  private JPanel middle;
   private JPanel gameField;
   private String currentPlayer;
   private int frameWidth;
@@ -84,6 +83,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private DecimalFormat dFormat;
   private int numberOfPayersHS;
   private Timer timer;
+  private JPanel middle;
 
 
   /**
@@ -536,6 +536,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    */
   private void createPlates(JPanel middle) {
     try {
+      collection = controller.getTilePlates();
       for (int plateNumber = 1; plateNumber < collection.length; plateNumber++) {
         BufferedImage img = images.getPlate();
 
@@ -549,6 +550,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           String color = String.valueOf(collection[plateNumber].get(i));
           PaintTile tile = new PaintTile(color, images);
           tile.setName(color);
+          System.out.println(color);
           if (i == 2) {
             x = 1;
             y = 3;
@@ -577,7 +579,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
               amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile_color));
               boolean confirmation = confirmTileSelection(plateNumber, tile_color, amountOfSelectedTiles, currentPlayer);
               if (confirmation) {
-                //TODO: next line is thowing an exception
                 controller.selectAllTiles(plateNumber, tile_color);
               }
             }
@@ -766,35 +767,43 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       showCard(LOGIN_M_CARD);
 
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
-      System.out.println("FRAME: MiddleTileUpdate");
-      collection = controller.getTilePlates();
+      showGame();
       gameField.removeAll();
+      collection = controller.getTilePlates();
       createGameView();
       repaint();
       currentPlayer = controller.getCurrentPlayer();
     } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
-      System.out.println("FRAME: otherPlayerPlacedTilesEvent");
+      showGame();
       gameField.removeAll();
+      collection = controller.getTilePlates();
       createGameView();
       repaint();
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof OtherPlayerSelectedTilesEvent) {
-      System.out.println("FRAME: PlayerSelectedTielsEvent");
+      showGame();
       gameField.removeAll();
+      collection = controller.getTilePlates();
+
       createGameView();
       repaint();
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilesAddedEvent) {
-      System.out.println("FRAME: TilesAddedEvent");
+      showGame();
       gameField.removeAll();
+      collection = controller.getTilePlates();
       createGameView();
       repaint();
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilesSelectedEvent) {
-
+      gameField.removeAll();
+      collection = controller.getTilePlates();
+      createGameView();
+      repaint();
+      currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilePlacementFailedEvent) {
 
