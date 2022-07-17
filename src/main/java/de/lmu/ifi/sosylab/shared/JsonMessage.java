@@ -292,7 +292,7 @@ public enum JsonMessage {
    */
   public static String getTiles(JSONObject object) {
     try {
-      return object.getString(TILES_FIELD);
+      return String.valueOf(object.get(TILES_FIELD));
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
@@ -306,7 +306,7 @@ public enum JsonMessage {
    */
   public static String getRows(JSONObject object) {
     try {
-      return object.getString(ROWS_FIELD);
+      return String.valueOf(object.get(ROWS_FIELD));
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
@@ -357,7 +357,7 @@ public enum JsonMessage {
    * */
   public static String getAmounts(JSONObject object) {
     try {
-      return object.getString(AMOUNTS);
+      return String.valueOf(object.get(AMOUNTS));
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
