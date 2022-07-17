@@ -193,7 +193,6 @@ public class Board extends JPanel {
       if (controller.getCurrentPlayer().equals(controller.getPlayer(boardNumber).getPlayerName())) {
         int[] valid = controller.getValidRow();
         for (int i = 0; i < controller.getValidRow().length; i++) {
-          System.out.println(valid[i]);
           int validNumber = valid[i];
           switch (validNumber) {
             case 0 -> g2D.drawRect(5 * 25, 2 * 25, 25, 25);
