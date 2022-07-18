@@ -209,7 +209,6 @@ public class LocalGame {
   private void endRound() {
 
     // Laying tiles on wall, clearing layingRows accordingly and put left over tiles in the trash
-    //
     for (GameBoard gameBoard : gameBoards) {
       for (int row = 0; row < 5; row++) {
         if (gameBoard.getLayingRow(row).isRowFull()) {
@@ -346,7 +345,7 @@ public class LocalGame {
   }
 
   /**
-   * Moves tiles, that are left on a plate after a selection was made, to the middle.
+   * Moves tiles, that are left on a plate after a placement was made, to the middle.
    * */
   private void moveTilesToMiddle() {
     if (currentSelectionSource != 0) {

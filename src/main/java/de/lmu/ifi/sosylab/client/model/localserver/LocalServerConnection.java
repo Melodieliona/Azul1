@@ -93,7 +93,7 @@ public class LocalServerConnection {
               new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 
           while (keepReading) {
-            String clientNick = "Not initialized.";
+            String clientNick;
 
             // Wait for a single message from the client.
             // If readLine is null, means that socket is closed / client disconnected.
@@ -402,51 +402,44 @@ public class LocalServerConnection {
         sendBoardUpdate.put("type", "board update");
         sendBoardUpdate.put("nick", gameBoard.getPlayerName());
 
-        //Add empty laying rows and wall tile columns / colors
-        int rowIterator = 0;
-        Tile[][] wall = gameBoard.getTileWall();
+        //Add empty laying rows
         StringBuilder emptyLayingRows = new StringBuilder();
-        StringBuilder filledWallCols = new StringBuilder();
-        StringBuilder wallTileColors = new StringBuilder();
         for (LayingRow layingRow : gameBoard.getLayingRows()) {
           if (layingRow.isRowEmpty()) {
             emptyLayingRows.append(layingRow.getRowNumber());
-
-            int colIterator = 0;
-            for (int col = 0; col < 5; col++) {
-              if (wall[col][rowIterator] != null) {
-                filledWallCols.append(col);
-                if (colIterator < 4) {
-                  filledWallCols.append(",");
-                }
-              }
-
-              if (wall[col][rowIterator] != null) {
-                wallTileColors.append(wall[col][rowIterator].getColor());
-                if (colIterator < 4) {
-                  wallTileColors.append(",");
-                }
-              }
-
-              colIterator++;
-            }
-
-            if (rowIterator < 4) {
-              emptyLayingRows.append(",");
-              filledWallCols.append("/");
-              wallTileColors.append("/");
-            }
+            emptyLayingRows.append(',');
           }
-          rowIterator++;
+        }
+        if (emptyLayingRows.charAt(emptyLayingRows.length() - 1) == ',') {
+          emptyLayingRows.deleteCharAt(emptyLayingRows.length() - 1);
         }
 
+        //Add wall tiles
+        Tile[][] wall = gameBoard.getTileWall();
+        StringBuilder wallTileColors = new StringBuilder();
+        for (int row = 0; row < 5; row++) {
+          for (int col = 0; col < 5; col++) {
+            if (wall[col][row] == null) {
+              wallTileColors.append("0");
+            } else {
+              wallTileColors.append(wall[col][row].getColor());
+            }
+            wallTileColors.append(" ");
+          }
+          wallTileColors.deleteCharAt(wallTileColors.length() - 1);
+          wallTileColors.append(',');
+        }
+        wallTileColors.deleteCharAt(wallTileColors.length() - 1);
+
         //TODO DELETE sout's
-        System.out.println("Gesendete leere Reihen: " + emptyLayingRows);
-        System.out.println("Gesendete Wand-Spalten: " + filledWallCols);
-        System.out.println("Gesendete Wand-Farben: " + wallTileColors);
+        System.out.println("\n-----------------\n" +
+          "Board Update für Spieler: " + gameBoard.getPlayerName() + "\n"
+          + "Gesendete leere Reihen: " + emptyLayingRows + "\n"
+          + "Gesendete Wand-Farben: " + wallTileColors + "\n"
+          + "Gesendeter Score: " + gameBoard.getCurrentScore()
+          + "\n----------------");
 
         sendBoardUpdate.put("row", emptyLayingRows.toString());
-        sendBoardUpdate.put("pattern columns", filledWallCols.toString());
         sendBoardUpdate.put("colors", wallTileColors.toString());
         sendBoardUpdate.put("points", String.valueOf(gameBoard.getCurrentScore()));
 
@@ -459,14 +452,10 @@ public class LocalServerConnection {
   }
 
   /**
-   * Send filled tile plates to all players at the very beginning of a round.
-   * Contains all tiles on plates and the middle
+   * Sends filled tile plates to all players at the very beginning of a round.
+   * Contains all tiles on plates and the middle.
    * */
   public void sendFilledPlates(TileCollection[] tilePlates) {
-
-    // { "type" : "fill plates", "color" : "red yellow,black green blue”, “tiles” : “ 3 1,1 1 2“ }
-    // TODO Testing
-
     StringBuilder tileColors = new StringBuilder();
     StringBuilder tileAmounts = new StringBuilder();
 
