@@ -153,17 +153,19 @@ public class GameModel {
    */
   public void selectTiles(int source, String color) {
     System.out.println("tiles selected model");
-    selectedTiles.removeAllTiles();
+    selectedTiles.clear();
     int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     selectedTiles.addTiles(Tile.getTile(color), numberOfTiles);
-    tilePlates[source].removeTilesOfColor(Tile.getTile(color));
+    tilePlates[source].removeAll(tilePlates[source].removeTilesOfColor(Tile.getTile(color)));
     if (source != 0) {
-      tilePlates[0].addAll(tilePlates[source]);
-      tilePlates[source].removeAllTiles();
+      tilePlates[0].addAllTiles(tilePlates[source]);
+      tilePlates[source].clear();
+      System.out.println("all tiles from plate "+ source+" removed");
+      System.out.println("size from collection in plate "+source+": "+tilePlates[source].size());
     } else {
       if (tilePlates[0].contains(Tile.STARTING_MARKER)){
         selectedTiles.add(Tile.STARTING_MARKER);
-        tilePlates[0].removeTilesOfColor(Tile.STARTING_MARKER);
+        tilePlates[0].removeAll(tilePlates[0].removeTilesOfColor(Tile.STARTING_MARKER));
       }
     }
     notifyListeners(new TilesSelectedEvent(source, color, selectedTiles.size()));
