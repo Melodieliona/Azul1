@@ -649,10 +649,29 @@ public class ServerNetworkConnection {
     try {
       for (User user : users) {
         if (user.getGameNumber() == nextGameNumber) {
-          JSONObject postMessageJson = new JSONObject();
-          postMessageJson.put("type", "timer");
+          JSONObject startTimerJson = new JSONObject();
+          startTimerJson.put("type", "timer start");
 
-          user.getWriter().write(postMessageJson + System.lineSeparator());
+          user.getWriter().write(startTimerJson + System.lineSeparator());
+          user.getWriter().flush();
+        }
+      }
+    } catch (IOException | JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Tells all players waiting for the game to start, that the timer ended and game starts now.
+   * */
+  private void sendTimerEnded() {
+    try {
+      for (User user : users) {
+        if (user.getGameNumber() == nextGameNumber) {
+          JSONObject timerEndedJson = new JSONObject();
+          timerEndedJson.put("type", "timer end");
+
+          user.getWriter().write(timerEndedJson + System.lineSeparator());
           user.getWriter().flush();
         }
       }
@@ -684,12 +703,12 @@ public class ServerNetworkConnection {
     gameStartTimerRunning = true;
     sendStartTimer();
 
-    System.out.println("Timer set on 5sec for testing...");
+    System.out.println("Timer set on 10sec for testing...");
     //TODO Set timer on 60sec after testing/debugging is complete
 
     Thread timerThread = new Thread(() -> {
       try {
-        Thread.sleep(1000 * 5);
+        Thread.sleep(1000 * 10);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
@@ -707,6 +726,7 @@ public class ServerNetworkConnection {
           + usersInGame.size() + " players.");
       if ((games.size() + 1 == nextGameNumber) && (usersInGame.size() > 1)) {
         gameStartTimerRunning = false;
+        sendTimerEnded();
         startGame();
       }
     });
