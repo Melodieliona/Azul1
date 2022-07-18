@@ -121,19 +121,20 @@ public class GameClientNetworkConnection {
       case ALLOWED_FIELDS -> handleAllowedFields(object);
       case ALLOWED_TILES -> handleAllowedTiles(object);
       case NEXT_TURN -> handleNextTurn(object);
-      case MOVE_NOT_ALLOWED -> handleMoveNotAllowed(object);
+      case MOVE_NOT_ALLOWED -> handleMoveNotAllowed();
       case BOARD_UPDATE -> handleBoardUpdate(object);
       case FILL_PLATES -> handleFillPlates(object);
       case POINTS -> handlePoints(object);
       case GAME_ENDED -> handleGameEnded(object);
       case GAME_RESTART_REQUEST -> handleGameRestartRequest(object);
-      case GAME_RESTART -> handleGameRestart(object);
-      case TILES_NOT_ALLOWED -> handleTilesNotAllowed(object);
-      case TIMER -> handleTimer(object);
+      case GAME_RESTART -> handleGameRestart();
+      case TILES_NOT_ALLOWED -> handleTilesNotAllowed();
+      case TIMER_START -> handleTimer();
       case GAME_CANCEL_REQUEST -> handleGameCancelRequest(object);
-      case GAME_CANCEL -> handleGameCancel(object);
+      case GAME_CANCEL -> handleGameCancel();
       case FLOOR_LINE_UPDATE -> handleFloorLineUpdate(object);
-      default -> handleInvalidJson(object);
+      case TIMER_END ->handleTimerEnd();
+      default -> handleInvalidJson();
     }
   }
 
@@ -225,10 +226,8 @@ public class GameClientNetworkConnection {
 
   /**
    * Handles receiving that a placement is not allowed.
-   *
-   * @param object JsonMessage received
    */
-  private void handleMoveNotAllowed(JSONObject object) {
+  private void handleMoveNotAllowed() {
     model.tilePlacementFailed();
   }
 
@@ -278,10 +277,8 @@ public class GameClientNetworkConnection {
 
   /**
    * Handles receiving that the game has been restarted.
-   *
-   * @param object JsonMessage received
    */
-  private void handleGameRestart(JSONObject object) {
+  private void handleGameRestart() {
     model.restartGame();
   }
 
@@ -297,10 +294,8 @@ public class GameClientNetworkConnection {
 
   /**
    * Handles receiving that the game has been canceled.
-   *
-   * @param object JsonMessage received
    */
-  private void handleGameCancel(JSONObject object) {
+  private void handleGameCancel() {
     model.cancelGame();
   }
 
@@ -321,28 +316,22 @@ public class GameClientNetworkConnection {
 
   /**
    * Handles receiving that an invalid JSON has been sent.
-   *
-   * @param object JsonMessage received
    */
-  private void handleInvalidJson(JSONObject object) {
+  private void handleInvalidJson() {
     throw new AssertionError("Invalid JSON Message sent");
   }
 
   /**
    * Handles receiving that a tiles selection failed.
-   *
-   * @param object JsonMessage received
    */
-  private void handleTilesNotAllowed(JSONObject object) {
+  private void handleTilesNotAllowed() {
     model.tileSelectionFailed();
   }
 
   /**
    * Handles receiving that a tiles selection failed.
-   *
-   * @param object JsonMessage received
    */
-  private void handleTimer(JSONObject object) {
+  private void handleTimer() {
     model.timer();
   }
 
@@ -359,6 +348,10 @@ public class GameClientNetworkConnection {
   public void handleLogin(JSONObject object) {
     String[] nicknames = JsonMessage.getNickname(object).trim().split(",");
     model.loggedIn(nicknames);
+  }
+
+  public void handleTimerEnd() {
+    model.endTimer();
   }
 
   /**

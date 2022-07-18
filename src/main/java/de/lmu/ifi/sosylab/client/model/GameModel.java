@@ -159,8 +159,12 @@ public class GameModel {
     tilePlates[source].removeTilesOfColor(Tile.getTile(color));
     if (source != 0) {
       tilePlates[0].addAll(tilePlates[source]);
+      tilePlates[source].removeAllTiles();
     } else {
-      if (tilePlates[0].contains(Tile.STARTING_MARKER)) selectedTiles.add(Tile.STARTING_MARKER);
+      if (tilePlates[0].contains(Tile.STARTING_MARKER)){
+        selectedTiles.add(Tile.STARTING_MARKER);
+        tilePlates[0].removeTilesOfColor(Tile.STARTING_MARKER);
+      }
     }
     notifyListeners(new TilesSelectedEvent(source, color, selectedTiles.size()));
   }
@@ -309,6 +313,7 @@ public class GameModel {
 
   public void loggedIn(String[] nicknames) {
     if (gameMode.equals("Multiplayer")) {
+      players.add(new Player(this.nickname));
       for (String nickname :
           nicknames) {
         players.add(new Player(nickname));
@@ -345,6 +350,10 @@ public class GameModel {
    */
   public void timer() {
     notifyListeners(new TimerEvent());
+  }
+
+  public void endTimer(){
+    notifyListeners(new TimerEndedEvent());
   }
 
   /**
@@ -447,7 +456,7 @@ public class GameModel {
 
   public TileCollection[] getTilePlates() {
     TileCollection[] copyofTilePlates = tilePlates.clone();
-    return copyofTilePlates;
+    return tilePlates;
   }
 
   public int[] getValidRows() {

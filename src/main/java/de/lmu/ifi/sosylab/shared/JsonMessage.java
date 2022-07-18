@@ -2,6 +2,7 @@ package de.lmu.ifi.sosylab.shared;
 
 import java.util.Arrays;
 import java.util.Optional;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,9 +19,9 @@ public enum JsonMessage {
   BOARD_UPDATE("board update"), USER_LEFT("user left"),
   FILL_PLATES("fill plates"), POINTS("points"),
   GAME_ENDED("game ended"), GAME_RESTART("game restart"),
-  GAME_RESTART_REQUEST("game restart request"), TIMER("timer"),
+  GAME_RESTART_REQUEST("game restart request"), TIMER_END("timer end"),
   PLAYERS("players"), TILES_NOT_ALLOWED("tiles not allowed"),
-  GAME_CANCEL_REQUEST("game cancel request"), GAME_CANCEL("game cancel"),
+  GAME_CANCEL_REQUEST("game cancel request"), GAME_CANCEL("game cancel"), TIMER_START("timer start"),
   FLOOR_LINE_UPDATE("floor line update");
 
 
@@ -343,7 +344,7 @@ public enum JsonMessage {
 
   /**
    * TODO Add JavaDoc
-   * */
+   */
   public static String getFloorTile(JSONObject object, int index) {
     try {
       return object.getString(FLOORTILE + index);
@@ -354,7 +355,7 @@ public enum JsonMessage {
 
   /**
    * TODO Add JavaDoc
-   * */
+   */
   public static String getAmounts(JSONObject object) {
     try {
       return String.valueOf(object.get(AMOUNTS));
