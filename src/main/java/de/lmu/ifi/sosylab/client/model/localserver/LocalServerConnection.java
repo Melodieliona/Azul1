@@ -440,7 +440,7 @@ public class LocalServerConnection {
           + "\n----------------");
 
         sendBoardUpdate.put("row", emptyLayingRows.toString());
-        sendBoardUpdate.put("colors", wallTileColors.toString());
+        sendBoardUpdate.put("color", wallTileColors.toString());
         sendBoardUpdate.put("points", String.valueOf(gameBoard.getCurrentScore()));
 
         writer.write(sendBoardUpdate + System.lineSeparator());
