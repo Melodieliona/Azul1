@@ -612,8 +612,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   /**
-   * Creates tile pile in the Middle.
+   * Creates tile pile in the Middle and adds a MouseListener to each Tile.
+   * The MouseListener gets the name of the clicked Component.
+   * Afterwards the information is sent to controller.selectAllTiles.
    *
+   * If the pile is null a Exception is thrown.
    * @return - pile.
    */
   private Component createPile() {
@@ -656,10 +659,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   /**
-   * Creates a Board with MouseListener for the Rows.
+   * Creates a board with MouseListener for the rows.
+   * When clicked the selected tiles are placed there.
    *
-   * @param boardNumber -
-   * @return -board.
+   * @param boardNumber - Number so that the playername can be fetched.
+   * @return -board with name, points and placed tiles.
    */
   private Component createBoard(int boardNumber) {
     Board b = new Board(controller, tileSize, playerNames.get(boardNumber), images, boardNumber);

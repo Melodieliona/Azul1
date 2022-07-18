@@ -23,9 +23,10 @@ public class Board extends JPanel {
   private String name;
   private transient BufferedImage board;
   private int boardNumber;
+  private Graphics2D g2D;
 
   /**
-   * Creates Board.
+   * Creates Board with name, Points and Tiles.
    *
    * @param tileSize - this.tilesize.
    * @param name     - username.
@@ -50,12 +51,12 @@ public class Board extends JPanel {
   }
 
   /**
-   * Paints board and playername and points.
+   * Paints board, playername and points.
    *
    * @param g -graphics.
    */
   public void paint(Graphics g) {
-    Graphics2D g2D = (Graphics2D) g;
+    g2D = (Graphics2D) g;
     g2D.drawImage(board, 0, 0, board.getWidth(), board.getHeight(), null);
     g2D.setFont(new Font("Arial", Font.PLAIN, 15));
     g2D.setColor(Color.white);
@@ -68,19 +69,19 @@ public class Board extends JPanel {
     }
 
     g2D.drawString(String.valueOf(score), 250, 35);
-    createTilesLeft(g2D);
-    createTilesRight(g2D);
-    createMinusPoints(g2D);
-    createFrame(g2D);
-    createValidRows(g2D);
+    createTilesLeft();
+    createTilesRight();
+    createMinusPoints();
+    createFrame();
+    createValidRows();
   }
 
   /**
    * Creates the different tiles for the left board.
+   * If rows are empty a NullPointerException is thrown.
    *
-   * @param g2D -graphics.
    */
-  private void createTilesLeft(Graphics2D g2D) {
+  private void createTilesLeft() {
     try {
       Player player = controller.getPlayer(boardNumber);
       LayingRow[] rows = player.getBoard().getLayingRows();
@@ -114,9 +115,9 @@ public class Board extends JPanel {
   /**
    * Creates the different tiles for the right board.
    *
-   * @param g2D -graphics.
+   * If rows are empty a NullPointerException is thrown
    */
-  private void createTilesRight(Graphics2D g2D) {
+  private void createTilesRight() {
     try {
       Player player = controller.getPlayer(boardNumber);
       Tile[][] collection = player.getBoard().getTileWall();
@@ -147,11 +148,11 @@ public class Board extends JPanel {
   }
 
   /**
-   * Creates the different tiles for the left board.
+   * Creates the minusPoints.
+   * If rows are empty a NullPointerException is thrown.
    *
-   * @param g2D -graphics.
    */
-  private void createMinusPoints(Graphics2D g2D) {
+  private void createMinusPoints() {
     try {
       Player player = controller.getPlayer(boardNumber);
       TileCollection minusPoints = new TileCollection();
@@ -181,14 +182,20 @@ public class Board extends JPanel {
     }
   }
 
-  private void createFrame(Graphics2D g2D) {
+  /**
+   * Creates a green frame when it's the players turn.
+   */
+  private void createFrame() {
     if (name.equals(controller.getCurrentPlayer())) {
       g2D.setColor(Color.GREEN);
       g2D.drawRect(0, 0, board.getWidth() - 1, board.getHeight() - 1);
     }
   }
 
-  private void createValidRows(Graphics2D g2D) {
+  /**
+   * Creates a green frame when the row is clickable.
+   */
+  private void createValidRows() {
     try {
       if (controller.getCurrentPlayer().equals(controller.getPlayer(boardNumber).getPlayerName())) {
         int[] valid = controller.getValidRow();

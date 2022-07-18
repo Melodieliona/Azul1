@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
- * TODO Add JavaDoc
+ * Imports the images and resizes them if needed.
  * */
 public class Images {
   private BufferedImage board;
@@ -69,7 +69,7 @@ public class Images {
    * @param targetHeight  - new height.
    * @return - resized image.
    */
-  public BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+  private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
     BufferedImage resizedImage =
         new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics2D = resizedImage.createGraphics();
@@ -160,6 +160,11 @@ public class Images {
     return icon;
   }
 
+  /**
+   * Getter for tileStarter.
+   *
+   * @return  - tileStarter.
+   */
   public BufferedImage getTileStarter() {
     return tileStarter;
   }
@@ -168,6 +173,11 @@ public class Images {
     return backgroundHomeScreen;
   }
 
+  /**
+   * Getter for BackgroundSetGameMode.
+   *
+   * @return  - backgroundSetGameMode.
+   */
   public BufferedImage getBackgroundSetGameMode() {
     return backgroundSetGameMode;
   }

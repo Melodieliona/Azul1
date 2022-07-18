@@ -6,12 +6,15 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 /**
- * TODO Add JavaDoc
+ * Imports images.
  * */
 public class ImportImage {
   private BufferedImage img;
   private final String path;
 
+  /**
+   * @param path - path for the picture.
+   */
   public ImportImage(String path) {
     this.path = path;
     importImage();
