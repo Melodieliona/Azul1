@@ -487,6 +487,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     });
   }
 
+  /**
+   * Creates the amount of boards according to the size of playernames and adds middle.
+   * @return - The Game Field with boards, pile and plates.
+   */
   private Component createGameField() {
     switch (playerNames.size() - 1) {
       case 1 -> {
@@ -517,24 +521,26 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   /**
    * Creates Middle with plates and pile.
    *
-   * @return -middle.
+   * @return - middle.
    */
   private Component createMiddle() {
     middle = new JPanel(new FlowLayout());
     middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     middle.setPreferredSize(new Dimension(325, 300));
 
-    createPlates(middle);
+    createPlates();
     middle.add(createPile());
     return middle;
   }
 
   /**
    * Creates the Plates in the middle with the tiles and adds a MouseListener.
+   * The MouseListener gets the name of the clicked Component like tile_color and plate.
+   * Afterwards the information is sent to controller.selectAllTiles.
    *
-   * @param middle - Plates can be directly added to the middle.
+   * If collection ist empty a NullPointerException is thrown.
    */
-  private void createPlates(JPanel middle) {
+  private void createPlates() {
     try {
       collection = controller.getTilePlates();
       for (int plateNumber = 1; plateNumber < collection.length; plateNumber++) {
