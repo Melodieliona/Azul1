@@ -2,6 +2,7 @@ package de.lmu.ifi.sosylab.client.view;
 
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
+import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.server.User;
@@ -175,7 +176,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     play.setFont(standardFont);
     hotSeat = new JButton("HOTSEAT");
     hotSeat.setFont(standardFont);
-    multiPlayer = new JButton("MULTIPLAYER");
+    multiPlayer = new JButton("ONLINE");
     multiPlayer.setFont(standardFont);
     songs = new JComboBox<>(songList);
     back = new JButton("Back");
@@ -275,8 +276,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         formatedCounterSecond = dFormat.format(counterSecond);
         formatedCounterMinute = dFormat.format(counterMinute);
         counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
-
         counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
+
       }
 
     });
@@ -430,13 +431,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       public void actionPerformed(ActionEvent e) {
         String selectedSong = songs.getSelectedItem().toString();
         switch (selectedSong) {
-          case "CHILL BEAT" ->
-            playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
-          case "MELODIC RHYTHM" ->
-            playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
-          case "RETRO CITY" ->
-            playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
-          default -> {}
+          case "CHILL BEAT" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
+          case "MELODIC RHYTHM" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
+          case "RETRO CITY" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
+          default -> {
+          }
         }
         songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
       }
@@ -456,7 +455,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       public void actionPerformed(ActionEvent e) {
 
         if (model.getGameMode().equals("Multiplayer")) {
-          controller.logInMultiplayer(nickName.getText());
+          String playerName = nickName.getText();
+          controller.logInMultiplayer(playerName);
         } else if (model.getGameMode().equals("Hot seat")) {
 
           if (numberOfPayersHS == 2) {
@@ -489,6 +489,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   /**
    * Creates the amount of boards according to the size of playernames and adds middle.
+   *
    * @return - The Game Field with boards, pile and plates.
    */
   private Component createGameField() {
@@ -537,7 +538,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates the Plates in the middle with the tiles and adds a MouseListener.
    * The MouseListener gets the name of the clicked Component like tile_color and plate.
    * Afterwards the information is sent to controller.selectAllTiles.
-   *
+   * <p>
    * If collection ist empty a NullPointerException is thrown.
    */
   private void createPlates() {
@@ -615,8 +616,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates tile pile in the Middle and adds a MouseListener to each Tile.
    * The MouseListener gets the name of the clicked Component.
    * Afterwards the information is sent to controller.selectAllTiles.
-   *
+   * <p>
    * If the pile is null a Exception is thrown.
+   *
    * @return - pile.
    */
   private Component createPile() {
@@ -748,24 +750,48 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     Object newValue = event.getNewValue();
 
     if (newValue instanceof LoggedInEvent) {
-      int numberOfActivePlayers = model.getNumberOfPlayers();
+
       if (model.getGameMode().equals("Multiplayer")) {
+        int numberOfPlayers = model.getPlayers().size() - 1;
+        System.out.println("LogeddInEvent, numer of current players are: " + numberOfPlayers);
 
-        //int numberOfActivePlayers = model.getNumberOfPlayers();
-        System.out.println("Number of active players provided from the model are: " + numberOfActivePlayers);
+        String player = model.getNickname();
+        playerNames.add(player);
+        System.out.println(player + "has been added Login Event (this is the main playor of this client instance)");
 
-        if (numberOfActivePlayers == 2 || numberOfActivePlayers == 3 || numberOfActivePlayers == 4) {
-          timer.stop();
-          showGame();
+        if (numberOfPlayers > 0) {
+          ArrayList<Player> players = model.getPlayers();
+          for (int i = 0; i < model.getPlayers().size(); i++) {
+            String otherPlayer = players.get(i).getPlayerName();
 
-        } else {
-          waitForEnoughPlayers();
-          showCard(COUNTER_CARD);
+            if (!player.equals(otherPlayer)) {
+              playerNames.add(otherPlayer);
+              System.out.println("LoginEvent adding player: " + otherPlayer);
+            }
+          }
+
         }
+
 
       } else if (model.getGameMode().equals("Hot Seat")) {
         showGame();
       }
+    } else if (newValue instanceof UserJoinedEvent) {
+      if (model.getGameMode().equals("Hot seat")) {
+        //TODO: was soll hier genau passieren?
+
+      } else if (model.getGameMode().equals("Multiplayer")) {
+        int numberOfPlayers = model.getPlayers().size() - 1;
+        ArrayList<Player> players = model.getPlayers();
+        String playerName = players.get(numberOfPlayers).getPlayerName();
+        playerNames.add(playerName);
+        System.out.println("UserJoinedEvent in Frame adding " + playerName);
+
+      }
+
+    } else if (newValue instanceof UserLeftEvent) {
+      //TODO: was soll hier genau passieren?
+
     } else if (newValue instanceof LoginFailedEvent) {
       JOptionPane.showMessageDialog(this,
               String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
@@ -812,23 +838,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof TilePlacementFailedEvent) {
 
-    } else if (newValue instanceof UserJoinedEvent) {
-      int numberOfActivePlayers = model.getNumberOfPlayers();
-      System.out.println("Number of active players provided from the model are: " + numberOfActivePlayers);
-      showGame();
-      /*if (numberOfActivePlayers > 1 && numberOfActivePlayers < 5) {
-        timer.stop();
-        showGame();
-
-      } else {
-        //waitForEnoughPlayers();
-        //showCard(COUNTER_CARD);
-      }*/
-
-
-    } else if (newValue instanceof UserLeftEvent) {
-      //TODO: was soll hier genau passieren?
-
     } else if (newValue instanceof PointsUpdatedEvent) {
       score = ((PointsUpdatedEvent) newValue).getPoints();
 
@@ -850,6 +859,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TimerEvent) {
+      waitForEnoughPlayers();
+      showCard(COUNTER_CARD);
+
+    } else if (newValue instanceof TimerEndedEvent) {
+      showGame();
 
     }
   }

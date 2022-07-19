@@ -73,7 +73,7 @@ public class GameModel {
   }
 
   public int getNumberOfPlayers() {
-    return players.size();
+    return players.size() - 1;
   }
 
   /**
@@ -93,16 +93,12 @@ public class GameModel {
     setNickname(name);
   }
 
+
+
   /**
    * TODO Javadoc
    */
   public void logInHotSeat(String[] playersName) {
-    //TODO remove this
-    //testing
-    //for (int i = 0; i < playersName.length; i++) {
-    //  System.out.println(playersName[i]);
-    //}
-
     connection.sendPlayers(playersName.length);
     for (int i = 0; i < playersName.length; i++) {
       connection.sendLogin(playersName[i]);
@@ -316,9 +312,12 @@ public class GameModel {
   public void loggedIn(String[] nicknames) {
     if (gameMode.equals("Multiplayer")) {
       players.add(new Player(this.nickname));
+      System.out.println("Player array size is now: " + this.getPlayers().size());
+      System.out.println("Model LogginSuccess addig: " + this.nickname);
       for (String nickname :
           nicknames) {
         players.add(new Player(nickname));
+        System.out.println("Model Logged in Event  Nickname of other player that was addes to Player Array: " + nickname);
       }
     }
     notifyListeners(new LoggedInEvent());

@@ -5,6 +5,7 @@ import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,12 +15,13 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Network Layer of the game server.
- * */
+ */
 public class ServerNetworkConnection {
   private static final int port = 8080;
 
@@ -53,7 +55,7 @@ public class ServerNetworkConnection {
       serverSocket = new ServerSocket(port);
     } catch (IOException e) {
       System.out.println("Cannot create socket with port " + port + ".\n"
-          + "Likely the port is already in use.");
+              + "Likely the port is already in use.");
 
       return;
     }
@@ -83,7 +85,7 @@ public class ServerNetworkConnection {
    * Listens to incoming messages from the client.
    *
    * @param socket Provides the connection to a new client
-   * */
+   */
   private void startHandler(Socket socket) {
 
     Thread newConnectionThread = new Thread() {
@@ -98,9 +100,9 @@ public class ServerNetworkConnection {
 
         try {
           BufferedReader reader = new BufferedReader(
-              new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                  new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
           OutputStreamWriter writer =
-              new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
+                  new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
 
 
           while (keepReading) {
@@ -277,7 +279,7 @@ public class ServerNetworkConnection {
 
   /**
    * Acknowledges that a player has successfully joined the game.
-   * */
+   */
   private void sendUserJoined(String nickname) {
     try {
       for (User user : users) {
@@ -330,7 +332,7 @@ public class ServerNetworkConnection {
    * Sends a successful tile selection to all users (including the sender as confirmation).
    */
   public void sendTileSelection(
-      List<User> list, String currentPlayer, int sourceTilePlate, Tile color, int amount) {
+          List<User> list, String currentPlayer, int sourceTilePlate, Tile color, int amount) {
     try {
       for (User user : list) {
         JSONObject sendMoveJson = new JSONObject();
@@ -353,7 +355,7 @@ public class ServerNetworkConnection {
    * Sends a successful tile placement to all users (including the sender as confirmation).
    */
   public void sendTilePlacement(
-      List<User> list, String currentPlayer, Tile color, int amount, int layingRow) {
+          List<User> list, String currentPlayer, Tile color, int amount, int layingRow) {
     try {
       for (User user : list) {
         JSONObject sendMoveJson = new JSONObject();
@@ -372,12 +374,13 @@ public class ServerNetworkConnection {
   }
 
   // TODO Integrate Floorline update into board update
+
   /**
    * Sends a message with all tiles that have been added to the floor line
    * to all other players of that game.
-   * */
+   */
   public void sendFloorLineUpdate(
-      List<User> userlist, User currentUser, TileCollection newFloorLineTiles) {
+          List<User> userlist, User currentUser, TileCollection newFloorLineTiles) {
     try {
       for (User user : userlist) {
         JSONObject sendNewFloorLineTiles = new JSONObject();
@@ -407,7 +410,7 @@ public class ServerNetworkConnection {
 
   /**
    * Sends the updated score to the player who just made a move.
-   * */
+   */
   public void sendScoreUpdate(User user, int score) {
     try {
       JSONObject sendScoreUpdate = new JSONObject();
@@ -427,10 +430,10 @@ public class ServerNetworkConnection {
    * - "nick": Name of the player, this play board belongs to
    * - "row": Empty laying rows
    * - "pattern columns": x-coords of laid wall tiles -
-   *   (corresponding values of "row" are y-coords)
+   * (corresponding values of "row" are y-coords)
    * - "colors": Colors of the laid wall tiles
    * - "score": The current score of the player as Integer
-   * */
+   */
   public void sendBoardUpdate(List<User> userList, GameBoard[] gameBoards) {
     for (User user : userList) {
       for (GameBoard gameBoard : gameBoards) {
@@ -496,7 +499,7 @@ public class ServerNetworkConnection {
   /**
    * Send filled tile plates to all players at the very beginning of a round.
    * Contains all tiles on plates and the middle
-   * */
+   */
   public void sendFilledPlates(List<User> userList, TileCollection[] tilePlates) {
 
     // { "type" : "fill plates", "color" : "red yellow,black green blue”, “tiles” : “ 3 1,1 1 2“ }
@@ -546,7 +549,7 @@ public class ServerNetworkConnection {
   /**
    * Gets send after a tile selection was made successfully.
    * Tells the player whose turn it is, which rows he can place selected tile(s) on.
-   * */
+   */
   public void sendClickableRows(User user, int[] rows) {
     try {
       StringBuilder clickableRows = new StringBuilder();
@@ -591,10 +594,10 @@ public class ServerNetworkConnection {
   /**
    * Announces the winner(s) of the game to all players and sends the final scores.
    * Format winnerJson: {"type": "winner", "amount": int amountOfWinners,
-   *                     "winner0": ... [, winner1": ... [, "winner2": ... [, "winner3": ...]]]}
+   * "winner0": ... [, winner1": ... [, "winner2": ... [, "winner3": ...]]]}
    * Format finalScoresJson: {"type": "points", "points0": ..., "points1": ..., "points2": ...,
-   *                                            "points3": ...}
-   * */
+   * "points3": ...}
+   */
   public void announceWinner(List<User> userList, int[] endScores, ArrayList<String> winners) {
     try {
       for (User user : userList) {
@@ -646,7 +649,7 @@ public class ServerNetworkConnection {
 
   /**
    * Tells all players waiting for the game to start, that the game will start soon.
-   * */
+   */
   private void sendStartTimer() {
     try {
       for (User user : users) {
@@ -665,7 +668,7 @@ public class ServerNetworkConnection {
 
   /**
    * Tells all players waiting for the game to start, that the timer ended and game starts now.
-   * */
+   */
   private void sendTimerEnded() {
     try {
       for (User user : users) {
@@ -684,7 +687,7 @@ public class ServerNetworkConnection {
 
   /**
    * Starts the game.
-   * */
+   */
   private void startGame() {
     List<User> usersInGame = new ArrayList<>();
     for (User user : users) {
@@ -700,17 +703,14 @@ public class ServerNetworkConnection {
   /**
    * Starts a timer. When expired, starts the game with current amount of logged in players.
    * Timer length: 60 sec
-   * */
+   */
   private void startTimer() {
     gameStartTimerRunning = true;
     sendStartTimer();
-
-    System.out.println("Timer set on 10sec for testing...");
-    //TODO Set timer on 60sec after testing/debugging is complete
-
+//TODO: change timer to 1 minute
     Thread timerThread = new Thread(() -> {
       try {
-        Thread.sleep(1000 * 10);
+        Thread.sleep(1000 * 30);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
@@ -725,7 +725,7 @@ public class ServerNetworkConnection {
       // Check if game hasn't already been started (because a 4th user joined) and if there are
       // enough users for a game (at least 2)
       System.out.println("Timer elapsed! Game will start now with "
-          + usersInGame.size() + " players.");
+              + usersInGame.size() + " players.");
       if ((games.size() + 1 == nextGameNumber) && (usersInGame.size() > 1)) {
         gameStartTimerRunning = false;
         sendTimerEnded();
