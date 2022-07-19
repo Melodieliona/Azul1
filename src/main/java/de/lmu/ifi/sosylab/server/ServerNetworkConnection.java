@@ -150,6 +150,7 @@ public class ServerNetworkConnection {
                     }
                   }
 
+                  //Immediately start the game without waiting for the timer if 4 players joined
                   if (numberOfUsersInNextGame > 3) {
                     sendTimerEnded();
                     startGame();
