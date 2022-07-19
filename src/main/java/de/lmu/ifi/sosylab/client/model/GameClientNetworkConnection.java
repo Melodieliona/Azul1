@@ -238,11 +238,10 @@ public class GameClientNetworkConnection {
    */
   private void handleBoardUpdate(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
-    String[] patternRow = JsonMessage.getRows(object).trim().split("/");
-    String[] patternColumns = JsonMessage.getPatternColumns(object).trim().split("/");
+    String[] patternRow = JsonMessage.getRows(object).trim().split(",");
     String points = JsonMessage.getScores(object);
-    String[] colors = JsonMessage.getTileColor(object).trim().split("/");
-    model.updateBoard(patternRow, patternColumns, nick, points, colors);
+    String[] colors = JsonMessage.getTileColor(object).trim().split(",");
+    model.updateBoard(patternRow, nick, points, colors);
   }
 
   /**
@@ -411,6 +410,7 @@ public class GameClientNetworkConnection {
    */
   public void sendTileSelection(int source, String color, int numberOfTiles) {
     JSONObject tileSelection = JsonMessage.selectTile(color, source);
+    System.out.println("color: " +color+" and source: "+source);
     send(tileSelection);
   }
 

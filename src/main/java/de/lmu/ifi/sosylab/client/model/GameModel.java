@@ -94,7 +94,6 @@ public class GameModel {
   }
 
 
-
   /**
    * TODO Javadoc
    */
@@ -156,10 +155,10 @@ public class GameModel {
     if (source != 0) {
       tilePlates[0].addAllTiles(tilePlates[source]);
       tilePlates[source].clear();
-      System.out.println("all tiles from plate "+ source+" removed");
-      System.out.println("size from collection in plate "+source+": "+tilePlates[source].size());
+      System.out.println("all tiles from plate " + source + " removed");
+      System.out.println("size from collection in plate " + source + ": " + tilePlates[source].size());
     } else {
-      if (tilePlates[0].contains(Tile.STARTING_MARKER)){
+      if (tilePlates[0].contains(Tile.STARTING_MARKER)) {
         selectedTiles.add(Tile.STARTING_MARKER);
         tilePlates[0].removeAll(tilePlates[0].removeTilesOfColor(Tile.STARTING_MARKER));
       }
@@ -353,7 +352,7 @@ public class GameModel {
     notifyListeners(new TimerEvent());
   }
 
-  public void endTimer(){
+  public void endTimer() {
     notifyListeners(new TimerEndedEvent());
   }
 
@@ -379,18 +378,25 @@ public class GameModel {
    * @param points the current score of the player
    * @param colors the colors of the tiles that will go in the wall
    */
-  public void updateBoard(String[] rows, String[] columns, String nick, String points, String[] colors) {
-    int numberOfTiles = rows.length;
+  public void updateBoard(String[] rows, String nick, String points, String[] colors) {
     for (Player player :
         players) {
       if (player.getPlayerName().equals(nick)) {
         GameBoard board = player.getBoard();
         board.setCurrentScore(Integer.parseInt(points));
-        for (int i = 0; i < numberOfTiles; i++) {
-          int line = Integer.parseInt(rows[i]);
-          Tile tile = Tile.getTile(colors[i]);
-          board.layWallTile(line, tile);
-          board.getLayingRow(line).clearRow();
+        for (String row :
+            rows) {
+          int line = Integer.parseInt(row);
+          for (String color :
+              colors) {
+            String[] tiles = color.trim().split("\\s+");
+            for (String tile :
+                tiles) {
+              Tile actualTile = Tile.getTile(tile);
+              board.layWallTile(line, actualTile);
+              board.getLayingRow(line).clearRow();
+            }
+          }
         }
         board.clearFloorLine();
       }
@@ -401,7 +407,7 @@ public class GameModel {
   public void updateFloorLine(String nick, String[] colors) {
     System.out.println("updating floor line");
     int numberOfTiles = colors.length;
-    System.out.println("number of tiles in floor line "+numberOfTiles);
+    System.out.println("number of tiles in floor line " + numberOfTiles);
     TileCollection tiles = new TileCollection();
     for (Player player :
         players) {
@@ -415,7 +421,7 @@ public class GameModel {
         }
         player.getBoard().addToFloorLine(tiles);
         System.out.println("now all tiles actually added to floorline");
-        System.out.println("Size of the floor line: "+player.getBoard().getFloorLine().size());
+        System.out.println("Size of the floor line: " + player.getBoard().getFloorLine().size());
       }
     }
     notifyListeners(new FloorLineEvent());
