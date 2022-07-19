@@ -151,6 +151,7 @@ public class ServerNetworkConnection {
                   }
 
                   if (numberOfUsersInNextGame > 3) {
+                    sendTimerEnded();
                     startGame();
                     nextGameNumber++;
                   } else if ((numberOfUsersInNextGame > 1) && !gameStartTimerRunning) {
