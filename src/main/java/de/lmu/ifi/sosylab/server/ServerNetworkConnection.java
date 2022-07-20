@@ -218,7 +218,6 @@ public class ServerNetworkConnection {
     newConnectionThread.start();
   }
 
-
   /**
    * Sends a login confirmation.
    */
