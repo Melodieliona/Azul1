@@ -23,7 +23,7 @@ public class Board extends JPanel {
   private String name;
   private transient BufferedImage board;
   private int boardNumber;
-  private Graphics2D g2D;
+  private transient Graphics2D g2D;
 
   /**
    * Creates Board with name, Points and Tiles.
