@@ -31,8 +31,6 @@ public class ServerNetworkConnection {
 
   private int nextGameNumber = 1;
 
-  private boolean gameStartTimerRunning = false;
-
   /**
    * Initializes the User list, which stores all clients that are currently connected.
    */
@@ -151,11 +149,11 @@ public class ServerNetworkConnection {
                   }
 
                   //Immediately start the game without waiting for the timer if 4 players joined
-                  if (numberOfUsersInNextGame > 3) {
+                  if (numberOfUsersInNextGame == 4) {
                     sendTimerEnded();
                     startGame();
                     nextGameNumber++;
-                  } else if ((numberOfUsersInNextGame > 1) && !gameStartTimerRunning) {
+                  } else if ((numberOfUsersInNextGame == 2 | numberOfUsersInNextGame == 3 )) {
                     startTimer();
                   }
                 }
@@ -702,7 +700,6 @@ public class ServerNetworkConnection {
    * Timer length: 60 sec
    */
   private void startTimer() {
-    gameStartTimerRunning = true;
     sendStartTimer();
     //TODO: change timer to 1 minute
     Thread timerThread = new Thread(() -> {
@@ -724,7 +721,6 @@ public class ServerNetworkConnection {
       System.out.println("Timer elapsed! Game will start now with "
               + usersInGame.size() + " players.");
       if ((games.size() + 1 == nextGameNumber) && (usersInGame.size() > 1)) {
-        gameStartTimerRunning = false;
         sendTimerEnded();
         startGame();
       }
