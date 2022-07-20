@@ -224,9 +224,11 @@ public enum JsonMessage {
    *
    * @return JsonMessage to be sent
    */
-  public static JSONObject gameCancelRequest() {
+  public static JSONObject gameCancelRequest(String nickname) {
     try {
-      return createMessageOfType(GAME_CANCEL_REQUEST);
+      JSONObject message = createMessageOfType(GAME_CANCEL_REQUEST);
+      message.put(NICK_FIELD, nickname);
+      return message;
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to create a json object.", e);
     }

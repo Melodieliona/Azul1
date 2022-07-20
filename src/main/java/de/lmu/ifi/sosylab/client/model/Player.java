@@ -39,7 +39,7 @@ public class Player {
 
   public GameBoard getBoard() {
     GameBoard copyOfGameBoard = new GameBoard(board);
-    return copyOfGameBoard;
+    return board;
   }
 
 }

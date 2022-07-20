@@ -161,6 +161,10 @@ public class LocalServerConnection {
                 game.handleTilePlacement(targetRow, placementColor);
 
                 break;
+              case GAME_CANCEL_REQUEST:
+                String nick = JsonMessage.getNickname(jsonObject);
+                //game.handleGameCancelRequest(nick);
+
               default:
                 sendInvalidJsonError();
                 break;

@@ -432,8 +432,8 @@ public class GameClientNetworkConnection {
   /**
    * TODO Add JavaDoc
    * */
-  public void sendGameCancelRequest() {
-    JSONObject request = JsonMessage.gameCancelRequest();
+  public void sendGameCancelRequest(String nickname) {
+    JSONObject request = JsonMessage.gameCancelRequest(nickname);
     send(request);
   }
 }

@@ -296,7 +296,13 @@ public class GameModel {
   }
 
   public void requestGameCancel() {
-    connection.sendGameCancelRequest();
+    String nickname;
+    if (gameMode.equals("Hot seat")) {
+      nickname = currentPlayer;
+    } else {
+      nickname = this.nickname;
+    }
+    connection.sendGameCancelRequest(nickname);
   }
 
   public void cancelGame() {
@@ -397,20 +403,18 @@ public class GameModel {
     for (Player player :
         players) {
       if (player.getPlayerName().equals(nick)) {
-        GameBoard board = player.getBoard();
-        board.setCurrentScore(Integer.parseInt(points));
+        player.getBoard().setCurrentScore(Integer.parseInt(points));
         for (String row :
             rows) {
           int line = Integer.parseInt(row);
           for (String color :
               colors) {
-            color = color.trim().replaceAll("0", " ");
             String[] tiles = color.trim().split("\\s+");
             TileCollection actualTiles = new TileCollection();
 
             for (String tile :
                 tiles) {
-              if (tile.equals("")) {
+              if (tile.equals("0") || actualTiles.contains(Tile.getTile(tile))) {
                 //do nothing
               } else {
                 actualTiles.add(Tile.getTile(tile));
@@ -418,14 +422,13 @@ public class GameModel {
 
               for (Tile actualTile :
                   actualTiles) {
-                board.layWallTile(line, actualTile);
+                player.getBoard().layWallTile(line, actualTile);
               }
-
             }
           }
-          board.getLayingRow(line).clearRow();
+          player.getBoard().getLayingRow(line).clearRow();
         }
-        board.clearFloorLine();
+        player.getBoard().clearFloorLine();
       }
     }
     notifyListeners(new BoardUpdatedEvent());
