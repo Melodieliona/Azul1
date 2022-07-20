@@ -57,7 +57,17 @@ public class Board extends JPanel {
    */
   public void paint(Graphics g) {
     g2D = (Graphics2D) g;
-    g2D.drawImage(board, 0, 0, board.getWidth(), board.getHeight(), null);
+
+    createBoard();
+    createTilesLeft();
+    createTilesRight();
+    createMinusPoints();
+    createFrame();
+    createValidRows();
+  }
+
+  private void createBoard() {
+    g2D.drawImage(board, 0, 0, tileSize * 13, tileSize * 10, null);
     g2D.setFont(new Font("Arial", Font.PLAIN, 15));
     g2D.setColor(Color.white);
     g2D.drawString(name, 83, 35);
@@ -69,11 +79,6 @@ public class Board extends JPanel {
     }
 
     g2D.drawString(String.valueOf(score), 250, 35);
-    createTilesLeft();
-    createTilesRight();
-    createMinusPoints();
-    createFrame();
-    createValidRows();
   }
 
   /**
@@ -114,35 +119,37 @@ public class Board extends JPanel {
 
   /**
    * Creates the different tiles for the right board.
-   * If rows are empty a NullPointerException is thrown.
+   *
+   * If rows are empty a NullPointerException is thrown
    */
   private void createTilesRight() {
     try {
       Player player = controller.getPlayer(boardNumber);
       Tile[][] collection = player.getBoard().getTileWall();
-
       for (int i = 0; i < 5; i++) {
         for (int b = 0; b < 5; b++) {
-          String color = collection[i][b].getColor();
-          int x = 7 + b;
-          int y = i + 2;
+          if(collection[i][b] != null){
+            String color = collection[i][b].getColor().toUpperCase();
+            System.out.println(color + "_____ist in Reihe_" + i + " an Platz " + b +"________________________________________________________________________");
+            int x = 7 + i;
+            int y = b + 2;
 
-          x = x * tileSize;
-          y = y * tileSize;
+            x = x * tileSize;
+            y = y * tileSize;
 
-          switch (color) {
-            case "BLUE" -> g2D.drawImage(img.getTileBlue(), x, y, null);
-            case "YELLOW" -> g2D.drawImage(img.getTileYellow(), x, y, null);
-            case "RED" -> g2D.drawImage(img.getTileRed(), x, y, null);
-            case "BLACK" -> g2D.drawImage(img.getTileBlack(), x, y, null);
-            case "WHITE" -> g2D.drawImage(img.getTileWhite(), x, y, null);
-            default -> throw new IllegalArgumentException("Invalid color.");
+            switch (color) {
+              case "BLUE" -> g2D.drawImage(img.getTileBlue(), x, y, null);
+              case "YELLOW" -> g2D.drawImage(img.getTileYellow(), x, y, null);
+              case "RED" -> g2D.drawImage(img.getTileRed(), x, y, null);
+              case "BLACK" -> g2D.drawImage(img.getTileBlack(), x, y, null);
+              case "WHITE" -> g2D.drawImage(img.getTileWhite(), x, y, null);
+              default -> throw new IllegalArgumentException("Invalid color.");
+            }
           }
-
         }
       }
     } catch (NullPointerException e) {
-      //System.out.println("Tile[][] ist noch leer! (Board)");
+      System.out.println("Tile[][] ist noch leer! (Board)");
     }
   }
 
@@ -158,8 +165,8 @@ public class Board extends JPanel {
       minusPoints.addAll(player.getBoard().getFloorLine());
 
       for (int i = 0; i < minusPoints.size(); i++) {
-        int x = 1 + i;
-        int y = 8;
+          int x = 1 + i;
+          int y = 8;
         String color = String.valueOf(minusPoints.get(i));
 
         x = x * tileSize;
@@ -201,12 +208,12 @@ public class Board extends JPanel {
         for (int i = 0; i < controller.getValidRow().length; i++) {
           int validNumber = valid[i];
           switch (validNumber) {
-            case 0 -> g2D.drawRect(5 * 25, 2 * 25, 25, 25);
-            case 1 -> g2D.drawRect(4 * 25, 3 * 25, 50, 25);
-            case 2 -> g2D.drawRect(3 * 25, 4 * 25, 75, 25);
-            case 3 -> g2D.drawRect(2 * 25, 5 * 25, 100, 25);
-            case 4 -> g2D.drawRect(1 * 25, 6 * 25, 125, 25);
-            case 5 -> g2D.drawRect(1 * 25, 8 * 25, 175, 25);
+            case 0 -> g2D.drawRect(5 * tileSize, 2 * tileSize, tileSize, tileSize);
+            case 1 -> g2D.drawRect(4 * tileSize, 3 * tileSize, tileSize * 2, tileSize);
+            case 2 -> g2D.drawRect(3 * tileSize, 4 * tileSize, tileSize * 3, tileSize);
+            case 3 -> g2D.drawRect(2 * tileSize, 5 * tileSize, tileSize * 4, tileSize);
+            case 4 -> g2D.drawRect(1 * tileSize, 6 * tileSize, tileSize * 5, tileSize);
+            case 5 -> g2D.drawRect(1 * tileSize, 8 * tileSize, tileSize * 7,tileSize);
             default -> throw new IllegalArgumentException("Invalid Row.");
           }
         }
