@@ -203,8 +203,8 @@ public class GameModel {
    * Notifies the subscribed view that game has ended.
    *
    * @param usernames array of names players in game
-   * @param points  array of all players points
-   * @param winners  array of names of the winners
+   * @param points    array of all players points
+   * @param winners   array of names of the winners
    */
   public void gameEnded(String[] winners, String[] points, String[] usernames) {
     selectedTiles.clear();
@@ -212,7 +212,7 @@ public class GameModel {
     validPlates = new int[]{};
 
     for (int i = 0; i < points.length; i++) {
-      for (Player player:
+      for (Player player :
           players) {
         if (usernames[i].equals(player.getPlayerName())) {
           player.getBoard().setCurrentScore(Integer.parseInt(points[i]));
@@ -220,8 +220,8 @@ public class GameModel {
       }
     }
 
-    for (String winner:
-         winners) {
+    for (String winner :
+        winners) {
       nicksFromWinners.add(winner);
     }
 
@@ -335,7 +335,7 @@ public class GameModel {
       System.out.println("Model LogginSuccess addig: " + this.nickname);
       for (String nickname :
           nicknames) {
-        if (players.contains(nickname) || nickname.trim().isEmpty()){
+        if (players.contains(nickname) || nickname.trim().isEmpty()) {
 
         } else {
           players.add(new Player(nickname));
@@ -414,15 +414,26 @@ public class GameModel {
           int line = Integer.parseInt(row);
           for (String color :
               colors) {
-            color = color.replaceAll("0"," ").trim();
-            String []tiles = color.split("\\s+");
+            color = color.trim().replaceAll("0", " ");
+            String[] tiles = color.trim().split("\\s+");
+            TileCollection actualTiles = new TileCollection();
+
             for (String tile :
                 tiles) {
-              Tile actualTile = Tile.getTile(tile);
-              board.layWallTile(line, actualTile);
-              board.getLayingRow(line).clearRow();
+              if (tile.equals("")) {
+                //do nothing
+              } else {
+                actualTiles.add(Tile.getTile(tile));
+              }
+
+              for (Tile actualTile :
+                  actualTiles) {
+                board.layWallTile(line, actualTile);
+              }
+
             }
           }
+          board.getLayingRow(line).clearRow();
         }
         board.clearFloorLine();
       }
