@@ -829,6 +829,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       repaint();
       currentPlayer = controller.getCurrentPlayer();
 
+    } else if (newValue instanceof FloorLineEvent) {
+      showGame();
+      gameField.removeAll();
+      collection = controller.getTilePlates();
+      createGameView();
+      repaint();
+      currentPlayer = controller.getCurrentPlayer();
+
     } else if (newValue instanceof TilesSelectedEvent) {
       gameField.removeAll();
       collection = controller.getTilePlates();

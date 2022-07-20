@@ -147,8 +147,30 @@ public class LocalGame {
 
     GameBoard gameBoard = getPlayersGameBoard(userList.get(currentPlayer).getName());
 
-    // Check if at least one tile of the given color can be added to the row
-    if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
+    //If selected row is the floor line
+    if (targetRow == 5) {
+      //Attempt to place tiles on floor line
+      TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(currentSelection);
+
+      // Put tiles in the trash, that don't fit on the floor line
+      trash.addAll(didNotFitOnFloorLine);
+
+      TileCollection placedTiles = new TileCollection();
+      placedTiles.addAll(currentSelection);
+      for (Tile tile : didNotFitOnFloorLine) {
+        placedTiles.remove(tile);
+      }
+
+      //Move unselected tiles to the middle
+      moveTilesToMiddle();
+
+      sendFloorLinePlacement(placedTiles);
+
+      currentSelection.clear();
+      currentSelectionSource = -1;
+
+      // Check if at least one tile of the given color can be added to the row
+    } else if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
 
       //Attempt to place tiles
       TileCollection placedTiles =
@@ -181,6 +203,13 @@ public class LocalGame {
       //for debugging
       //connection.sendBoardUpdate(gameBoards);
 
+    } else {
+      sendInvalidPlacement(userList.get(currentPlayer).getName());
+      return;
+    }
+
+
+
       // If at lease one tile is left on plates or the middle, let the next player make a move.
       boolean everythingEmpty = true;
       for (TileCollection tilePlate : tilePlates) {
@@ -194,10 +223,6 @@ public class LocalGame {
       if (everythingEmpty) {
         endRound();
       }
-
-    } else {
-      sendInvalidPlacement(userList.get(currentPlayer).getName());
-    }
   }
 
   /**
@@ -312,8 +337,13 @@ public class LocalGame {
    * */
   private void sendSuccessfulPlacement(TileCollection tileSelection, int layingRow) {
     String currentPlayer = userList.get(this.currentPlayer).getName();
-    Tile color = tileSelection.get(0);
     int amount = tileSelection.size();
+    Tile color;
+    if (amount > 0) {
+      color = tileSelection.get(0);
+    } else {
+      color = Tile.STARTING_MARKER;
+    }
 
     connection.sendTilePlacement(currentPlayer, color, amount, layingRow);
   }

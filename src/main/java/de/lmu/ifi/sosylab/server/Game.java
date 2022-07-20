@@ -139,7 +139,7 @@ public class Game {
   /**
    * Checks a requested tile placement for validity and if valid changes model accordingly.
    * */
-  protected void handleTilePlacement(String playerName, int targetRow, Tile color) {
+  protected void handleTilePlacement(int targetRow, Tile color) {
     if (currentSelection.isEmpty()) {
       sendInvalidPlacement(userList.get(currentPlayer).getName());
       return;
@@ -147,8 +147,30 @@ public class Game {
 
     GameBoard gameBoard = getPlayersGameBoard(userList.get(currentPlayer).getName());
 
-    // Check if at least one tile of the given color can be added to the row
-    if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
+    //If selected row is the floor line
+    if (targetRow == 5) {
+      //Attempt to place tiles on floor line
+      TileCollection didNotFitOnFloorLine = gameBoard.addToFloorLine(currentSelection);
+
+      // Put tiles in the trash, that don't fit on the floor line
+      trash.addAll(didNotFitOnFloorLine);
+
+      TileCollection placedTiles = new TileCollection();
+      placedTiles.addAll(currentSelection);
+      for (Tile tile : didNotFitOnFloorLine) {
+        placedTiles.remove(tile);
+      }
+
+      //Move unselected tiles to the middle
+      moveTilesToMiddle();
+
+      sendFloorLinePlacement(placedTiles);
+
+      currentSelection.clear();
+      currentSelectionSource = -1;
+
+      // Check if at least one tile of the given color can be added to the row
+    } else if (gameBoard.getLayingRow(targetRow).canAddTilesToLayingRow(color)) {
 
       //Attempt to place tiles
       TileCollection placedTiles =

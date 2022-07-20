@@ -179,7 +179,7 @@ public class ServerNetworkConnection {
                 Tile placementColor = Tile.getTile((String) jsonObject.get("color"));
                 for (Game game : games) {
                   if (game.getGameNumber() == clientGameNumber) {
-                    game.handleTilePlacement(clientNick, targetRow, placementColor);
+                    game.handleTilePlacement(targetRow, placementColor);
                     break;
                   }
                 }
