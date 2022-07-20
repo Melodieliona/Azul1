@@ -364,9 +364,9 @@ public class Game {
     boolean playerHasFullWallRow = false;
     for (GameBoard gameBoard : gameBoards) {
       Tile[][] tileWall = gameBoard.getTileWall();
-      for (int j = 0; j < tileWall.length; j++) {
+      for (int j = 0; j < 5; j++) {
         int numberOfTilesOnWallRow = 0;
-        for (int i = 0; i < tileWall[i].length; i++) {
+        for (int i = 0; i < 5; i++) {
           if (tileWall[i][j] != null) {
             numberOfTilesOnWallRow++;
           }
