@@ -45,6 +45,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private static final String GAME_CARD = "game";
   private static final String GAMEMODE_CARD = "gameMode";
   private static final String COUNTER_CARD = "counter";
+  private static final String LOGINNAMES_CARD = "loginNames";
   private static final String WAIT_CARD = "wait";
   private static final String[] songList = {"CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
   private static TileCollection[] collection;
@@ -88,6 +89,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JPanel middle;
 
   private JLabel playersInLobby;
+  private JPanel cardDeck;
 
 
 
@@ -103,15 +105,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     this.controller = requireNonNull(controller);
     this.model = requireNonNull(model);
 
-    this.frameWidth = 450;
-    this.frameHeight = 450;
-    this.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
 
     images = new Images();
     //Creates Game icon.
     BufferedImage icon = images.getIcon();
     this.setIconImage(icon);
 
+    setPreferredSize(new Dimension(310, 450));
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     initializeWidgets();
@@ -167,10 +167,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Instantiate all Swing widgets and specify config options where appropriate.
    */
   private void initializeWidgets() {
-    // CardLayout ist nur Platzhalter
     standardFont = new Font("Arial", Font.PLAIN, 15);
     dFormat = new DecimalFormat("00");
     layout = new CardLayout();
+    cardDeck = new JPanel(layout);
+    this.add(cardDeck);
     nickName = new JTextField(20);
     firstNicknameHS = new JTextField(20);
     secondNicknameHS = new JTextField(20);
@@ -193,13 +194,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterMinute = 1;
     numberOfPayersHS = 0;
 
+
     //Game
     playerNames = new ArrayList<>();
 
     collection = new TileCollection[10];
     gameField = new JPanel(new BorderLayout());
     gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    // gameField.setPreferredSize(createGameField().getPreferredSize());
+    gameField.setPreferredSize(createGameField().getPreferredSize());
   }
 
   /**
@@ -212,15 +214,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     JLabel background = new JLabel(new ImageIcon(img));
     background.setLayout(new FlowLayout());
 
-    //setGameMode.add(new JLabel("Choose mode"));
     JPanel south = new JPanel();
     south.add(hotSeat);
     south.add(multiPlayer);
     south.add(songs);
     setGameMode.add(south, BorderLayout.SOUTH);
-    add(setGameMode, GAMEMODE_CARD);
+    cardDeck.add(setGameMode, GAMEMODE_CARD);
 
     setGameMode.add(background);
+    showCard(GAMEMODE_CARD);
 
   }
 
@@ -229,7 +231,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    */
   public void createGameView() {
     JPanel game = new JPanel();
-    add(game, GAME_CARD);
+    cardDeck.add(game, GAME_CARD);
 
     BufferedImage img = images.getBackground();
     JLabel background = new JLabel(new ImageIcon(img));
@@ -252,23 +254,26 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   public void createMultiplayerLoginView() {
 
     JPanel login = new JPanel(new BorderLayout());
-    login.setPreferredSize(new Dimension(200, 100));
+    login.setPreferredSize(new Dimension(100, 100));
     JPanel south = new JPanel(new GridLayout(1, 2));
-    south.add(play);
+    south.setBackground(Color.CYAN);
     south.add(back);
+    south.add(play);
     login.add(south, BorderLayout.SOUTH);
     JPanel center = new JPanel();
+    center.setBackground(Color.CYAN);
     center.add(loginLabel);
     center.add(nickName);
     login.add(center);
-    add(login, LOGIN_M_CARD);
+    cardDeck.add(login, LOGIN_M_CARD);
   }
   private void firstPlayerWait(){
     JPanel waitFirstPlayer =new JPanel();
     JLabel wait = new JLabel("Waiting for other players to join.");
     wait.setFont(standardFont);
     waitFirstPlayer.add(wait);
-    add(waitFirstPlayer,WAIT_CARD);
+    waitFirstPlayer.setBackground(Color.CYAN);
+    cardDeck.add(waitFirstPlayer,WAIT_CARD);
   }
 
   private void waitForEnoughPlayers() {
@@ -280,6 +285,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     waitingLabel.setFont(standardFont);
     waitMultiPlayer.add(waitingLabel);
     waitMultiPlayer.add(counter);
+    waitMultiPlayer.setBackground(Color.CYAN);
     waitMultiPlayer.add(playersInLobby);
     timer = new Timer(1000, new ActionListener() {
       @Override
@@ -298,7 +304,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     });
 
     timer.start();
-    add(waitMultiPlayer, COUNTER_CARD);
+    cardDeck.add(waitMultiPlayer, COUNTER_CARD);
 
 
   }
@@ -310,8 +316,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     JPanel login = new JPanel();
     login.setBackground(Color.CYAN);
-    login.setPreferredSize(new Dimension(400, 100));
-    add(login, LOGIN_H_CARD);
+    //login.setPreferredSize(new Dimension(100, 100));
+    cardDeck.add(login, LOGIN_H_CARD);
 
     JLabel howMany = new JLabel("How many Players would you like to play with?");
     howMany.setFont(standardFont);
@@ -319,6 +325,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     playerNumberSelection.setFont(standardFont);
     login.add(playerNumberSelection);
     login.add(back);
+    login.setBackground(Color.CYAN);
 
 
   }
@@ -334,15 +341,17 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     JPanel east = new JPanel();
     east.setLayout(new GridLayout(numberOfPlayers, 1));
     JPanel south = new JPanel();
+    south.setBackground(Color.CYAN);
     south.setLayout(new GridLayout(1, 2));
     JPanel center = new JPanel();
+    center.setBackground(Color.CYAN);
     center.setBackground(Color.CYAN);
     south.setBackground(Color.CYAN);
     south.add(play);
     south.add(back);
     loginNames.setPreferredSize(new Dimension(400, 100));
-    add(loginNames, "loginNames");
-    layout.show(getContentPane(), "loginNames");
+    cardDeck.add(loginNames, LOGINNAMES_CARD);
+    showCard(LOGINNAMES_CARD);
 
     JLabel playerOne = new JLabel("Player " + "1" + ": Login with your nick name:");
     playerOne.setFont(standardFont);
@@ -404,8 +413,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Set up the view in a way that is finally shown to the user.
    */
   private void createView() throws IOException {
-    JPanel panel = new JPanel(layout);
-    setContentPane(panel);
+    setContentPane(cardDeck);
     createSetGameModeView();
     createMultiplayerLoginView();
     createHotSeatLoginView();
@@ -745,7 +753,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   public void dispose() {
     super.dispose();
     model.removePropertyChangeListener(this);
-    controller.dispose();
+    //controller.dispose();
   }
 
   @Override
@@ -786,7 +794,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           for (int i = 0; i < model.getPlayers().size(); i++) {
             String otherPlayer = players.get(i).getPlayerName();
 
-            if (!player.equals(otherPlayer)) {
+            if (!player.equals(otherPlayer) && !player.equals("  ")) {
               playerNames.add(otherPlayer);
               System.out.println("LoginEvent adding player: " + otherPlayer);
             }
@@ -897,6 +905,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     } else if (newValue instanceof TimerEndedEvent) {
       showGame();
 
+    } else if (newValue instanceof FloorLineEvent) {
+      System.out.println("Floor line event");
+      
     }
   }
 
@@ -922,14 +933,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   private void showCard(String card) {
-    layout.show(getContentPane(), card);
+    CardLayout localLayout = (CardLayout) cardDeck.getLayout();
+    localLayout.show(cardDeck, card);
     setCurrentCard(card);
+    setPreferredSize(localLayout.minimumLayoutSize(cardDeck.getParent()));
   }
 
   private void goBackOneCard() {
-    if (this.currentCard.equals(LOGIN_H_CARD) || this.currentCard.equals(LOGIN_M_CARD)) {
       showCard(GAMEMODE_CARD);
-    }
 
   }
 }

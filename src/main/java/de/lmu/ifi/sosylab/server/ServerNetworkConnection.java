@@ -690,7 +690,7 @@ public class ServerNetworkConnection {
     //TODO: change timer to 1 minute
     Thread timerThread = new Thread(() -> {
       try {
-        Thread.sleep(1000 * 30);
+        Thread.sleep(1000 * 20);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }

@@ -326,9 +326,10 @@ public class GameModel {
 
   public void loggedIn(String[] nicknames) {
     if (gameMode.equals("Multiplayer")) {
+      System.out.println("Model LoggedIn nickname array size: " + nicknames.length);
       players.add(new Player(this.nickname));
       System.out.println("Player array size is now: " + this.getPlayers().size());
-      System.out.println("Model LogginSuccess addig: " + this.nickname);
+      System.out.println("Model LogginSuccess adding: " + this.nickname);
       for (String nickname :
           nicknames) {
         if (players.contains(nickname) || nickname.trim().isEmpty()) {
@@ -337,7 +338,7 @@ public class GameModel {
           players.add(new Player(nickname));
         }
 
-        System.out.println("Model Logged in Event  Nickname of other player that was addes to Player Array: " + nickname);
+        System.out.println("Model Logged in Event  Nickname of other player that was added to Player Array: " + nickname);
       }
     }
     notifyListeners(new LoggedInEvent());
