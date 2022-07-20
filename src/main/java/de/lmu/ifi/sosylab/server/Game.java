@@ -398,6 +398,9 @@ public class Game {
       clickableRows[i] = row;
       i++;
     }
+    //Always add floorline to clickable rows.
+    clickableRows[i] = 5;
+
     return clickableRows;
   }
 

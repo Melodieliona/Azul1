@@ -391,12 +391,15 @@ public class LocalGame {
       }
     }
 
-    int[] clickableRows = new int[rowList.size()];
+    int[] clickableRows = new int[rowList.size() + 1];
     int i = 0;
     for (int row : rowList) {
       clickableRows[i] = row;
       i++;
     }
+    //Always add the floorline to clickable rows.
+    clickableRows[i] = 5;
+
     return clickableRows;
   }
 
