@@ -124,7 +124,6 @@ public class GameClientNetworkConnection {
       case MOVE_NOT_ALLOWED -> handleMoveNotAllowed();
       case BOARD_UPDATE -> handleBoardUpdate(object);
       case FILL_PLATES -> handleFillPlates(object);
-      case POINTS -> handlePoints(object);
       case GAME_ENDED -> handleGameEnded(object);
       case GAME_RESTART_REQUEST -> handleGameRestartRequest(object);
       case GAME_RESTART -> handleGameRestart();
@@ -299,21 +298,6 @@ public class GameClientNetworkConnection {
    */
   private void handleGameCancel() {
     model.cancelGame();
-  }
-
-  /**
-   * Handles receiving the current scores.
-   *
-   * @param object JsonMessage received
-   */
-  private void handlePoints(JSONObject object) {
-    String[] nicks = JsonMessage.getNickname(object).trim().split("\\s+");
-    String[] points = JsonMessage.getScores(object).trim().split("\\s+");
-    int[] intPoints = new int[points.length];
-    for (int i = 0; i < points.length; i++) {
-      intPoints[i] = Integer.parseInt(points[i]);
-    }
-    model.pointsUpdate(nicks, intPoints);
   }
 
   /**

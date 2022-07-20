@@ -291,16 +291,6 @@ public class GameModel {
     notifyListeners(new MiddleTilesUpdateEvent());
   }
 
-  /**
-   * Notifies the subscribed view that the points of each player were just updated.
-   *
-   * @param names  name of all players
-   * @param points all players points
-   */
-  public void pointsUpdate(String[] names, int[] points) {
-    notifyListeners(new PointsUpdatedEvent(names, points));
-  }
-
   public void requestGameRestart() {
     connection.sendGameRestartRequest();
   }

@@ -873,9 +873,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     } else if (newValue instanceof UserLeftEvent) {
       //TODO: was soll hier genau passieren?
 
-    } else if (newValue instanceof PointsUpdatedEvent) {
-      score = ((PointsUpdatedEvent) newValue).getPoints();
-
     } else if (newValue instanceof BoardUpdatedEvent) {
       gameField.removeAll();
       createGameView();

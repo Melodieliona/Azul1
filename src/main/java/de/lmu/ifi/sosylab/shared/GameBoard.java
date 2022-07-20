@@ -171,7 +171,7 @@ public class GameBoard {
    * */
   public Tile[][] getTileWall() {
     //TODO Test if copy is correct
-    return Arrays.stream(tileWall).map(Tile[]::clone).toArray(Tile[][]::new);
+    return tileWall;
   }
 
   /**
