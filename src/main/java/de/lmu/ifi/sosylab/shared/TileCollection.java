@@ -54,8 +54,9 @@ public class TileCollection extends ArrayList<Tile> {
    * */
   public TileCollection removeAllTiles() {
     TileCollection removedTiles = new TileCollection();
-    for (int i = 0; i < this.size(); i++) {
-      removedTiles.add(this.remove(i));
+    int collectionSize = this.size();
+    for (int i = 0; i < collectionSize; i++) {
+      removedTiles.add(this.remove(0));
     }
     return removedTiles;
   }

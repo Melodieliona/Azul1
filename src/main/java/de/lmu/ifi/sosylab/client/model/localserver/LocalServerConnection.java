@@ -164,7 +164,7 @@ public class LocalServerConnection {
               case GAME_CANCEL_REQUEST:
                 String nick = JsonMessage.getNickname(jsonObject);
                 //game.handleGameCancelRequest(nick);
-
+                break;
               default:
                 sendInvalidJsonError();
                 break;

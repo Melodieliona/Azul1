@@ -48,15 +48,15 @@ public class GameModel {
   /**
    * Sets the game mode according to the value that is passed on by the view.
    *
-   * @param gMode name of the player
+   * @param mode name of the player
    */
-  public void setGameMode(String gMode) throws IOException {
-    if (gMode.equals("Multiplayer")) {
+  public void setGameMode(String mode) throws IOException {
+    if (mode.equals("Multiplayer")) {
       gameMode = "Multiplayer";
       connection = new GameClientNetworkConnection(this);
       setConnection(connection);
       connection.start(8080);
-    } else if (gMode.equals("Hot Seat")) {
+    } else if (mode.equals("Hot Seat")) {
       gameMode = "Hot seat";
 
       // Start local server
@@ -180,7 +180,8 @@ public class GameModel {
         player.placeTiles(line, selectedTiles.getContainedColors().get(0).getColor(), numOfTiles);
       }
     }
-    notifyListeners(new TilesAddedEvent(selectedTiles.getContainedColors().get(0).getColor(), line, numOfTiles, 0));
+    notifyListeners(new TilesAddedEvent(selectedTiles.getContainedColors().get(0).getColor(), line,
+        numOfTiles, 0));
   }
 
   /**
@@ -218,8 +219,7 @@ public class GameModel {
       }
     }
 
-    for (String winner :
-        winners) {
+    for (String winner : winners) {
       nicksFromWinners.add(winner);
     }
 
@@ -239,7 +239,9 @@ public class GameModel {
     if (source != 0) {
       tilePlates[0].addAll(tilePlates[source]);
     } else {
-      if (tilePlates[0].contains(Tile.STARTING_MARKER)) selectedTiles.add(Tile.STARTING_MARKER);
+      if (tilePlates[0].contains(Tile.STARTING_MARKER)) {
+        selectedTiles.add(Tile.STARTING_MARKER);
+      }
     }
     notifyListeners(
         new OtherPlayerSelectedTilesEvent(color, numberOfSelectedTiles, currentPlayer, source));
@@ -260,7 +262,9 @@ public class GameModel {
         player.placeTiles(row, selectedTiles.getContainedColors().get(0).getColor(), amount);
       }
     }
-    notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, amount, row, 0)); // I think the amount of points are always sent with the minus points calculated so I just put 0 in the parameter for minuspoints
+    notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, amount, row, 0));
+    // I think the amount of points are always sent with the minus points calculated so I just put
+    // 0 in the parameter for minuspoints
   }
 
   /**
@@ -293,6 +297,9 @@ public class GameModel {
     connection.sendGameRestartRequest();
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void requestGameCancel() {
     String nickname;
     if (gameMode.equals("Hot seat")) {
@@ -322,6 +329,9 @@ public class GameModel {
     support.firePropertyChange(event.getName(), null, event);
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void loggedIn(String[] nicknames) {
     if (gameMode.equals("Multiplayer")) {
       System.out.println("Model LoggedIn nickname array size: " + nicknames.length);
@@ -331,7 +341,7 @@ public class GameModel {
       for (String nickname :
           nicknames) {
         if (players.contains(nickname) || nickname.trim().isEmpty()) {
-
+          //TODO is this right / something missing? *just asking*
         } else {
           players.add(new Player(nickname));
         }
@@ -366,7 +376,8 @@ public class GameModel {
   }
 
   /**
-   * Notifies the subscribed view that a timer for restart, cancellation or start of the game has been set by the server.
+   * Notifies the subscribed view that a timer for restart, cancellation or start of the game has
+   * been set by the server.
    */
   public void timer() {
     notifyListeners(new TimerEvent());
@@ -393,14 +404,14 @@ public class GameModel {
   /**
    * Updates the information regarding the board of a given player as well as their score.
    *
-   * @param rows   the laying lines that should be cleared as well as the line of the wall were the tile will be palced
+   * @param rows   the laying lines that should be cleared as well as the line of the wall were the
+   *               tile will be palced
    * @param nick   the nickname of the player
    * @param points the current score of the player
    * @param colors the colors of the tiles that will go in the wall
    */
   public void updateBoard(String[] rows, String nick, String points, String[] colors) {
-    for (Player player :
-        players) {
+    for (Player player : players) {
       if (player.getPlayerName().equals(nick)) {
         //Update Score
         player.getBoard().setCurrentScore(Integer.parseInt(points));
@@ -408,25 +419,25 @@ public class GameModel {
         //Calculate new wall tiles
         String[][] tiles = new String[5][5];
         int rowIterator = 0;
-        for(String color : colors) {
+        for (String color : colors) {
           String[] rowTiles = color.trim().split("\\s+");
-          for(int j = 0; j < 5; j++) {
+          for (int j = 0; j < 5; j++) {
             tiles[j][rowIterator] = rowTiles[j];
           }
           rowIterator++;
         }
 
         //Set wall tiles
-        for(int i = 0; i < 5; i++) {
-          for(int j = 0; j < 5; j++) {
-            if(!tiles[j][i].equals("0")) {
+        for (int i = 0; i < 5; i++) {
+          for (int j = 0; j < 5; j++) {
+            if (!tiles[j][i].equals("0")) {
               player.getBoard().layWallTile(i, Tile.getTile(tiles[j][i]));
             }
           }
         }
 
         //Clear emptied rows
-        for(String row : rows) {
+        for (String row : rows) {
           player.getBoard().getLayingRow(Integer.parseInt(row)).clearRow();
         }
 
@@ -437,6 +448,9 @@ public class GameModel {
     notifyListeners(new BoardUpdatedEvent());
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void updateFloorLine(String nick, String[] colors) {
     System.out.println("updating floor line");
     int numberOfTiles = colors.length;
@@ -504,6 +518,9 @@ public class GameModel {
     return copyOfValidRows;
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void setValidRows(int numberOfValidRows, String[] rows) {
     validRows = new int[numberOfValidRows];
     for (int i = 0; i < numberOfValidRows; i++) {
@@ -516,6 +533,9 @@ public class GameModel {
     return copyOfValidPlates;
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void setValidPlates(String[] plates) {
     validPlates = new int[plates.length];
     for (int i = 0; i < validPlates.length; i++) {

@@ -119,7 +119,6 @@ public class Board extends JPanel {
 
   /**
    * Creates the different tiles for the right board.
-   *
    * If rows are empty a NullPointerException is thrown
    */
   private void createTilesRight() {
@@ -128,7 +127,7 @@ public class Board extends JPanel {
       Tile[][] collection = player.getBoard().getTileWall();
       for (int i = 0; i < 5; i++) {
         for (int b = 0; b < 5; b++) {
-          if(collection[i][b] != null){
+          if (collection[i][b] != null) {
             String color = collection[i][b].getColor().toUpperCase();
             System.out.println(color + "_____ist in Reihe_" + i + " an Platz " + b +"________________________________________________________________________");
             int x = 7 + i;
@@ -165,8 +164,8 @@ public class Board extends JPanel {
       minusPoints.addAll(player.getBoard().getFloorLine());
 
       for (int i = 0; i < minusPoints.size(); i++) {
-          int x = 1 + i;
-          int y = 8;
+        int x = 1 + i;
+        int y = 8;
         String color = String.valueOf(minusPoints.get(i));
 
         x = x * tileSize;
@@ -213,7 +212,7 @@ public class Board extends JPanel {
             case 2 -> g2D.drawRect(3 * tileSize, 4 * tileSize, tileSize * 3, tileSize);
             case 3 -> g2D.drawRect(2 * tileSize, 5 * tileSize, tileSize * 4, tileSize);
             case 4 -> g2D.drawRect(1 * tileSize, 6 * tileSize, tileSize * 5, tileSize);
-            case 5 -> g2D.drawRect(1 * tileSize, 8 * tileSize, tileSize * 7,tileSize);
+            case 5 -> g2D.drawRect(1 * tileSize, 8 * tileSize, tileSize * 7, tileSize);
             default -> throw new IllegalArgumentException("Invalid Row.");
           }
         }
