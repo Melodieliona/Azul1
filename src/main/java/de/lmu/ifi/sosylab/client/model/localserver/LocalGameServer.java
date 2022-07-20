@@ -1,10 +1,9 @@
 package de.lmu.ifi.sosylab.client.model.localserver;
 
-
 import java.io.IOException;
 
 /**
- * TODO Javadoc
+ * Starts the local server.
  * */
 public class LocalGameServer {
 

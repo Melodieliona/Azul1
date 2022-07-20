@@ -69,7 +69,8 @@ public class Images {
    * @param targetHeight  - new height.
    * @return - resized image.
    */
-  private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+  private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth,
+                                    int targetHeight) {
     BufferedImage resizedImage =
         new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics2D = resizedImage.createGraphics();

@@ -2,7 +2,6 @@ package de.lmu.ifi.sosylab.shared;
 
 import java.util.Arrays;
 import java.util.Optional;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,8 +20,8 @@ public enum JsonMessage {
   GAME_ENDED("game ended"), GAME_RESTART("game restart"),
   GAME_RESTART_REQUEST("game restart request"), TIMER_END("timer end"),
   PLAYERS("players"), TILES_NOT_ALLOWED("tiles not allowed"),
-  GAME_CANCEL_REQUEST("game cancel request"), GAME_CANCEL("game cancel"), TIMER_START("timer start"),
-  FLOOR_LINE_UPDATE("floor line update");
+  GAME_CANCEL_REQUEST("game cancel request"), GAME_CANCEL("game cancel"),
+  TIMER_START("timer start"), FLOOR_LINE_UPDATE("floor line update");
 
 
   public static final String TYPE_FIELD = "type";
@@ -211,8 +210,7 @@ public enum JsonMessage {
    */
   public static JSONObject gameRestartRequest() {
     try {
-      JSONObject message = createMessageOfType(GAME_RESTART_REQUEST);
-      return message;
+      return createMessageOfType(GAME_RESTART_REQUEST);
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to create a json object.", e);
     }
@@ -225,14 +223,12 @@ public enum JsonMessage {
    */
   public static JSONObject gameCancelRequest() {
     try {
-      JSONObject message = createMessageOfType(GAME_CANCEL_REQUEST);
-      return message;
+      return createMessageOfType(GAME_CANCEL_REQUEST);
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to create a json object.", e);
     }
   }
-
-
+  
   /**
    * Creates a message of a specified type.
    *

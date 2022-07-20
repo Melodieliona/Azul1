@@ -5,7 +5,6 @@ import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,7 +14,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -707,7 +705,7 @@ public class ServerNetworkConnection {
   private void startTimer() {
     gameStartTimerRunning = true;
     sendStartTimer();
-//TODO: change timer to 1 minute
+    //TODO: change timer to 1 minute
     Thread timerThread = new Thread(() -> {
       try {
         Thread.sleep(1000 * 30);
