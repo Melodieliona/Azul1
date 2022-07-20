@@ -389,7 +389,7 @@ public class GameModel {
           int line = Integer.parseInt(row);
           for (String color :
               colors) {
-            String[] tiles = color.trim().split("\\s+");
+            String[] tiles = color.trim().split("\\s+|0");
             for (String tile :
                 tiles) {
               Tile actualTile = Tile.getTile(tile);
