@@ -4,10 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
-import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -404,31 +402,35 @@ public class GameModel {
     for (Player player :
         players) {
       if (player.getPlayerName().equals(nick)) {
+        //Update Score
         player.getBoard().setCurrentScore(Integer.parseInt(points));
-        for (String row :
-            rows) {
-          int line = Integer.parseInt(row);
-          for (String color :
-              colors) {
-            String[] tiles = color.trim().split("\\s+");
-            TileCollection actualTiles = new TileCollection();
 
-            for (String tile :
-                tiles) {
-              if (tile.equals("0") || actualTiles.contains(Tile.getTile(tile))) {
-                //do nothing
-              } else {
-                actualTiles.add(Tile.getTile(tile));
-              }
+        //Calculate new wall tiles
+        String[][] tiles = new String[5][5];
+        int rowIterator = 0;
+        for(String color : colors) {
+          String[] rowTiles = color.trim().split("\\s+");
+          for(int j = 0; j < 5; j++) {
+            tiles[j][rowIterator] = rowTiles[j];
+          }
+          rowIterator++;
+        }
 
-              for (Tile actualTile :
-                  actualTiles) {
-                player.getBoard().layWallTile(line, actualTile);
-              }
+        //Set wall tiles
+        for(int i = 0; i < 5; i++) {
+          for(int j = 0; j < 5; j++) {
+            if(!tiles[j][i].equals("0")) {
+              player.getBoard().layWallTile(i, Tile.getTile(tiles[j][i]));
             }
           }
-          player.getBoard().getLayingRow(line).clearRow();
         }
+
+        //Clear emptied rows
+        for(String row : rows) {
+          player.getBoard().getLayingRow(Integer.parseInt(row)).clearRow();
+        }
+
+        //Clear floorline
         player.getBoard().clearFloorLine();
       }
     }
