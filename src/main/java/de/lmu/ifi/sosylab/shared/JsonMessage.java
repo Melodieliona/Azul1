@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosylab.shared;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import org.json.JSONException;
@@ -49,6 +50,8 @@ public enum JsonMessage {
   public static final String FLOORTILE = "floortile";
 
   private final String jsonName;
+
+  private static final String WINNERS = "winners";
 
   /**
    * Constructor for a JsonMessage.
@@ -228,7 +231,25 @@ public enum JsonMessage {
       throw new IllegalArgumentException("Failed to create a json object.", e);
     }
   }
-  
+
+  /**
+   *
+   */
+  public static JSONObject gameEndedMessage(int[] endScores, ArrayList<String> winners, ArrayList<String> usernames){
+    try{
+      String winnersField = winners.toString();
+      String endScoresField = Arrays.toString(endScores);
+      String usernamesField = usernames.toString();
+      JSONObject message = createMessageOfType(GAME_ENDED);
+      message.put(WINNERS, winnersField);
+      message.put(SCORES_FIELD, endScoresField);
+      message.put(NICK_FIELD, usernamesField);
+      return message;
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to create a json object.", e);
+    }
+  }
+
   /**
    * Creates a message of a specified type.
    *
@@ -355,6 +376,17 @@ public enum JsonMessage {
   public static String getAmounts(JSONObject object) {
     try {
       return String.valueOf(object.get(AMOUNTS));
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to read a json object.", e);
+    }
+  }
+
+  /**
+   * TODO Add JavaDoc
+   */
+  public static String getWinners(JSONObject object) {
+    try {
+      return String.valueOf(object.get(WINNERS));
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }

@@ -40,6 +40,8 @@ public class GameModel {
 
   private String nickname;
 
+  private ArrayList<String> nicksFromWinners = new ArrayList<>();
+
 
   public GameModel() {
     support = new PropertyChangeSupport(this);
@@ -200,12 +202,30 @@ public class GameModel {
   /**
    * Notifies the subscribed view that game has ended.
    *
-   * @param players array of players in game
+   * @param usernames array of names players in game
    * @param points  array of all players points
-   * @param winner  name of the winner
+   * @param winners  array of names of the winners
    */
-  public void gameEnded(String[] players, int[] points, String winner) {
-    notifyListeners(new GameEndedEvent(players, points, winner));
+  public void gameEnded(String[] winners, String[] points, String[] usernames) {
+    selectedTiles.clear();
+    validRows = new int[]{};
+    validPlates = new int[]{};
+
+    for (int i = 0; i < points.length; i++) {
+      for (Player player:
+          players) {
+        if (usernames[i].equals(player.getPlayerName())) {
+          player.getBoard().setCurrentScore(Integer.parseInt(points[i]));
+        }
+      }
+    }
+
+    for (String winner:
+         winners) {
+      nicksFromWinners.add(winner);
+    }
+
+    notifyListeners(new GameEndedEvent());
   }
 
   /**
@@ -315,7 +335,12 @@ public class GameModel {
       System.out.println("Model LogginSuccess addig: " + this.nickname);
       for (String nickname :
           nicknames) {
-        players.add(new Player(nickname));
+        if (players.contains(nickname) || nickname.trim().isEmpty()){
+
+        } else {
+          players.add(new Player(nickname));
+        }
+
         System.out.println("Model Logged in Event  Nickname of other player that was addes to Player Array: " + nickname);
       }
     }
@@ -389,7 +414,8 @@ public class GameModel {
           int line = Integer.parseInt(row);
           for (String color :
               colors) {
-            String[] tiles = color.replaceAll("0","").trim().split("\\s+");
+            color = color.replaceAll("0"," ").trim();
+            String []tiles = color.split("\\s+");
             for (String tile :
                 tiles) {
               Tile actualTile = Tile.getTile(tile);
@@ -515,6 +541,11 @@ public class GameModel {
   public TileCollection getSelectedTiles() {
     TileCollection copyOfSelectedTiles = (TileCollection) selectedTiles.clone();
     return copyOfSelectedTiles;
+  }
+
+  public void clear() {
+    players.clear();
+    nicksFromWinners.clear();
   }
 
 }

@@ -9,6 +9,9 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Array;
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -261,7 +264,10 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleGameEnded(JSONObject object) {
-    //model.gameEnded();
+    String[] winners = JsonMessage.getWinners(object).trim().split(",");
+    String[] scores = JsonMessage.getScores(object).trim().split(",");
+    String[] usernames = JsonMessage.getNickname(object).trim().split(",");
+    model.gameEnded(winners, scores, usernames);
   }
 
   /**
@@ -358,6 +364,7 @@ public class GameClientNetworkConnection {
    */
   public void stop() {
     synchronized (this) {
+      model.clear();
       thread.interrupt();
     }
     closeSocket();

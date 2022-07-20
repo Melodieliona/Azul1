@@ -550,35 +550,14 @@ public class LocalServerConnection {
 
   /**
    * Announces the winner(s) of the game to all players and sends the final scores.
-   * Format winnerJson: {"type": "winner", "amount": int amountOfWinners,
-   *                     "winner0": ... [, winner1": ... [, "winner2": ... [, "winner3": ...]]]}
-   * Format finalScoresJson: {"type": "points", "points0": ..., "points1": ..., "points2": ...,
-   *                                            "points3": ...}
    * */
-  public void announceWinner(int[] endScores, ArrayList<String> winners) {
+  public void announceWinner(int[] endScores, ArrayList<String> winners, ArrayList<String> usernames) {
     try {
-      JSONObject winnerJson = new JSONObject();
-      winnerJson.put("type", "winner");
-      winnerJson.put("amount", winners.size());
-      // winners are 0-indexed
-      for (int i = 0; i < winners.size(); i++) {
-        String winnerIndex = "winner" + i;
-        winnerJson.put(winnerIndex, winners.get(i));
-      }
-
-      JSONObject finalScoresJson = new JSONObject();
-      finalScoresJson.put("type", "points");
-      for (int i = 0; i < endScores.length; i++) {
-        String scoreOfPlayerIndex = "points" + i;
-        finalScoresJson.put(scoreOfPlayerIndex, endScores[i]);
-      }
-
-      writer.write(winnerJson + System.lineSeparator());
-      writer.flush();
-      writer.write(finalScoresJson + System.lineSeparator());
+      JSONObject message = JsonMessage.gameEndedMessage(endScores, winners, usernames);
+      writer.write(message + System.lineSeparator());
       writer.flush();
 
-    } catch (IOException | JSONException e) {
+    } catch (IOException e) {
       System.out.println(e.getMessage());
     }
   }

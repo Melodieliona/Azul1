@@ -595,26 +595,14 @@ public class ServerNetworkConnection {
    */
   public void announceWinner(List<User> userList, int[] endScores, ArrayList<String> winners) {
     try {
+      ArrayList<String> usernames = new ArrayList<>();
+      for (User user:
+          userList ) {
+        usernames.add(user.getName());
+      }
       for (User user : userList) {
-        JSONObject winnerJson = new JSONObject();
-        winnerJson.put("type", "winner");
-        winnerJson.put("amount", winners.size());
-        // winners are 0-indexed
-        for (int i = 0; i < winners.size(); i++) {
-          String winnerIndex = "winner" + i;
-          winnerJson.put(winnerIndex, winners.get(i));
-        }
-
-        JSONObject finalScoresJson = new JSONObject();
-        finalScoresJson.put("type", "points");
-        for (int i = 0; i < endScores.length; i++) {
-          String scoreOfPlayerIndex = "points" + i;
-          finalScoresJson.put(scoreOfPlayerIndex, endScores[i]);
-        }
-
-        user.getWriter().write(winnerJson + System.lineSeparator());
-        user.getWriter().flush();
-        user.getWriter().write(finalScoresJson + System.lineSeparator());
+        JSONObject message = JsonMessage.gameEndedMessage(endScores, winners, usernames);
+        user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
       }
     } catch (IOException | JSONException e) {
@@ -637,7 +625,7 @@ public class ServerNetworkConnection {
         user.getWriter().write(postMessageJson + System.lineSeparator());
         user.getWriter().flush();
       }
-    } catch (IOException | JSONException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }

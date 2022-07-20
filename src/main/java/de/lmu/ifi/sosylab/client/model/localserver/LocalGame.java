@@ -283,7 +283,14 @@ public class LocalGame {
         }
       }
 
-      connection.announceWinner(endScores, winners);
+      //Create list with usernames(index corresponds to endScores)
+      ArrayList<String> usernames = new ArrayList<>();
+      for (LocalUser user:
+           userList) {
+        usernames.add(user.getName());
+      }
+
+      connection.announceWinner(endScores, winners, usernames);
     }
   }
 
