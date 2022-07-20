@@ -13,6 +13,8 @@ public class ImportImage {
   private final String path;
 
   /**
+   * TODO Add Summary
+   *
    * @param path - path for the picture.
    */
   public ImportImage(String path) {

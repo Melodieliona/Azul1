@@ -551,7 +551,8 @@ public class LocalServerConnection {
   /**
    * Announces the winner(s) of the game to all players and sends the final scores.
    * */
-  public void announceWinner(int[] endScores, ArrayList<String> winners, ArrayList<String> usernames) {
+  public void announceWinner(int[] endScores, ArrayList<String> winners,
+                             ArrayList<String> usernames) {
     try {
       JSONObject message = JsonMessage.gameEndedMessage(endScores, winners, usernames);
       writer.write(message + System.lineSeparator());

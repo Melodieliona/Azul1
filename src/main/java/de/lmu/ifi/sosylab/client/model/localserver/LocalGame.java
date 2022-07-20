@@ -210,19 +210,19 @@ public class LocalGame {
 
 
 
-      // If at lease one tile is left on plates or the middle, let the next player make a move.
-      boolean everythingEmpty = true;
-      for (TileCollection tilePlate : tilePlates) {
-        if (!tilePlate.isEmpty()) {
-          everythingEmpty = false;
-          setAndSendNextPlayer();
-          break;
-        }
+    // If at lease one tile is left on plates or the middle, let the next player make a move.
+    boolean everythingEmpty = true;
+    for (TileCollection tilePlate : tilePlates) {
+      if (!tilePlate.isEmpty()) {
+        everythingEmpty = false;
+        setAndSendNextPlayer();
+        break;
       }
+    }
 
-      if (everythingEmpty) {
-        endRound();
-      }
+    if (everythingEmpty) {
+      endRound();
+    }
   }
 
   /**
@@ -285,8 +285,7 @@ public class LocalGame {
 
       //Create list with usernames(index corresponds to endScores)
       ArrayList<String> usernames = new ArrayList<>();
-      for (LocalUser user:
-           userList) {
+      for (LocalUser user : userList) {
         usernames.add(user.getName());
       }
 

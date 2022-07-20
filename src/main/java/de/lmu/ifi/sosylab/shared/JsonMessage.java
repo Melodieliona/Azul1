@@ -233,10 +233,11 @@ public enum JsonMessage {
   }
 
   /**
-   *
+   * TODO Add Javadoc
    */
-  public static JSONObject gameEndedMessage(int[] endScores, ArrayList<String> winners, ArrayList<String> usernames){
-    try{
+  public static JSONObject gameEndedMessage(int[] endScores, ArrayList<String> winners,
+                                            ArrayList<String> usernames) {
+    try {
       String winnersField = winners.toString();
       String endScoresField = Arrays.toString(endScores);
       String usernamesField = usernames.toString();

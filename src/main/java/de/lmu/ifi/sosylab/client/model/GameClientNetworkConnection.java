@@ -9,9 +9,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Array;
-import java.util.ArrayList;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -136,7 +133,7 @@ public class GameClientNetworkConnection {
       case GAME_CANCEL_REQUEST -> handleGameCancelRequest(object);
       case GAME_CANCEL -> handleGameCancel();
       case FLOOR_LINE_UPDATE -> handleFloorLineUpdate(object);
-      case TIMER_END ->handleTimerEnd();
+      case TIMER_END -> handleTimerEnd();
       default -> handleInvalidJson();
     }
   }

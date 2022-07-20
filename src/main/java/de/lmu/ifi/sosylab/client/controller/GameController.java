@@ -104,7 +104,8 @@ public class GameController {
 
     return model.getPlayers().get(player);
   }
-  public int[] getValidRow(){
+
+  public int[] getValidRow() {
     return model.getValidRows();
   }
 }

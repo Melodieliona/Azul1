@@ -153,7 +153,7 @@ public class ServerNetworkConnection {
                     sendTimerEnded();
                     startGame();
                     nextGameNumber++;
-                  } else if ((numberOfUsersInNextGame == 2 | numberOfUsersInNextGame == 3 )) {
+                  } else if ((numberOfUsersInNextGame == 2 | numberOfUsersInNextGame == 3)) {
                     startTimer();
                   }
                 }
@@ -596,8 +596,7 @@ public class ServerNetworkConnection {
   public void announceWinner(List<User> userList, int[] endScores, ArrayList<String> winners) {
     try {
       ArrayList<String> usernames = new ArrayList<>();
-      for (User user:
-          userList ) {
+      for (User user : userList) {
         usernames.add(user.getName());
       }
       for (User user : userList) {
@@ -605,7 +604,7 @@ public class ServerNetworkConnection {
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
       }
-    } catch (IOException | JSONException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
@@ -625,7 +624,7 @@ public class ServerNetworkConnection {
         user.getWriter().write(postMessageJson + System.lineSeparator());
         user.getWriter().flush();
       }
-    } catch (IOException e) {
+    } catch (IOException | JSONException e) {
       e.printStackTrace();
     }
   }
