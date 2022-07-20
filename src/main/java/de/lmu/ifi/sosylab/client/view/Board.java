@@ -207,6 +207,7 @@ public class Board extends JPanel {
             case 2 -> g2D.drawRect(3 * 25, 4 * 25, 75, 25);
             case 3 -> g2D.drawRect(2 * 25, 5 * 25, 100, 25);
             case 4 -> g2D.drawRect(1 * 25, 6 * 25, 125, 25);
+            case 5 -> g2D.drawRect(1 * 25, 8 * 25, 175,25);
             default -> throw new IllegalArgumentException("Invalid Row.");
           }
         }
