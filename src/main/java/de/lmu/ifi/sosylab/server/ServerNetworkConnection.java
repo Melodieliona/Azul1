@@ -435,61 +435,60 @@ public class ServerNetworkConnection {
   public void sendBoardUpdate(List<User> userList, GameBoard[] gameBoards) {
     for (User user : userList) {
       for (GameBoard gameBoard : gameBoards) {
-        if (gameBoard.getPlayerName().equals(user.getName())) {
+        try {
+          JSONObject sendBoardUpdate = new JSONObject();
+          sendBoardUpdate.put("type", "board update");
+          sendBoardUpdate.put("nick", gameBoard.getPlayerName());
 
-          try {
-            JSONObject sendBoardUpdate = new JSONObject();
-            sendBoardUpdate.put("type", "board update");
-            sendBoardUpdate.put("nick", gameBoard.getPlayerName());
-
-            //Add empty laying rows and wall tile columns / colors
-            int rowIterator = 0;
-            Tile[][] wall = gameBoard.getTileWall();
-            StringBuilder emptyLayingRows = new StringBuilder();
-            StringBuilder filledWallCols = new StringBuilder();
-            StringBuilder wallTileColors = new StringBuilder();
-            for (LayingRow layingRow : gameBoard.getLayingRows()) {
-              if (layingRow.isRowEmpty()) {
-                emptyLayingRows.append(layingRow.getRowNumber());
-
-                int colIterator = 0;
-                for (int col = 0; col < 5; col++) {
-                  if (wall[col][rowIterator] != null) {
-                    filledWallCols.append(col);
-                    wallTileColors.append(wall[col][rowIterator].getColor());
-                  }
-                  if (colIterator < 4) {
-                    filledWallCols.append(",");
-                    wallTileColors.append(",");
-                  }
-                  colIterator++;
-                }
-
-                if (rowIterator < 4) {
-                  emptyLayingRows.append(",");
-                  filledWallCols.append("/");
-                  wallTileColors.append("/");
-                }
-              }
-              rowIterator++;
+          //Add empty laying rows
+          StringBuilder emptyLayingRows = new StringBuilder();
+          for (LayingRow layingRow : gameBoard.getLayingRows()) {
+            if (layingRow.isRowEmpty()) {
+              emptyLayingRows.append(layingRow.getRowNumber());
+              emptyLayingRows.append(',');
             }
-
-            //TODO DELETE sout's
-            System.out.println("Gesendete leere Reihen: " + emptyLayingRows);
-            System.out.println("Gesendete Wand-Spalten: " + filledWallCols);
-            System.out.println("Gesendete Wand-Farben: " + wallTileColors);
-
-            sendBoardUpdate.put("row", emptyLayingRows.toString());
-            sendBoardUpdate.put("pattern columns", filledWallCols.toString());
-            sendBoardUpdate.put("colors", wallTileColors.toString());
-            sendBoardUpdate.put("points", gameBoard.getCurrentScore());
-
-            user.getWriter().write(sendBoardUpdate + System.lineSeparator());
-            user.getWriter().flush();
-          } catch (IOException | JSONException e) {
-            e.printStackTrace();
           }
+          if (emptyLayingRows.charAt(emptyLayingRows.length() - 1) == ',') {
+            emptyLayingRows.deleteCharAt(emptyLayingRows.length() - 1);
+          }
+
+          //Add wall tiles
+          Tile[][] wall = gameBoard.getTileWall();
+          StringBuilder wallTileColors = new StringBuilder();
+          for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+              if (wall[col][row] == null) {
+                wallTileColors.append("0");
+              } else {
+                wallTileColors.append(wall[col][row].getColor());
+              }
+              wallTileColors.append(" ");
+            }
+            wallTileColors.deleteCharAt(wallTileColors.length() - 1);
+            wallTileColors.append(',');
+          }
+          wallTileColors.deleteCharAt(wallTileColors.length() - 1);
+
+          //TODO DELETE sout's
+          System.out.println("\n-----------------\n" +
+            "Board Update für Spieler: " + gameBoard.getPlayerName() + "\n"
+            + "Gesendete leere Reihen: " + emptyLayingRows + "\n"
+            + "Gesendete Wand-Farben: " + wallTileColors + "\n"
+            + "Gesendeter Score: " + gameBoard.getCurrentScore()
+            + "\n----------------");
+
+          sendBoardUpdate.put("row", emptyLayingRows.toString());
+          sendBoardUpdate.put("color", wallTileColors.toString());
+          sendBoardUpdate.put("points", String.valueOf(gameBoard.getCurrentScore()));
+
+          user.getWriter().write(sendBoardUpdate + System.lineSeparator());
+          user.getWriter().flush();
+        } catch (IOException | JSONException e) {
+          System.out.println(e.getMessage());
         }
+
+
+
       }
     }
   }
