@@ -45,6 +45,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private static final String GAME_CARD = "game";
   private static final String GAMEMODE_CARD = "gameMode";
   private static final String COUNTER_CARD = "counter";
+  private static final String WAIT_CARD = "wait";
   private static final String[] songList = {"CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
   private static TileCollection[] collection;
   private final int tileSize = 25;
@@ -85,6 +86,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private int numberOfPayersHS;
   private Timer timer;
   private JPanel middle;
+
+  private JLabel playersInLobby;
+
 
 
   /**
@@ -183,6 +187,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     back.setFont(standardFont);
     loginLabel = new JLabel("Login with your nick name:");
     loginLabel.setFont(standardFont);
+    playersInLobby = new JLabel("Players waiting for game: ");
+    playersInLobby.setFont(standardFont);
     counterSecond = 60;
     counterMinute = 1;
     numberOfPayersHS = 0;
@@ -257,6 +263,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     login.add(center);
     add(login, LOGIN_M_CARD);
   }
+  private void firstPlayerWait(){
+    JPanel waitFirstPlayer =new JPanel();
+    JLabel wait = new JLabel("Waiting for other players to join.");
+    wait.setFont(standardFont);
+    waitFirstPlayer.add(wait);
+    add(waitFirstPlayer,WAIT_CARD);
+  }
 
   private void waitForEnoughPlayers() {
     JPanel waitMultiPlayer = new JPanel();
@@ -267,6 +280,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     waitingLabel.setFont(standardFont);
     waitMultiPlayer.add(waitingLabel);
     waitMultiPlayer.add(counter);
+    waitMultiPlayer.add(playersInLobby);
     timer = new Timer(1000, new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -276,6 +290,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         formatedCounterSecond = dFormat.format(counterSecond);
         formatedCounterMinute = dFormat.format(counterMinute);
         counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
+
         counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
 
       }
@@ -455,8 +470,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       public void actionPerformed(ActionEvent e) {
 
         if (model.getGameMode().equals("Multiplayer")) {
-          String playerName = nickName.getText();
-          controller.logInMultiplayer(playerName);
+          if(model.getPlayers().size()==0){
+            firstPlayerWait();
+            showCard(WAIT_CARD);
+          }
+          controller.logInMultiplayer(nickName.getText());
         } else if (model.getGameMode().equals("Hot seat")) {
 
           if (numberOfPayersHS == 2) {
@@ -601,8 +619,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private boolean confirmTileSelection(int plateNumber, String tile, int amount, String playerName) {
 
     int selection = JOptionPane.showConfirmDialog(null,
-            playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
-            "Tile Selection", JOptionPane.YES_NO_OPTION);
+      playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
+      "Tile Selection", JOptionPane.YES_NO_OPTION);
 
     if (selection == 0) {
       return true;
@@ -752,6 +770,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     if (newValue instanceof LoggedInEvent) {
 
       if (model.getGameMode().equals("Multiplayer")) {
+        for (Player player : model.getPlayers()) {
+          playersInLobby.setText(playersInLobby.getText() + "\n " + player.getPlayerName());
+        }
+
         int numberOfPlayers = model.getPlayers().size() - 1;
         System.out.println("LogeddInEvent, numer of current players are: " + numberOfPlayers);
 
@@ -781,6 +803,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         //TODO: was soll hier genau passieren?
 
       } else if (model.getGameMode().equals("Multiplayer")) {
+        playersInLobby.setText(playersInLobby.getText() + "\n " + ((UserJoinedEvent) newValue).getUsername());
         int numberOfPlayers = model.getPlayers().size() - 1;
         ArrayList<Player> players = model.getPlayers();
         String playerName = players.get(numberOfPlayers).getPlayerName();
@@ -794,7 +817,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof LoginFailedEvent) {
       JOptionPane.showMessageDialog(this,
-              String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
+        String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
       showCard(LOGIN_M_CARD);
 
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
@@ -845,6 +868,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilePlacementFailedEvent) {
+
+
+    } else if (newValue instanceof UserLeftEvent) {
+      //TODO: was soll hier genau passieren?
 
     } else if (newValue instanceof PointsUpdatedEvent) {
       score = ((PointsUpdatedEvent) newValue).getPoints();
