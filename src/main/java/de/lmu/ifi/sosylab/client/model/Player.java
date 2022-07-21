@@ -1,6 +1,5 @@
 package de.lmu.ifi.sosylab.client.model;
 
-import de.lmu.ifi.sosylab.server.Game;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
@@ -41,7 +40,6 @@ public class Player {
   }
 
   public GameBoard getBoard() {
-    GameBoard copyOfGameBoard = new GameBoard(board);
     return board;
   }
 
