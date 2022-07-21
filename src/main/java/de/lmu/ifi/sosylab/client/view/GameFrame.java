@@ -608,11 +608,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private Component createMiddle() {
     JPanel middle2 = new JPanel(new BorderLayout());
     middle2.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    middle2.setPreferredSize(new Dimension((int) (325 * prozent), (int) (300 * prozent)));
     middle2.add(createControl(), BorderLayout.NORTH);
 
     middle = new JPanel(new FlowLayout());
     middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    middle.setPreferredSize(new Dimension((int) (325 * prozent), (int) (300 * prozent)));
 
     createPlates();
     middle.add(createPile());
