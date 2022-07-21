@@ -6,6 +6,7 @@ import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingWorker;
 
@@ -107,6 +108,18 @@ public class GameController {
 
   public int[] getValidRow() {
     return model.getValidRows();
+  }
+
+  public ArrayList<String> getWinners(){
+    return model.getNicksFromWinners();
+  }
+
+  public String getGameMode(){
+    return model.getGameMode();
+  }
+
+  public String getNickname(){
+    return model.getNickname();
   }
 }
 

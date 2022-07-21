@@ -506,7 +506,11 @@ public class GameModel {
   }
 
   public void dispose() {
-    connection.stop();
+    if (connection.equals(null)){
+      //do nothing
+    } else {
+      connection.stop();
+    }
   }
 
   public TileCollection[] getTilePlates() {
@@ -565,6 +569,10 @@ public class GameModel {
 
   public TileCollection getSelectedTiles() {
     return (TileCollection) selectedTiles.clone();
+  }
+
+  public ArrayList<String> getNicksFromWinners() {
+    return nicksFromWinners;
   }
 
   public void clear() {

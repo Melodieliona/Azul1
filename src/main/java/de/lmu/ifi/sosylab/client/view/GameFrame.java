@@ -891,6 +891,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     } else if (newValue instanceof GameCanceledEvent) {
 
     } else if (newValue instanceof GameEndedEvent) {
+      String message = handleGameEndedEvent();
+      JOptionPane.showMessageDialog(this, message);
 
     } else if (newValue instanceof GameRestartedEvent) {
 
@@ -943,6 +945,36 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private void goBackOneCard() {
       showCard(GAMEMODE_CARD);
 
+  }
+
+  private String handleGameEndedEvent(){
+    ArrayList<String> winners = controller.getWinners();
+    StringBuilder str = new StringBuilder();
+    String message;
+    String winner;
+    if (winners.size()>1){
+      str.append("Draw between: ");
+      for (int i = 0; i < winners.size(); i++) {
+        if (i == winners.size()-1){
+          str.append("and ");
+          str.append(winners.get(i));
+        } else {
+          str.append(winners.get(i));
+          str.append(", ");
+        }
+      }
+      message = str.toString();
+    } else {
+      winner = winners.get(0);
+      if (controller.getGameMode().equalsIgnoreCase("hot seat")){
+        message = String.format("Congratulations! \"%s\" won!", winner);
+      } else if (controller.getNickname().equals(winner)) {
+        message = "Congratulations! YOU won!";
+      } else {
+        message = String.format("\"%s\" won!", winner);
+      }
+    }
+    return message;
   }
 }
 
