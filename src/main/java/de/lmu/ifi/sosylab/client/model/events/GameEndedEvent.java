@@ -1,7 +1,5 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
-import java.util.Arrays;
-
 /**
  * Todo JavaDoc
  * */

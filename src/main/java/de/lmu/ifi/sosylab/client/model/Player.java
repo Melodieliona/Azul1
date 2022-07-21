@@ -3,7 +3,6 @@ package de.lmu.ifi.sosylab.client.model;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.util.Objects;
 
 /**
@@ -33,8 +32,6 @@ public class Player {
     TileCollection tiles = new TileCollection();
     tiles.addTiles(Tile.getTile(color), numberOfTiles);
     board.getLayingRow(line).layTilesOnRow(tiles);
-    System.out.println("Size of the collection in line " + line + ": " + board.getLayingRow(line).getRow().size());
-    System.out.println("Player: " + playerName + " has placed " + numberOfTiles + " " + color + " in line " + line);
   }
 
   public String getPlayerName() {

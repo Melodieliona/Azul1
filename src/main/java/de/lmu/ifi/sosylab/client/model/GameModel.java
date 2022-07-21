@@ -155,8 +155,6 @@ public class GameModel {
     if (source != 0) {
       tilePlates[0].addAllTiles(tilePlates[source]);
       tilePlates[source].clear();
-      System.out.println("all tiles from plate " + source + " removed");
-      System.out.println("size from collection in plate " + source + ": " + tilePlates[source].size());
     } else {
       if (tilePlates[0].contains(Tile.STARTING_MARKER)) {
         selectedTiles.add(Tile.STARTING_MARKER);
@@ -207,29 +205,19 @@ public class GameModel {
    */
   public void gameEnded(String[] winners, String[] points, String[] usernames) {
     selectedTiles.clear();
-    System.out.println("cleared selected tiles");
     validRows = new int[]{};
-    System.out.println("cleared allowed fields");
     validPlates = new int[]{};
-    System.out.println("cleared allowed plates");
 
     for (int i = 0; i < points.length; i++) {
-      System.out.println("setting scores");
-      for (Player player :
-          players) {
-        System.out.println("looking for "+usernames[i]);
-        System.out.println("found "+player.getPlayerName());
+      for (Player player : players) {
         if (usernames[i].equals(player.getPlayerName())) {
-          System.out.println("setting score for: "+player.getPlayerName());
           player.setScore(Integer.parseInt(points[i]));
         }
       }
     }
 
     for (String winner : winners) {
-      System.out.println("adding winners to list");
       nicksFromWinners.add(winner);
-      System.out.println("got winners");
     }
 
     notifyListeners(new GameEndedEvent());
@@ -343,10 +331,7 @@ public class GameModel {
    * */
   public void loggedIn(String[] nicknames) {
     if (gameMode.equals("Multiplayer")) {
-      System.out.println("Model LoggedIn nickname array size: " + nicknames.length);
       players.add(new Player(this.nickname));
-      System.out.println("Player array size is now: " + this.getPlayers().size());
-      System.out.println("Model LogginSuccess adding: " + this.nickname);
       for (String nickname : nicknames) {
         if (players.contains(new Player(nickname)) || nickname.trim().isEmpty()) {
           //TODO is this right / something missing? *just asking*
@@ -354,8 +339,6 @@ public class GameModel {
         } else {
           players.add(new Player(nickname));
         }
-
-        System.out.println("Model Logged in Event  Nickname of other player that was added to Player Array: " + nickname);
       }
     }
     notifyListeners(new LoggedInEvent());
@@ -504,6 +487,9 @@ public class GameModel {
     return connection;
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void dispose() {
     if (!(connection == null)) {
       connection.stop();

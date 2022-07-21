@@ -3,7 +3,6 @@ package de.lmu.ifi.sosylab.client.controller;
 import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.server.User;
-import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,15 +109,15 @@ public class GameController {
     return model.getValidRows();
   }
 
-  public ArrayList<String> getWinners(){
+  public ArrayList<String> getWinners() {
     return model.getNicksFromWinners();
   }
 
-  public String getGameMode(){
+  public String getGameMode() {
     return model.getGameMode();
   }
 
-  public String getNickname(){
+  public String getNickname() {
     return model.getNickname();
   }
 }
