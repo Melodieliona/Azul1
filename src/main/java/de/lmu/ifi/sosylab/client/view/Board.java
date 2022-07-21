@@ -218,7 +218,7 @@ public class Board extends JPanel {
         }
       }
     } catch (NullPointerException e) {
-      System.out.println("ValidRows ist noch leer! (Board)");
+      e.printStackTrace();
     }
   }
 }

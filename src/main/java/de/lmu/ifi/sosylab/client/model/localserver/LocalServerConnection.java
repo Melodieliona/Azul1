@@ -394,9 +394,7 @@ public class LocalServerConnection {
    * Contains:
    * - "nick": Name of the player, this play board belongs to
    * - "row": Empty laying rows
-   * - "pattern columns": x-coords of laid wall tiles -
-   *   (corresponding values of "row" are y-coords)
-   * - "colors": Colors of the laid wall tiles
+   * - "color": Colors of the laid wall tiles
    * - "score": The current score of the player
    * */
   public void sendBoardUpdate(GameBoard[] gameBoards) {
@@ -406,7 +404,7 @@ public class LocalServerConnection {
         sendBoardUpdate.put("type", "board update");
         sendBoardUpdate.put("nick", gameBoard.getPlayerName());
 
-        //Add empty laying rows
+        //Format empty laying rows
         StringBuilder emptyLayingRows = new StringBuilder();
         for (LayingRow layingRow : gameBoard.getLayingRows()) {
           if (layingRow.isRowEmpty()) {
@@ -418,7 +416,7 @@ public class LocalServerConnection {
           emptyLayingRows.deleteCharAt(emptyLayingRows.length() - 1);
         }
 
-        //Add wall tiles
+        //Format wall tiles
         Tile[][] wall = gameBoard.getTileWall();
         StringBuilder wallTileColors = new StringBuilder();
         for (int row = 0; row < 5; row++) {
@@ -435,14 +433,7 @@ public class LocalServerConnection {
         }
         wallTileColors.deleteCharAt(wallTileColors.length() - 1);
 
-        //TODO DELETE sout's
-        System.out.println("\n-----------------\n" +
-          "Board Update für Spieler: " + gameBoard.getPlayerName() + "\n"
-          + "Gesendete leere Reihen: " + emptyLayingRows + "\n"
-          + "Gesendete Wand-Farben: " + wallTileColors + "\n"
-          + "Gesendeter Score: " + gameBoard.getCurrentScore()
-          + "\n----------------");
-
+        //Add data to JSON
         sendBoardUpdate.put("row", emptyLayingRows.toString());
         sendBoardUpdate.put("color", wallTileColors.toString());
         sendBoardUpdate.put("points", String.valueOf(gameBoard.getCurrentScore()));
@@ -493,14 +484,6 @@ public class LocalServerConnection {
       sendFillPlates.put("type", "fill plates");
       sendFillPlates.put("color", tileColors.toString());
       sendFillPlates.put("tiles", tileAmounts.toString());
-
-      //TODO remove this
-      //for debugging
-      //System.out.println("\n");
-      //System.out.println("LocalServer: Sending the values below in fillPlates JSON");
-      //System.out.println("Colors: " + tileColors);
-      //System.out.println("Amounts: " + tileAmounts);
-      //System.out.println("\n");
 
       writer.write(sendFillPlates + System.lineSeparator());
       writer.flush();

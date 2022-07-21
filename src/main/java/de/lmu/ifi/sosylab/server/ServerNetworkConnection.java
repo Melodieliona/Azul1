@@ -424,9 +424,7 @@ public class ServerNetworkConnection {
    * Contains:
    * - "nick": Name of the player, this play board belongs to
    * - "row": Empty laying rows
-   * - "pattern columns": x-coords of laid wall tiles -
-   * (corresponding values of "row" are y-coords)
-   * - "colors": Colors of the laid wall tiles
+   * - "color": Colors of the laid wall tiles
    * - "score": The current score of the player as Integer
    */
   public void sendBoardUpdate(List<User> userList, GameBoard[] gameBoards) {
@@ -437,7 +435,7 @@ public class ServerNetworkConnection {
           sendBoardUpdate.put("type", "board update");
           sendBoardUpdate.put("nick", gameBoard.getPlayerName());
 
-          //Add empty laying rows
+          //Format empty laying rows
           StringBuilder emptyLayingRows = new StringBuilder();
           for (LayingRow layingRow : gameBoard.getLayingRows()) {
             if (layingRow.isRowEmpty()) {
@@ -449,7 +447,7 @@ public class ServerNetworkConnection {
             emptyLayingRows.deleteCharAt(emptyLayingRows.length() - 1);
           }
 
-          //Add wall tiles
+          //Format wall tiles
           Tile[][] wall = gameBoard.getTileWall();
           StringBuilder wallTileColors = new StringBuilder();
           for (int row = 0; row < 5; row++) {
@@ -466,14 +464,7 @@ public class ServerNetworkConnection {
           }
           wallTileColors.deleteCharAt(wallTileColors.length() - 1);
 
-          //TODO DELETE sout's
-          System.out.println("\n-----------------\n" +
-            "Board Update für Spieler: " + gameBoard.getPlayerName() + "\n"
-            + "Gesendete leere Reihen: " + emptyLayingRows + "\n"
-            + "Gesendete Wand-Farben: " + wallTileColors + "\n"
-            + "Gesendeter Score: " + gameBoard.getCurrentScore()
-            + "\n----------------");
-
+          //Add data to JSON
           sendBoardUpdate.put("row", emptyLayingRows.toString());
           sendBoardUpdate.put("color", wallTileColors.toString());
           sendBoardUpdate.put("points", String.valueOf(gameBoard.getCurrentScore()));
@@ -483,9 +474,6 @@ public class ServerNetworkConnection {
         } catch (IOException | JSONException e) {
           System.out.println(e.getMessage());
         }
-
-
-
       }
     }
   }
@@ -495,10 +483,6 @@ public class ServerNetworkConnection {
    * Contains all tiles on plates and the middle
    */
   public void sendFilledPlates(List<User> userList, TileCollection[] tilePlates) {
-
-    // { "type" : "fill plates", "color" : "red yellow,black green blue”, “tiles” : “ 3 1,1 1 2“ }
-    // TODO Testing
-
     StringBuilder tileColors = new StringBuilder();
     StringBuilder tileAmounts = new StringBuilder();
 

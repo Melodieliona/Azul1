@@ -30,7 +30,7 @@ public class GameModel {
 
   private String currentPlayer;
 
-  private int[] validRows;
+  private int[] validRows = new int[]{};
 
   private int[] validPlates;
 
@@ -99,8 +99,8 @@ public class GameModel {
    */
   public void logInHotSeat(String[] playersName) {
     connection.sendPlayers(playersName.length);
-    for (int i = 0; i < playersName.length; i++) {
-      connection.sendLogin(playersName[i]);
+    for (String s : playersName) {
+      connection.sendLogin(s);
     }
   }
 
@@ -338,10 +338,10 @@ public class GameModel {
       players.add(new Player(this.nickname));
       System.out.println("Player array size is now: " + this.getPlayers().size());
       System.out.println("Model LogginSuccess adding: " + this.nickname);
-      for (String nickname :
-          nicknames) {
+      for (String nickname : nicknames) {
         if (players.contains(nickname) || nickname.trim().isEmpty()) {
           //TODO is this right / something missing? *just asking*
+          //TODO Also, players is an ArrayList<Player> and only contains Player objects, no Strings
         } else {
           players.add(new Player(nickname));
         }
@@ -452,23 +452,14 @@ public class GameModel {
    * TODO Add JavaDoc
    * */
   public void updateFloorLine(String nick, String[] colors) {
-    System.out.println("updating floor line");
     int numberOfTiles = colors.length;
-    System.out.println("number of tiles in floor line " + numberOfTiles);
     TileCollection tiles = new TileCollection();
-    for (Player player :
-        players) {
-      System.out.println("looking for player");
+    for (Player player : players) {
       if (player.getPlayerName().equals(nick)) {
-        System.out.println("player found");
-        for (int i = 0; i < numberOfTiles; i++) {
-          System.out.println("adding tiles");
-          tiles.addTiles(Tile.getTile(colors[i]), 1);
-          System.out.println("tile added to floor line");
+        for (String color : colors) {
+          tiles.addTiles(Tile.getTile(color), 1);
         }
         player.getBoard().addToFloorLine(tiles);
-        System.out.println("now all tiles actually added to floorline");
-        System.out.println("Size of the floor line: " + player.getBoard().getFloorLine().size());
       }
     }
     notifyListeners(new FloorLineEvent());
@@ -514,8 +505,7 @@ public class GameModel {
   }
 
   public int[] getValidRows() {
-    int[] copyOfValidRows = validRows.clone();
-    return copyOfValidRows;
+    return validRows.clone();
   }
 
   /**
@@ -529,8 +519,7 @@ public class GameModel {
   }
 
   public int[] getValidPlates() {
-    int[] copyOfValidPlates = validPlates.clone();
-    return copyOfValidPlates;
+    return validPlates.clone();
   }
 
   /**
@@ -561,13 +550,11 @@ public class GameModel {
   }
 
   public ArrayList<Player> getPlayers() {
-    ArrayList<Player> copyOfPlayers = new ArrayList<>(players);
-    return copyOfPlayers;
+    return new ArrayList<>(players);
   }
 
   public TileCollection getSelectedTiles() {
-    TileCollection copyOfSelectedTiles = (TileCollection) selectedTiles.clone();
-    return copyOfSelectedTiles;
+    return (TileCollection) selectedTiles.clone();
   }
 
   public void clear() {

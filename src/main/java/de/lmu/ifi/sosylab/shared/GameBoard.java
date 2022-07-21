@@ -1,9 +1,5 @@
 package de.lmu.ifi.sosylab.shared;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * A game board containing the score, tile wall and laying rows of one player.
  * */
@@ -87,6 +83,7 @@ public class GameBoard {
 
   /**
    * Calculates plus points after every round and adds them to 'pluspoints'.
+   * Update the current score.
    * */
   public void updatePlusPoints(int row, int column) {
 
@@ -132,11 +129,14 @@ public class GameBoard {
       // Add one point for the added wall tile without any points for rows / columns
       plusPoints++;
     }
+
+    //Update current score
     currentScore = plusPoints - minusPoints;
   }
 
   /**
    * Sets the minus points for the current amount of tiles on the floor line.
+   * Updates the current score.
    * */
   private void updateMinusPoints() {
     switch (floorLine.size()) {
@@ -151,7 +151,12 @@ public class GameBoard {
       default -> throw new IllegalArgumentException("Tried to set minus points for more than 7 "
         + "tiles on the floor line. 7 tiles is the maximum amount.");
     }
+
+    //Update current score
     currentScore = plusPoints - minusPoints;
+    if (currentScore < 0) {
+      currentScore = 0;
+    }
   }
 
   /**
@@ -191,6 +196,7 @@ public class GameBoard {
 
   /**
    * Calculates the extra points you get at the end of the game and adds them to the plus-points.
+   * Updates the current score.
    */
   public void calculateAndAddExtraPoints() {
 
@@ -255,6 +261,7 @@ public class GameBoard {
     // Add calculated points
     plusPoints += (amountOfFullColumns * 7) + (amountOfFullRows * 2) + (completedColors * 10);
 
+    //Update current score
     currentScore = plusPoints - minusPoints;
   }
 
