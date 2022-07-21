@@ -3,6 +3,7 @@ package de.lmu.ifi.sosylab.client.model.localserver;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,11 +17,11 @@ public class LocalGame {
 
   private final LocalServerConnection connection;
 
-  private final List<LocalUser> userList;
+  private final ArrayList<LocalUser> userList;
 
   private int cancelRequests;
 
-  private final List<LocalUser> usersWantCancel;
+  private final ArrayList<LocalUser> usersWantCancel;
 
   private int currentPlayer;
 
@@ -47,8 +48,8 @@ public class LocalGame {
   /**
    * Initializes all necessary data for a game with a given amount of users.
    */
-  public LocalGame(List<LocalUser> users, LocalServerConnection connection) {
-    this.userList = List.copyOf(users);
+  public LocalGame(ArrayList<LocalUser> users, LocalServerConnection connection) {
+    this.userList = new ArrayList<>(users);
     this.connection = connection;
     cancelRequests = 0;
     usersWantCancel = new ArrayList<>();
@@ -478,6 +479,17 @@ public class LocalGame {
       }
     }
     return gameBoard;
+  }
+
+  void dispose() {
+    userList.clear();
+    cancelRequests = 0;
+    usersWantCancel.clear();
+    bag.clear();
+    trash.clear();
+    currentSelection.clear();
+    currentSelectionSource = -1;
+    startsAtNextRound = null;
   }
 
 

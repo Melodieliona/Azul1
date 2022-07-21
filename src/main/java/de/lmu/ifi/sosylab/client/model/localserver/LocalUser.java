@@ -1,5 +1,9 @@
 package de.lmu.ifi.sosylab.client.model.localserver;
 
+import de.lmu.ifi.sosylab.client.model.Player;
+
+import java.util.Objects;
+
 /**
  * Stores the data corresponding to a single local user.
  * */
@@ -16,6 +20,22 @@ public class LocalUser {
 
   public String getName() {
     return name;
+  }
+
+  public int hashCode() {
+    return Objects.hash(name);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (other == null || getClass() != other.getClass()) {
+      return false;
+    }
+    LocalUser user = (LocalUser) other;
+    return name.equals(user.getName());
   }
 
 }

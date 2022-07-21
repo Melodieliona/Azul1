@@ -93,6 +93,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   private JButton cancel;
 
+  private JButton restart;
+
 
   /**
    * Create a new graphical view that contains all necessary elements for playing the game.
@@ -180,6 +182,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     fourthNicknameHS = new JTextField(20);
     cancel = new JButton("Request cancel");
     cancel.setFont(standardFont);
+    restart = new JButton("Request restart");
+    restart.setFont(standardFont);
     play = new JButton("Play");
     play.setFont(standardFont);
     hotSeat = new JButton("HOTSEAT");
@@ -561,7 +565,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     cancel.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        controller.cancelGameRquest();
+        controller.cancelGameRequest();
+      }
+    });
+
+    restart.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        controller.restartGameRequest();
       }
     });
   }
@@ -626,6 +637,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     controller.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     controller.add(createSettingButton());
     controller.add(cancel);
+    controller.add(restart);
     return controller;
   }
 
@@ -1042,9 +1054,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof TilePlacementFailedEvent) {
 
+      JOptionPane.showMessageDialog(this, "Tile placement not allowed!", "Error!", JOptionPane.ERROR_MESSAGE);
 
-    } else if (newValue instanceof UserLeftEvent) {
-      //TODO: was soll hier genau passieren?
+    } else if (newValue instanceof TileSelectionFailedEvent) {
+
+      JOptionPane.showMessageDialog(this, "Tile selection not allowed!", "Error!", JOptionPane.ERROR_MESSAGE);
 
     } else if (newValue instanceof BoardUpdatedEvent) {
       gameField.removeAll();
@@ -1053,19 +1067,32 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof GameCanceledEvent) {
+
       JOptionPane.showMessageDialog(this, "The game has been canceled", "Game Canceled", JOptionPane.INFORMATION_MESSAGE);
       model.clear();
       goBackToFirstCard();
+
     } else if (newValue instanceof GameEndedEvent) {
+
       String message = handleGameEndedEvent();
       JOptionPane.showMessageDialog(this, message, "Game Ended", JOptionPane.INFORMATION_MESSAGE);
       model.clear();
       goBackToFirstCard();
+
     } else if (newValue instanceof GameRestartedEvent) {
+
+      JOptionPane.showMessageDialog(this, "The game has been restarted", "Game Canceled", JOptionPane.INFORMATION_MESSAGE);
 
     } else if (newValue instanceof GameRestartRequestEvent) {
 
+      JOptionPane.showMessageDialog(this, "Someone has requested to restart the game", "Game Request", JOptionPane.INFORMATION_MESSAGE);
+
+    } else if (newValue instanceof GameCancelRequestEvent) {
+
+      JOptionPane.showMessageDialog(this, "Someone has requested to cancel the game", "Game Request", JOptionPane.INFORMATION_MESSAGE);
+
     } else if (newValue instanceof NextPlayerEvent) {
+
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TimerEvent) {
@@ -1085,9 +1112,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof TimerEndedEvent) {
       showGame();
-
-    } else if (newValue instanceof FloorLineEvent) {
-      System.out.println("Floor line event");
 
     }
   }

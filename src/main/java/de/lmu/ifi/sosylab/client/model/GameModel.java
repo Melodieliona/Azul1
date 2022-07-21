@@ -6,10 +6,12 @@ import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The client-sided model for a game of Azul. Contains necessary data for the view.
@@ -296,7 +298,7 @@ public class GameModel {
 
   /**
    * TODO Add JavaDoc
-   * */
+   */
   public void requestGameCancel() {
     String nickname;
     if (gameMode.equals("Hot seat")) {
@@ -313,6 +315,11 @@ public class GameModel {
 
   public void restartGame() {
     selectedTiles.clear();
+    for (Player player:
+         players) {
+      player.setScore(0);
+      player.clearBoard();
+    }
     notifyListeners(new GameRestartedEvent());
   }
 
@@ -329,17 +336,21 @@ public class GameModel {
 
   /**
    * TODO Add JavaDoc
-   * */
+   */
   public void loggedIn(String[] nicknames) {
     if (gameMode.equals("Multiplayer")) {
       players.add(new Player(this.nickname));
       for (String nickname : nicknames) {
         if (players.contains(new Player(nickname)) || nickname.trim().isEmpty()) {
-          //TODO is this right / something missing? *just asking*
-          //TODO Also, players is an ArrayList<Player> and only contains Player objects, no Strings
+
         } else {
           players.add(new Player(nickname));
         }
+      }
+    } else {
+      for (String nickname:
+           nicknames) {
+        players.add(new Player(nickname));
       }
     }
     notifyListeners(new LoggedInEvent());
@@ -357,7 +368,12 @@ public class GameModel {
    * Notifies the subscribed view that a new player joined the game.
    */
   public void userJoined(String name) {
-    players.add(new Player(name));
+    if (gameMode.equals("Multiplayer")) {
+      players.add(new Player(name));
+    } else {
+      //do nothing
+    }
+
     notifyListeners(new UserJoinedEvent(name));
   }
 
@@ -443,7 +459,7 @@ public class GameModel {
 
   /**
    * Updates the floorline according to data sent by the server.
-   * */
+   */
   public void updateFloorLine(String nick, String[] colors) {
     TileCollection tiles = new TileCollection();
     for (Player player : players) {
@@ -489,7 +505,7 @@ public class GameModel {
 
   /**
    * TODO Add JavaDoc
-   * */
+   */
   public void dispose() {
     if (!(connection == null)) {
       connection.stop();
@@ -507,7 +523,7 @@ public class GameModel {
 
   /**
    * Sets the clickable rows for the view to display.
-   * */
+   */
   public void setValidRows(int numberOfValidRows, String[] rows) {
     validRows = new int[numberOfValidRows];
     for (int i = 0; i < numberOfValidRows; i++) {
@@ -521,7 +537,7 @@ public class GameModel {
 
   /**
    * Sets the clickable plates for the view to display.
-   * */
+   */
   public void setValidPlates(String[] plates) {
     validPlates = new int[plates.length];
     for (int i = 0; i < validPlates.length; i++) {
@@ -559,6 +575,7 @@ public class GameModel {
   }
 
   public void clear() {
+    gameMode = null;
     players.clear();
     nicksFromWinners.clear();
   }

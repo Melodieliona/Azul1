@@ -117,24 +117,16 @@ public class LocalServerConnection {
                 try {
                   clientNick = (String) jsonObject.get("nick");
 
-                  boolean nickAlreadyUsed = false;
-                  for (LocalUser user : users) {
-                    if (clientNick.equals(user.getName())) {
-                      nickAlreadyUsed = true;
-                      break;
-                    }
-                  }
+                    if (!(users.contains(new LocalUser(clientNick)))) {
+                      users.add(new LocalUser(clientNick));
 
-                  if (nickAlreadyUsed) {
-                    sendLoginFailed();
-                    break;
-                  } else {
-                    // Add user to User list
-                    users.add(new LocalUser(clientNick));
+                      // Acknowledge successful login
+                      sendLoginSuccess();
+                      sendUserJoined(clientNick);
 
-                    // Acknowledge successful login
-                    sendLoginSuccess();
-                    sendUserJoined(clientNick);
+                    } else {
+
+                      sendLoginFailed();
                   }
 
                   // Start the game immediately if 4 players are logged in.
@@ -546,6 +538,8 @@ public class LocalServerConnection {
    * Unused in this implementation.
    */
   public void stop() {
+    System.out.println("clearing local game");
+    game.dispose();
     System.out.println("shuting down local");
     users.clear();
     System.out.println("names are free");

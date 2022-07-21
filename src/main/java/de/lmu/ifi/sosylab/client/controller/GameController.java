@@ -79,7 +79,7 @@ public class GameController {
     model.requestGameRestart();
   }
 
-  public void cancelGameRquest() {
+  public void cancelGameRequest() {
     System.out.println("cancel request controller");
     model.requestGameCancel();
   }
@@ -124,6 +124,10 @@ public class GameController {
 
   public String getNickname() {
     return model.getNickname();
+  }
+
+  public void restartGameRequest() {
+    model.requestGameCancel();
   }
 }
 

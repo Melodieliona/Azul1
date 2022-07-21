@@ -50,6 +50,10 @@ public class Player {
     this.score = score;
   }
 
+  public void clearBoard(){
+    this.board=new GameBoard(this.playerName);
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(playerName, board, score);
