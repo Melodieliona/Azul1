@@ -415,22 +415,6 @@ public class ServerNetworkConnection {
   }
 
   /**
-   * Sends the updated score to the player who just made a move.
-   */
-  public void sendScoreUpdate(User user, int score) {
-    try {
-      JSONObject sendScoreUpdate = new JSONObject();
-
-      sendScoreUpdate.put("score", 12345);
-
-      user.getWriter().write(sendScoreUpdate + System.lineSeparator());
-      user.getWriter().flush();
-    } catch (IOException | JSONException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
    * Send board state to all players at the very beginning and after a round ended.
    * Contains:
    * - "nick": Name of the player, this play board belongs to
@@ -606,6 +590,21 @@ public class ServerNetworkConnection {
   public void sendGameCancel(List<User> userList) {
     try {
       for (User user : userList) {
+        JSONObject message = JsonMessage.gameCancel();
+        user.getWriter().write(message + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Sends all players that the game was cancelled.
+   */
+  public void sendGameCancelledServerShutDown() {
+    try {
+      for (User user : users) {
         JSONObject message = JsonMessage.gameCancel();
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
