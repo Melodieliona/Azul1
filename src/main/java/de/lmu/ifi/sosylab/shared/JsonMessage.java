@@ -287,7 +287,7 @@ public enum JsonMessage {
    */
   public static String getNickname(JSONObject object) {
     try {
-      return object.getString(NICK_FIELD);
+        return object.getString(NICK_FIELD);
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }

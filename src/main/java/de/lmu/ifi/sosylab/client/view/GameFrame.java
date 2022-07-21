@@ -249,7 +249,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     game.add(background);
     cardDeck.add(game, GAME_CARD);
 
-    pack();
   }
 
   /**
@@ -319,7 +318,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   }
 
-  private void timerRestart(){JPanel waitMultiPlayer = new JPanel();
+  private void timerRestart() {
+    JPanel waitMultiPlayer = new JPanel();
     JLabel counter = new JLabel();
     counter.setFont(standardFont);
     JLabel waitingLabel = new JLabel("Waiting for other Players to join.");
@@ -629,9 +629,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     return controller;
   }
 
-  private Component createSettingButton(){
+  private Component createSettingButton() {
     BufferedImage setting = images.getSettings();
-    JLabel settings =new JLabel(new ImageIcon(setting));
+    JLabel settings = new JLabel(new ImageIcon(setting));
 
     settings.addMouseListener(new MouseAdapter() {
       @Override
@@ -643,18 +643,18 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     return settings;
   }
 
-  private Component settingWindow(){
+  private Component settingWindow() {
     JFrame settingWindow = new JFrame();
     settingWindow.setVisible(true);
     settingWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    settingWindow.setSize(new Dimension(400,300));
+    settingWindow.setSize(new Dimension(400, 300));
 
     JPanel radioPanel = new JPanel();
 
     JLabel winSize = new JLabel("Set Game Size: ");
     radioPanel.add(winSize);
     JRadioButton small = new JRadioButton("small");
-    small.setBounds(0,0,100,25);
+    small.setBounds(0, 0, 100, 25);
     small.addItemListener(new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent e) {
@@ -673,7 +673,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     radioPanel.add(small);
 
     JRadioButton medium = new JRadioButton("medium");
-    medium.setBounds(50,0,100,25);
+    medium.setBounds(50, 0, 100, 25);
     medium.addItemListener(new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent e) {
@@ -693,7 +693,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     radioPanel.add(medium);
 
     JRadioButton big = new JRadioButton("big");
-    big.setBounds(100,0,100,25);
+    big.setBounds(100, 0, 100, 25);
     big.addItemListener(new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent e) {
@@ -720,6 +720,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     return settingWindow;
   }
+
   /**
    * Creates the Plates in the middle with the tiles and adds a MouseListener.
    * The MouseListener gets the name of the clicked Component like tile_color and plate.
@@ -789,8 +790,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private boolean confirmTileSelection(int plateNumber, String tile, int amount, String playerName) {
 
     int selection = JOptionPane.showConfirmDialog(null,
-            playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
-            "Tile Selection", JOptionPane.YES_NO_OPTION);
+        playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
+        "Tile Selection", JOptionPane.YES_NO_OPTION);
 
     if (selection == 0) {
       return true;
@@ -988,16 +989,16 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof LoginFailedEvent) {
       JOptionPane.showMessageDialog(this,
-              String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
+          String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
       showCard(LOGIN_M_CARD);
 
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
-        showGame();
-        gameField.removeAll();
-        collection = controller.getTilePlates();
-        createGameView();
-        repaint();
-        currentPlayer = controller.getCurrentPlayer();
+      showGame();
+      gameField.removeAll();
+      collection = controller.getTilePlates();
+      createGameView();
+      repaint();
+      currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
       showGame();
@@ -1052,10 +1053,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof GameCanceledEvent) {
-
+      JOptionPane.showMessageDialog(this, "The game has been canceled", "Game Canceled", JOptionPane.INFORMATION_MESSAGE);
+      model.clear();
+      goBackToFirstCard();
     } else if (newValue instanceof GameEndedEvent) {
       String message = handleGameEndedEvent();
       JOptionPane.showMessageDialog(this, message, "Game Ended", JOptionPane.INFORMATION_MESSAGE);
+      model.clear();
       goBackToFirstCard();
     } else if (newValue instanceof GameRestartedEvent) {
 
@@ -1066,14 +1070,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof TimerEvent) {
       System.out.println("Frame TimerEvent");
-      if (timerEventCounter > 0){
+      if (timerEventCounter > 0) {
         timerEventCounter++;
         System.out.println("Timers active (else if): " + timerEventCounter);
 
         timerRestart();
         showCard(TIMERUPDATE_CARD);
-      }
-      else if(timerEventCounter == 0){
+      } else if (timerEventCounter == 0) {
         timerEventCounter++;
         System.out.println("Timers active: " + timerEventCounter);
         timerStart();
@@ -1120,17 +1123,17 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private void goBackToFirstCard() {
     showCard(GAMEMODE_CARD);
 
-}
+  }
 
-  private String handleGameEndedEvent(){
+  private String handleGameEndedEvent() {
     ArrayList<String> winners = controller.getWinners();
     StringBuilder str = new StringBuilder();
     String message;
     String winner;
-    if (winners.size()>1){
+    if (winners.size() > 1) {
       str.append("Draw between: ");
       for (int i = 0; i < winners.size(); i++) {
-        if (i == winners.size()-1){
+        if (i == winners.size() - 1) {
           str.append("and ");
           str.append(winners.get(i));
         } else {
@@ -1141,7 +1144,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       message = str.toString();
     } else {
       winner = winners.get(0);
-      if (controller.getGameMode().equalsIgnoreCase("hot seat")){
+      if (controller.getGameMode().equalsIgnoreCase("hot seat")) {
         message = String.format("Congratulations! \"%s\" won!", winner);
       } else if (controller.getNickname().equals(winner)) {
         message = "Congratulations! YOU won!";
