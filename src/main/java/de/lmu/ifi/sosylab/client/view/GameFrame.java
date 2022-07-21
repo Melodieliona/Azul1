@@ -892,8 +892,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof GameEndedEvent) {
       String message = handleGameEndedEvent();
-      JOptionPane.showMessageDialog(this, message);
-
+      JOptionPane.showMessageDialog(this, message, "Game Ended", JOptionPane.INFORMATION_MESSAGE);
+      goBackOneCard();
     } else if (newValue instanceof GameRestartedEvent) {
 
     } else if (newValue instanceof GameRestartRequestEvent) {
@@ -928,7 +928,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   /**
-   * Show the chat view to the user.
+   * Show the game view to the user.
    */
   private void showGame() {
     showCard(GAME_CARD);
