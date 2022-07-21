@@ -24,7 +24,7 @@ public class Game {
 
   private int cancelRequests;
 
-  private List<User> usersWantCancel;
+  private List<String> usersWantCancel;
 
   private TileCollection bag;
 
@@ -233,16 +233,20 @@ public class Game {
    * Sends the corresponding message if all players
    * */
   public void handleGameCancelRequest(String nick) {
-    if (usersWantCancel.contains(new LocalUser(nick))) {
+
+    if(usersWantCancel.contains(nick)) {
+
+    } else {
+      usersWantCancel.add(nick);
       cancelRequests++;
+      connection.sendGameCancelRequest(userList, nick);
     }
-    if (cancelRequests == userList.size()) {
-      sendGameCancel();
-    }
+    if (cancelRequests == userList.size()-1) sendGameCancel();
+
   }
 
   private void sendGameCancel() {
-    connection.sendGameCancel();
+    connection.sendGameCancel(userList);
   }
 
   /**
@@ -252,7 +256,8 @@ public class Game {
    * notifies the next player (who had the start marker).
    * */
   private void endRound() {
-
+    cancelRequests = 0;
+    usersWantCancel.clear();
     // Laying tiles on wall, clearing layingRows accordingly and put left over tiles in the trash
     //
     for (GameBoard gameBoard : gameBoards) {

@@ -91,6 +91,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JPanel cardDeck;
   private int timerEventCounter = 0;
 
+  private JButton cancel;
+
 
   /**
    * Create a new graphical view that contains all necessary elements for playing the game.
@@ -176,6 +178,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     secondNicknameHS = new JTextField(20);
     thirdNicknameHS = new JTextField(20);
     fourthNicknameHS = new JTextField(20);
+    cancel = new JButton("Request cancel");
+    cancel.setFont(standardFont);
     play = new JButton("Play");
     play.setFont(standardFont);
     hotSeat = new JButton("HOTSEAT");
@@ -227,8 +231,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates Card for Game View.
    */
   public void createGameView() {
+
     JPanel game = new JPanel();
-    cardDeck.add(game, GAME_CARD);
+
+    JPanel controlsPanel = new JPanel();
+    controlsPanel.add(cancel);
+
 
     BufferedImage img = images.getBackground();
     JLabel background = new JLabel(new ImageIcon(img));
@@ -240,9 +248,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     gameField = new JPanel(new BorderLayout());
     gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
 
-    background.add(gameField);
 
+    background.add(gameField);
     game.add(background);
+    game.add(controlsPanel);
+    cardDeck.add(game, GAME_CARD);
+
+    pack();
   }
 
   /**
@@ -550,6 +562,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         goBackToFirstCard();
       }
     });
+
+    cancel.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        controller.cancelGameRquest();
+      }
+    });
   }
 
   /**
@@ -583,6 +602,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       }
     }
     gameField.add(createMiddle(), BorderLayout.CENTER);
+
+
     return gameField;
   }
 

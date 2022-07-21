@@ -5,6 +5,7 @@ import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,7 +53,7 @@ public class ServerNetworkConnection {
       serverSocket = new ServerSocket(port);
     } catch (IOException e) {
       System.out.println("Cannot create socket with port " + port + ".\n"
-              + "Likely the port is already in use.");
+          + "Likely the port is already in use.");
 
       return;
     }
@@ -96,9 +98,9 @@ public class ServerNetworkConnection {
 
         try {
           BufferedReader reader = new BufferedReader(
-                  new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+              new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
           OutputStreamWriter writer =
-                  new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
+              new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
 
 
           while (keepReading) {
@@ -178,6 +180,15 @@ public class ServerNetworkConnection {
                 for (Game game : games) {
                   if (game.getGameNumber() == clientGameNumber) {
                     game.handleTilePlacement(targetRow, placementColor);
+                    break;
+                  }
+                }
+              }
+              case GAME_CANCEL_REQUEST -> {
+                String nick = JsonMessage.getNickname(jsonObject);
+                for (Game game : games) {
+                  if (game.getGameNumber() == clientGameNumber) {
+                    game.handleGameCancelRequest(nick);
                     break;
                   }
                 }
@@ -327,7 +338,7 @@ public class ServerNetworkConnection {
    * Sends a successful tile selection to all users (including the sender as confirmation).
    */
   public void sendTileSelection(
-          List<User> list, String currentPlayer, int sourceTilePlate, Tile color, int amount) {
+      List<User> list, String currentPlayer, int sourceTilePlate, Tile color, int amount) {
     try {
       for (User user : list) {
         JSONObject sendMoveJson = new JSONObject();
@@ -350,7 +361,7 @@ public class ServerNetworkConnection {
    * Sends a successful tile placement to all users (including the sender as confirmation).
    */
   public void sendTilePlacement(
-          List<User> list, String currentPlayer, Tile color, int amount, int layingRow) {
+      List<User> list, String currentPlayer, Tile color, int amount, int layingRow) {
     try {
       for (User user : list) {
         JSONObject sendMoveJson = new JSONObject();
@@ -375,7 +386,7 @@ public class ServerNetworkConnection {
    * to all other players of that game.
    */
   public void sendFloorLineUpdate(
-          List<User> userlist, User currentUser, TileCollection newFloorLineTiles) {
+      List<User> userlist, User currentUser, TileCollection newFloorLineTiles) {
     try {
       for (User user : userlist) {
         JSONObject sendNewFloorLineTiles = new JSONObject();
@@ -592,10 +603,28 @@ public class ServerNetworkConnection {
     }
   }
 
-  public void sendGameCancel() {
+  public void sendGameCancel(List<User> userList) {
     try {
-      for (User user : users) {
+      for (User user : userList) {
         JSONObject message = JsonMessage.gameCancel();
+        user.getWriter().write(message + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Sends each player that someone made a cancel request.
+   *
+   * @param list     the list of players in the game
+   * @param nickname the nick of the player that has made the request
+   */
+  public void sendGameCancelRequest(List<User> list, String nickname) {
+    try {
+      for (User user : list) {
+        JSONObject message = JsonMessage.gameCancelRequest(nickname);
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
       }
@@ -701,7 +730,7 @@ public class ServerNetworkConnection {
       // Check if game hasn't already been started (because a 4th user joined) and if there are
       // enough users for a game (at least 2)
       System.out.println("Timer elapsed! Game will start now with "
-              + usersInGame.size() + " players.");
+          + usersInGame.size() + " players.");
       if ((games.size() + 1 == nextGameNumber) && (usersInGame.size() > 1)) {
         sendTimerEnded();
         startGame();

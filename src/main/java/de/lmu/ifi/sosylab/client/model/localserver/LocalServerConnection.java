@@ -576,11 +576,12 @@ public class LocalServerConnection {
    * */
   public void sendGameCancel() {
     try {
-      JSONObject message = JsonMessage.gameCancelRequest(null);
+      JSONObject message = JsonMessage.gameCancel();
       writer.write(message + System.lineSeparator());
       writer.flush();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
   }
+
 }
