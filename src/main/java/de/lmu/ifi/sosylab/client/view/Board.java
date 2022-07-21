@@ -129,7 +129,6 @@ public class Board extends JPanel {
         for (int b = 0; b < 5; b++) {
           if (collection[i][b] != null) {
             String color = collection[i][b].getColor().toUpperCase();
-            System.out.println(color + "_____ist in Reihe_" + i + " an Platz " + b +"________________________________________________________________________");
             int x = 7 + i;
             int y = b + 2;
 

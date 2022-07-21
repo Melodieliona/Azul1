@@ -12,9 +12,6 @@ public class GameBoard {
 
   private TileCollection floorLine;
 
-  private int plusPoints;
-
-  private int minusPoints;
 
   private int currentScore;
 
@@ -26,8 +23,6 @@ public class GameBoard {
    * */
   public GameBoard(String playerName) {
     this.playerName = playerName;
-    plusPoints = 0;
-    minusPoints = 0;
     currentScore = 0;
 
     tileWall = new Tile[5][5];
@@ -38,22 +33,6 @@ public class GameBoard {
     }
 
     floorLine = new TileCollection();
-  }
-
-  /**
-   * Initializes a gameboard with values of another given gameboard.
-   * Used to make copies of a gameboard.
-   * */
-  public GameBoard(GameBoard board) {
-    this.playerName = board.getPlayerName();
-    this.plusPoints = board.getPlusPoints();
-    this.minusPoints = board.getMinusPoints();
-    this.currentScore = board.getCurrentScore();
-
-    this.tileWall = board.getTileWall();
-
-    this.layingRows = board.getLayingRows();
-    this.floorLine = board.getFloorLine();
   }
 
   /**
@@ -76,7 +55,6 @@ public class GameBoard {
         tilesDidntFit.add(tile);
       }
     }
-    updateMinusPoints();
 
     return tilesDidntFit;
   }
@@ -108,7 +86,7 @@ public class GameBoard {
         lengthOfRow++;
       }
 
-      plusPoints += lengthOfRow;
+      currentScore += lengthOfRow;
 
     } else if (isPartOfColumn) {
       // Add points for columns
@@ -123,22 +101,20 @@ public class GameBoard {
         lengthOfColumn++;
       }
 
-      plusPoints += lengthOfColumn;
+      currentScore += lengthOfColumn;
 
     } else {
       // Add one point for the added wall tile without any points for rows / columns
-      plusPoints++;
+      currentScore++;
     }
-
-    //Update current score
-    currentScore = plusPoints - minusPoints;
   }
 
   /**
    * Sets the minus points for the current amount of tiles on the floor line.
    * Updates the current score.
    * */
-  private void updateMinusPoints() {
+  private void subtractMinusPoints() {
+    int minusPoints;
     switch (floorLine.size()) {
       case 0 -> minusPoints = 0;
       case 1 -> minusPoints = 1;
@@ -153,7 +129,7 @@ public class GameBoard {
     }
 
     //Update current score
-    currentScore = plusPoints - minusPoints;
+    currentScore -= minusPoints;
     if (currentScore < 0) {
       currentScore = 0;
     }
@@ -165,11 +141,8 @@ public class GameBoard {
    * @return The removed tiles
    * */
   public TileCollection clearFloorLine() {
-    //TODO Test if its ok
-    plusPoints -= minusPoints;
-    TileCollection clearedTiles = floorLine.removeAllTiles();
-    updateMinusPoints();
-    return clearedTiles;
+    subtractMinusPoints();
+    return floorLine.removeAllTiles();
   }
 
   /**
@@ -259,10 +232,7 @@ public class GameBoard {
     }
 
     // Add calculated points
-    plusPoints += (amountOfFullColumns * 7) + (amountOfFullRows * 2) + (completedColors * 10);
-
-    //Update current score
-    currentScore = plusPoints - minusPoints;
+    currentScore += (amountOfFullColumns * 7) + (amountOfFullRows * 2) + (completedColors * 10);
   }
 
   /**
@@ -277,14 +247,6 @@ public class GameBoard {
    */
   public String getPlayerName() {
     return playerName;
-  }
-
-  public int getMinusPoints() {
-    return minusPoints;
-  }
-
-  public int getPlusPoints() {
-    return plusPoints;
   }
 
   public TileCollection getFloorLine() {
