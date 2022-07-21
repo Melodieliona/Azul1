@@ -160,6 +160,7 @@ public class GameBoard {
    * @return The removed tiles
    * */
   public TileCollection clearFloorLine() {
+    //TODO Test if its ok
     plusPoints -= minusPoints;
     TileCollection clearedTiles = floorLine.removeAllTiles();
     updateMinusPoints();

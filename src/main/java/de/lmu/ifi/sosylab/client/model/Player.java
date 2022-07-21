@@ -14,12 +14,15 @@ public class Player {
 
   private GameBoard board;
 
+  private int score;
+
   /**
    * TODO Javadoc
    */
   public Player(String name) {
     playerName = name;
     board = new GameBoard(name);
+    score = 0;
   }
 
   /**
@@ -29,8 +32,8 @@ public class Player {
     TileCollection tiles = new TileCollection();
     tiles.addTiles(Tile.getTile(color), numberOfTiles);
     board.getLayingRow(line).layTilesOnRow(tiles);
-    System.out.println("Size of the collection in line "+line+": "+board.getLayingRow(line).getRow().size());
-    System.out.println("Player: "+playerName+ " has placed "+numberOfTiles+" "+ color+" in line "+line);
+    System.out.println("Size of the collection in line " + line + ": " + board.getLayingRow(line).getRow().size());
+    System.out.println("Player: " + playerName + " has placed " + numberOfTiles + " " + color + " in line " + line);
   }
 
   public String getPlayerName() {
@@ -42,4 +45,11 @@ public class Player {
     return board;
   }
 
+  public int getScore() {
+    return score;
+  }
+
+  public void setScore(int score) {
+    this.score = score;
+  }
 }

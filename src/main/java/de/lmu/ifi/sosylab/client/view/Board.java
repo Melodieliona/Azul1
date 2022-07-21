@@ -73,7 +73,7 @@ public class Board extends JPanel {
     g2D.drawString(name, 83, 35);
     int score;
     try {
-      score = controller.getPlayer(boardNumber).getBoard().getCurrentScore();
+      score = controller.getPlayer(boardNumber).getScore();
     } catch (NullPointerException e) {
       score = 0;
     }

@@ -414,7 +414,7 @@ public class GameModel {
     for (Player player : players) {
       if (player.getPlayerName().equals(nick)) {
         //Update Score
-        player.getBoard().setCurrentScore(Integer.parseInt(points));
+        player.setScore(Integer.parseInt(points));
 
         //Calculate new wall tiles
         String[][] tiles = new String[5][5];
@@ -442,7 +442,7 @@ public class GameModel {
         }
 
         //Clear floorline
-        player.getBoard().clearFloorLine();
+        player.getBoard().getFloorLine().clear();
       }
     }
     notifyListeners(new BoardUpdatedEvent());
