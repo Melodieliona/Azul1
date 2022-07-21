@@ -180,9 +180,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     secondNicknameHS = new JTextField(20);
     thirdNicknameHS = new JTextField(20);
     fourthNicknameHS = new JTextField(20);
-    cancel = new JButton("Request cancel");
+    cancel = new JButton("Cancel");
     cancel.setFont(standardFont);
-    restart = new JButton("Request restart");
+    restart = new JButton("Restart");
     restart.setFont(standardFont);
     play = new JButton("Play");
     play.setFont(standardFont);
@@ -648,14 +648,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     settings.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        settingWindow();
+        setWindow();
 
       }
     });
     return settings;
   }
 
-  private Component settingWindow() {
+  private Component setWindow() {
     JFrame settingWindow = new JFrame();
     settingWindow.setVisible(true);
     settingWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
