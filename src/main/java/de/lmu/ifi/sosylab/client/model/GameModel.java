@@ -506,7 +506,7 @@ public class GameModel {
   }
 
   public void dispose() {
-    if (connection.equals(null)){
+    if (connection == null){
       //do nothing
     } else {
       connection.stop();
