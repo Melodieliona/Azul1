@@ -234,10 +234,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     JPanel game = new JPanel();
 
-    JPanel controlsPanel = new JPanel();
-    controlsPanel.add(cancel);
-
-
     BufferedImage img = images.getBackground();
     JLabel background = new JLabel(new ImageIcon(img));
 
@@ -251,7 +247,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     background.add(gameField);
     game.add(background);
-    game.add(controlsPanel);
     cardDeck.add(game, GAME_CARD);
 
     pack();
@@ -581,9 +576,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       case 1 -> {
         gameField.add(createBoard(0), BorderLayout.NORTH);
         gameField.add(createBoard(1), BorderLayout.SOUTH);
-        if (!sizeset) {
-          this.setSize((int) (350 * prozent), (int) (prozent * 900));
-        }
+        this.setSize((int) (350 * prozent), (int) (prozent * 900));
       }
       case 2 -> {
         gameField.add(createBoard(0), BorderLayout.NORTH);
@@ -613,14 +606,27 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return - middle.
    */
   private Component createMiddle() {
+    JPanel middle2 = new JPanel(new BorderLayout());
+    middle2.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    middle2.add(createControl(), BorderLayout.NORTH);
+
     middle = new JPanel(new FlowLayout());
     middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     middle.setPreferredSize(new Dimension((int) (325 * prozent), (int) (300 * prozent)));
 
-    middle.add(createSettingButton());
     createPlates();
     middle.add(createPile());
-    return middle;
+    middle2.add(middle, BorderLayout.CENTER);
+    return middle2;
+  }
+
+  private Component createControl() {
+    JPanel controller = new JPanel(new FlowLayout());
+    controller.setSize((int) (325 * prozent), (int) (100 * prozent));
+    controller.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    controller.add(createSettingButton());
+    controller.add(cancel);
+    return controller;
   }
 
   private Component createSettingButton(){
