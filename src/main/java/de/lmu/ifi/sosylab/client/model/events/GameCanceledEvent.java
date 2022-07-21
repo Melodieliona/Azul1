@@ -1,7 +1,7 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Add JavaDoc
+ * This event is fired when the game was cancelled.
  * */
 public class GameCanceledEvent extends GameEvents {
 

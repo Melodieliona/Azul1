@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * TODO Javadoc
+ * The client-sided model for a game of Azul. Contains necessary data for the view.
  */
 public class GameModel {
 
@@ -441,10 +441,9 @@ public class GameModel {
   }
 
   /**
-   * TODO Add JavaDoc
+   * Updates the floorline according to data sent by the server.
    * */
   public void updateFloorLine(String nick, String[] colors) {
-    int numberOfTiles = colors.length;
     TileCollection tiles = new TileCollection();
     for (Player player : players) {
       if (player.getPlayerName().equals(nick)) {
@@ -506,7 +505,7 @@ public class GameModel {
   }
 
   /**
-   * TODO Add JavaDoc
+   * Sets the clickable rows for the view to display.
    * */
   public void setValidRows(int numberOfValidRows, String[] rows) {
     validRows = new int[numberOfValidRows];
@@ -520,7 +519,7 @@ public class GameModel {
   }
 
   /**
-   * TODO Add JavaDoc
+   * Sets the clickable plates for the view to display.
    * */
   public void setValidPlates(String[] plates) {
     validPlates = new int[plates.length];

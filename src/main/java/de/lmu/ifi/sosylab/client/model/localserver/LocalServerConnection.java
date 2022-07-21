@@ -571,6 +571,9 @@ public class LocalServerConnection {
     }
   }
 
+  /**
+   * Sends a message to the client when the game was cancelled.
+   * */
   public void sendGameCancel() {
     try {
       JSONObject message = JsonMessage.gameCancelRequest(null);
