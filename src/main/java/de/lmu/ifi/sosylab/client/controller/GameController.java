@@ -113,6 +113,10 @@ public class GameController {
     return model.getValidRows();
   }
 
+  public int[] getValidTiles(){
+    return model.getValidPlates();
+  }
+
   public ArrayList<String> getWinners() {
     return model.getNicksFromWinners();
   }

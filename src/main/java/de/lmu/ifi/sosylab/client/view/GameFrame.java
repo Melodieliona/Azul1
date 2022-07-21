@@ -577,7 +577,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         gameField.add(createBoard(1), BorderLayout.EAST);
         gameField.add(createBoard(2), BorderLayout.SOUTH);
         gameField.add(createBoard(3), BorderLayout.WEST);
-        this.setSize(1020, 880);
+        this.setSize((int) (1020 * prozent), (int) (880 * prozent));
       }
       default -> {
       }
@@ -727,7 +727,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           x += 2;
           plate.add(tile);
         }
-
         plate.addMouseListener(new MouseAdapter() {
           /**
            * {@inheritDoc}
