@@ -44,7 +44,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   private static final String GAME_CARD = "game";
   private static final String GAMEMODE_CARD = "gameMode";
-  private static final String COUNTER_CARD = "counter";
+  private static final String TIMER_CARD = "timer";
+  private static final String TIMERUPDATE_CARD = "resartedTimer";
   private static final String LOGINNAMES_CARD = "loginNames";
   private static final String WAIT_CARD = "wait";
   private static final String[] songList = {"CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
@@ -90,6 +91,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   private JLabel playersInLobby;
   private JPanel cardDeck;
+  private int timerEventCounter = 0;
 
 
   /**
@@ -189,8 +191,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     loginLabel.setFont(standardFont);
     playersInLobby = new JLabel("Players waiting for game: ");
     playersInLobby.setFont(standardFont);
-    counterSecond = 60;
-    counterMinute = 1;
     numberOfPayersHS = 0;
 
 
@@ -276,7 +276,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     cardDeck.add(waitFirstPlayer, WAIT_CARD);
   }
 
-  private void waitForEnoughPlayers() {
+  private void timerStart() {
+
     JPanel waitMultiPlayer = new JPanel();
 
     JLabel counter = new JLabel();
@@ -287,6 +288,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     waitMultiPlayer.add(counter);
     waitMultiPlayer.setBackground(Color.CYAN);
     waitMultiPlayer.add(playersInLobby);
+
+    counterMinute = 1;
+    counterSecond = 60;
+
     timer = new Timer(1000, new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -304,7 +309,43 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     });
 
     timer.start();
-    cardDeck.add(waitMultiPlayer, COUNTER_CARD);
+    cardDeck.add(waitMultiPlayer, TIMER_CARD);
+
+
+  }
+
+  private void timerRestart(){JPanel waitMultiPlayer = new JPanel();
+    JLabel counter = new JLabel();
+    counter.setFont(standardFont);
+    JLabel waitingLabel = new JLabel("Waiting for other Players to join.");
+    waitingLabel.setFont(standardFont);
+    waitMultiPlayer.add(waitingLabel);
+    waitMultiPlayer.add(counter);
+    waitMultiPlayer.setBackground(Color.CYAN);
+    waitMultiPlayer.add(playersInLobby);
+
+    counterMinute = 1;
+    counterSecond = 60;
+
+    timer.stop();
+    timer = new Timer(1000, new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        counterMinute = 0;
+        counterSecond--;
+        formatedCounterSecond = dFormat.format(counterSecond);
+        formatedCounterMinute = dFormat.format(counterMinute);
+        counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
+
+        counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
+
+      }
+
+    });
+
+    timer.start();
+    cardDeck.add(waitMultiPlayer, TIMERUPDATE_CARD);
 
 
   }
@@ -508,7 +549,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     back.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        goBackOneCard();
+        goBackToFirstCard();
       }
     });
   }
@@ -627,8 +668,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private boolean confirmTileSelection(int plateNumber, String tile, int amount, String playerName) {
 
     int selection = JOptionPane.showConfirmDialog(null,
-        playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
-        "Tile Selection", JOptionPane.YES_NO_OPTION);
+            playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
+            "Tile Selection", JOptionPane.YES_NO_OPTION);
 
     if (selection == 0) {
       return true;
@@ -788,6 +829,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
         String player = model.getNickname();
         playerNames.add(player);
+        this.setTitle(player);
         System.out.println(player + "has been added Login Event (this is the main playor of this client instance)");
 
         if (numberOfPlayers > 0) {
@@ -821,18 +863,22 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
       }
 
+    } else if (newValue instanceof UserLeftEvent) {
+      //TODO: was soll hier genau passieren?
+
     } else if (newValue instanceof LoginFailedEvent) {
       JOptionPane.showMessageDialog(this,
-          String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
+              String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
       showCard(LOGIN_M_CARD);
 
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
-      showGame();
-      gameField.removeAll();
-      collection = controller.getTilePlates();
-      createGameView();
-      repaint();
-      currentPlayer = controller.getCurrentPlayer();
+        showGame();
+        gameField.removeAll();
+        collection = controller.getTilePlates();
+        createGameView();
+        repaint();
+        currentPlayer = controller.getCurrentPlayer();
+
     } else if (newValue instanceof OtherPlayerPlacedTilesEvent) {
       showGame();
       gameField.removeAll();
@@ -874,9 +920,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilePlacementFailedEvent) {
-      JOptionPane.showMessageDialog(this, "Invalid tile placement!", "Error!", JOptionPane.ERROR_MESSAGE);
-    } else if (newValue instanceof TileSelectionFailedEvent) {
-      JOptionPane.showMessageDialog(this, "Invalid tile selection!", "Error!", JOptionPane.ERROR_MESSAGE);
+
+
     } else if (newValue instanceof UserLeftEvent) {
       //TODO: was soll hier genau passieren?
 
@@ -887,18 +932,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof GameCanceledEvent) {
-      controller.cancelGame();
-      JOptionPane.showMessageDialog(this, "Game has been canceled", "Game Canceled", JOptionPane.INFORMATION_MESSAGE);
-      goBackOneCard();
-
-    } else if (newValue instanceof GameCancelRequestEvent) {
-
-      JOptionPane.showMessageDialog(this, "Someone has requested to cancel the game", "Cancel Request", JOptionPane.INFORMATION_MESSAGE);
 
     } else if (newValue instanceof GameEndedEvent) {
       String message = handleGameEndedEvent();
       JOptionPane.showMessageDialog(this, message, "Game Ended", JOptionPane.INFORMATION_MESSAGE);
-      goBackOneCard();
+      goBackToFirstCard();
     } else if (newValue instanceof GameRestartedEvent) {
 
     } else if (newValue instanceof GameRestartRequestEvent) {
@@ -907,8 +945,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TimerEvent) {
-      waitForEnoughPlayers();
-      showCard(COUNTER_CARD);
+      System.out.println("Frame TimerEvent");
+      if (timerEventCounter > 0){
+        timerEventCounter++;
+        System.out.println("Timers active (else if): " + timerEventCounter);
+
+        timerRestart();
+        showCard(TIMERUPDATE_CARD);
+      }
+      else if(timerEventCounter == 0){
+        timerEventCounter++;
+        System.out.println("Timers active: " + timerEventCounter);
+        timerStart();
+        showCard(TIMER_CARD);
+      }
 
     } else if (newValue instanceof TimerEndedEvent) {
       showGame();
@@ -947,20 +997,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     setPreferredSize(localLayout.minimumLayoutSize(cardDeck.getParent()));
   }
 
-  private void goBackOneCard() {
+  private void goBackToFirstCard() {
     showCard(GAMEMODE_CARD);
 
   }
 
-  private String handleGameEndedEvent() {
+  private String handleGameEndedEvent(){
     ArrayList<String> winners = controller.getWinners();
     StringBuilder str = new StringBuilder();
     String message;
     String winner;
-    if (winners.size() > 1) {
+    if (winners.size()>1){
       str.append("Draw between: ");
       for (int i = 0; i < winners.size(); i++) {
-        if (i == winners.size() - 1) {
+        if (i == winners.size()-1){
           str.append("and ");
           str.append(winners.get(i));
         } else {
@@ -971,7 +1021,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       message = str.toString();
     } else {
       winner = winners.get(0);
-      if (controller.getGameMode().equalsIgnoreCase("hot seat")) {
+      if (controller.getGameMode().equalsIgnoreCase("hot seat")){
         message = String.format("Congratulations! \"%s\" won!", winner);
       } else if (controller.getNickname().equals(winner)) {
         message = "Congratulations! YOU won!";
