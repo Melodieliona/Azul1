@@ -232,7 +232,7 @@ public class GameBoard {
     }
 
     // Add calculated points
-    currentScore += (amountOfFullColumns * 7) + (amountOfFullRows * 2) + (completedColors * 10);
+    currentScore += (amountOfFullColumns * 7) + (amountOfFullRows * 5) + (completedColors * 10);
   }
 
   /**

@@ -3,7 +3,6 @@ package de.lmu.ifi.sosylab.client.model;
 import static java.util.Objects.requireNonNull;
 
 import de.lmu.ifi.sosylab.client.model.events.*;
-import de.lmu.ifi.sosylab.client.model.localserver.LocalGame;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
@@ -506,9 +505,7 @@ public class GameModel {
   }
 
   public void dispose() {
-    if (connection == null){
-      //do nothing
-    } else {
+    if (!(connection == null)) {
       connection.stop();
     }
   }
