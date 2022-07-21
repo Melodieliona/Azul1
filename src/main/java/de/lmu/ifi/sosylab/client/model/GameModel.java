@@ -30,7 +30,7 @@ public class GameModel {
 
   private String currentPlayer;
 
-  private int[] validRows = new int[]{};
+  private int[] validRows = {};
 
   private int[] validPlates;
 
@@ -312,6 +312,7 @@ public class GameModel {
   }
 
   public void restartGame() {
+    selectedTiles.clear();
     notifyListeners(new GameRestartedEvent());
   }
 

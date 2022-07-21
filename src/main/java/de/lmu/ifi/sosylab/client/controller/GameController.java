@@ -84,9 +84,6 @@ public class GameController {
     model.requestGameCancel();
   }
 
-  public void cancelGame() {
-    model.cancelGame();
-  }
 
   public String getCurrentPlayer() {
     return model.getCurrentPlayer();

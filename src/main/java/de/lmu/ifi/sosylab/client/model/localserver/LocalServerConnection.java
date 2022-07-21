@@ -546,6 +546,9 @@ public class LocalServerConnection {
    * Unused in this implementation.
    */
   public void stop() {
+    System.out.println("shuting down local");
+    users.clear();
+    System.out.println("names are free");
     executorService.shutdownNow();
     try {
       socket.close();
@@ -562,9 +565,11 @@ public class LocalServerConnection {
       JSONObject message = JsonMessage.gameCancel();
       writer.write(message + System.lineSeparator());
       writer.flush();
+
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
   }
+
 
 }
