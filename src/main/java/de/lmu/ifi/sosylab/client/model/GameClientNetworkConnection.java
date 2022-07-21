@@ -260,13 +260,9 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleGameEnded(JSONObject object) {
-    System.out.println("handling game ended");
     String[] winners = JsonMessage.getWinners(object).trim().split(",");
-    System.out.println("winners parsed");
     String[] scores = JsonMessage.getScores(object).trim().split(",");
-    System.out.println("scores parsed");
     String[] usernames = JsonMessage.getNickname(object).trim().split(",");
-    System.out.println("nicks parsed");
     model.gameEnded(winners, scores, usernames);
   }
 
@@ -402,7 +398,6 @@ public class GameClientNetworkConnection {
    */
   public void sendTileSelection(int source, String color, int numberOfTiles) {
     JSONObject tileSelection = JsonMessage.selectTile(color, source);
-    System.out.println("color: " +color+" and source: "+source);
     send(tileSelection);
   }
 
