@@ -3,6 +3,7 @@ package de.lmu.ifi.sosylab.client.model.localserver;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,12 +12,16 @@ import java.util.Random;
 /**
  * Represents a single hotseat game of Azul.
  * Handles the game logic and notifies other players of changes.
- * */
+ */
 public class LocalGame {
 
   private final LocalServerConnection connection;
 
   private final List<LocalUser> userList;
+
+  private int cancelRequests;
+
+  private final List<LocalUser> usersWantCancel;
 
   private int currentPlayer;
 
@@ -40,13 +45,14 @@ public class LocalGame {
   private static final Random RANDOM = new Random();
 
 
-
   /**
    * Initializes all necessary data for a game with a given amount of users.
-   * */
+   */
   public LocalGame(List<LocalUser> users, LocalServerConnection connection) {
     this.userList = List.copyOf(users);
     this.connection = connection;
+    cancelRequests = 0;
+    usersWantCancel = new ArrayList<>();
 
     bag = new TileCollection();
     bag.addTiles(Tile.BLUE, 20);
@@ -90,7 +96,7 @@ public class LocalGame {
   /**
    * Fill plates with tiles from the bag.
    * Put start marker in the middle.
-   * */
+   */
   private void fillPlates() {
     // Set start marker in the center area
     tilePlates[0].add(Tile.STARTING_MARKER);
@@ -115,7 +121,7 @@ public class LocalGame {
   /**
    * Checks a requested tile selection for validity and if valid changes model accordingly.
    * Remembers who picked the start marker.
-   * */
+   */
   protected void handleTileSelection(int source, Tile color) {
     int amount = tilePlates[source].getAmountTilesOfColor(color);
     if (amount > 0 && currentSelection.isEmpty()) {
@@ -138,7 +144,7 @@ public class LocalGame {
 
   /**
    * Checks a requested tile placement for validity and if valid changes model accordingly.
-   * */
+   */
   protected void handleTilePlacement(int targetRow, Tile color) {
     if (currentSelection.isEmpty()) {
       sendInvalidPlacement(userList.get(currentPlayer).getName());
@@ -209,7 +215,6 @@ public class LocalGame {
     }
 
 
-
     // If at lease one tile is left on plates or the middle, let the next player make a move.
     boolean everythingEmpty = true;
     for (TileCollection tilePlate : tilePlates) {
@@ -225,12 +230,21 @@ public class LocalGame {
     }
   }
 
+
+  public void handleGameCancelRequest(String nick) {
+    sendGameCancel();
+  }
+
+  private void sendGameCancel() {
+    connection.sendGameCancel();
+  }
+
   /**
    * Ends a round:
    * Calculates the score of every player,
    * starts a new round, fills all plates and the center,
    * notifies the next player (who had the start marker).
-   * */
+   */
   private void endRound() {
 
     // Laying tiles on wall, clearing layingRows accordingly and put left over tiles in the trash
@@ -295,7 +309,7 @@ public class LocalGame {
 
   /**
    * Refills tile plates with tiles from the bag and lets the next player make a move.
-   * */
+   */
   private void startNewRound() {
 
     fillPlates();
@@ -317,21 +331,21 @@ public class LocalGame {
 
   /**
    * Sends an Error message to a user if the made selection was invalid.
-   * */
+   */
   private void sendInvalidSelection(String user) {
     connection.sendInvalidSelectionMessage(getUser(user));
   }
 
   /**
    * Sends an Error message to a user if the made placement was invalid.
-   * */
+   */
   private void sendInvalidPlacement(String user) {
     connection.sendInvalidPlacementMessage(getUser(user));
   }
 
   /**
    * Informs all players of a successfully made tile selection.
-   * */
+   */
   private void sendSuccessfulSelection(int tilePlate, Tile color, int amount) {
     String currentPlayer = userList.get(this.currentPlayer).getName();
 
@@ -340,7 +354,7 @@ public class LocalGame {
 
   /**
    * Informs all players of a successfully made tile placement.
-   * */
+   */
   private void sendSuccessfulPlacement(TileCollection tileSelection, int layingRow) {
     String currentPlayer = userList.get(this.currentPlayer).getName();
     int amount = tileSelection.size();
@@ -382,7 +396,7 @@ public class LocalGame {
 
   /**
    * Moves tiles, that are left on a plate after a placement was made, to the middle.
-   * */
+   */
   private void moveTilesToMiddle() {
     if (currentSelectionSource != 0) {
       int amountOfLeftTiles = tilePlates[currentSelectionSource].size();
@@ -394,7 +408,7 @@ public class LocalGame {
 
   /**
    * Determines if at least one player has completed a wall row.
-   * */
+   */
   private boolean hasCompletedWallRow() {
     boolean playerHasFullWallRow = false;
     for (GameBoard gameBoard : gameBoards) {
@@ -417,7 +431,7 @@ public class LocalGame {
 
   /**
    * Returns all laying row indices that can be clicked on a player's board for a selected color.
-   * */
+   */
   private int[] getClickableRows(LocalUser user, Tile color) {
     List<Integer> rowList = new ArrayList<>();
     GameBoard gameBoard = getPlayersGameBoard(user.getName());
@@ -441,7 +455,7 @@ public class LocalGame {
 
   /**
    * Returns the user for a given name.
-   * */
+   */
   private LocalUser getUser(String userAsString) {
     LocalUser userAsUser = null;
     for (LocalUser user : userList) {
@@ -465,5 +479,7 @@ public class LocalGame {
     }
     return gameBoard;
   }
+
+
 }
 

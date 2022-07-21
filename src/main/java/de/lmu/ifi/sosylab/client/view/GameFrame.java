@@ -92,7 +92,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JPanel cardDeck;
 
 
-
   /**
    * Create a new graphical view that contains all necessary elements for playing the game.
    *
@@ -267,13 +266,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     login.add(center);
     cardDeck.add(login, LOGIN_M_CARD);
   }
-  private void firstPlayerWait(){
-    JPanel waitFirstPlayer =new JPanel();
+
+  private void firstPlayerWait() {
+    JPanel waitFirstPlayer = new JPanel();
     JLabel wait = new JLabel("Waiting for other players to join.");
     wait.setFont(standardFont);
     waitFirstPlayer.add(wait);
     waitFirstPlayer.setBackground(Color.CYAN);
-    cardDeck.add(waitFirstPlayer,WAIT_CARD);
+    cardDeck.add(waitFirstPlayer, WAIT_CARD);
   }
 
   private void waitForEnoughPlayers() {
@@ -478,7 +478,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       public void actionPerformed(ActionEvent e) {
 
         if (model.getGameMode().equals("Multiplayer")) {
-          if(model.getPlayers().size()==0){
+          if (model.getPlayers().size() == 0) {
             firstPlayerWait();
             showCard(WAIT_CARD);
           }
@@ -627,8 +627,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private boolean confirmTileSelection(int plateNumber, String tile, int amount, String playerName) {
 
     int selection = JOptionPane.showConfirmDialog(null,
-      playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
-      "Tile Selection", JOptionPane.YES_NO_OPTION);
+        playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
+        "Tile Selection", JOptionPane.YES_NO_OPTION);
 
     if (selection == 0) {
       return true;
@@ -821,12 +821,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
       }
 
-    } else if (newValue instanceof UserLeftEvent) {
-      //TODO: was soll hier genau passieren?
-
     } else if (newValue instanceof LoginFailedEvent) {
       JOptionPane.showMessageDialog(this,
-        String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
+          String.format("Login failed, name \"%s\" is already in use.", nickName.getText()));
       showCard(LOGIN_M_CARD);
 
     } else if (newValue instanceof MiddleTilesUpdateEvent) {
@@ -877,8 +874,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TilePlacementFailedEvent) {
-
-
+      JOptionPane.showMessageDialog(this, "Invalid tile placement!", "Error!", JOptionPane.ERROR_MESSAGE);
+    } else if (newValue instanceof TileSelectionFailedEvent) {
+      JOptionPane.showMessageDialog(this, "Invalid tile selection!", "Error!", JOptionPane.ERROR_MESSAGE);
     } else if (newValue instanceof UserLeftEvent) {
       //TODO: was soll hier genau passieren?
 
@@ -889,6 +887,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof GameCanceledEvent) {
+      controller.cancelGame();
+      JOptionPane.showMessageDialog(this, "Game has been canceled", "Game Canceled", JOptionPane.INFORMATION_MESSAGE);
+      goBackOneCard();
+
+    } else if (newValue instanceof GameCancelRequestEvent) {
+
+      JOptionPane.showMessageDialog(this, "Someone has requested to cancel the game", "Cancel Request", JOptionPane.INFORMATION_MESSAGE);
 
     } else if (newValue instanceof GameEndedEvent) {
       String message = handleGameEndedEvent();
@@ -910,7 +915,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof FloorLineEvent) {
       System.out.println("Floor line event");
-      
+
     }
   }
 
@@ -943,19 +948,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   private void goBackOneCard() {
-      showCard(GAMEMODE_CARD);
+    showCard(GAMEMODE_CARD);
 
   }
 
-  private String handleGameEndedEvent(){
+  private String handleGameEndedEvent() {
     ArrayList<String> winners = controller.getWinners();
     StringBuilder str = new StringBuilder();
     String message;
     String winner;
-    if (winners.size()>1){
+    if (winners.size() > 1) {
       str.append("Draw between: ");
       for (int i = 0; i < winners.size(); i++) {
-        if (i == winners.size()-1){
+        if (i == winners.size() - 1) {
           str.append("and ");
           str.append(winners.get(i));
         } else {
@@ -966,7 +971,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       message = str.toString();
     } else {
       winner = winners.get(0);
-      if (controller.getGameMode().equalsIgnoreCase("hot seat")){
+      if (controller.getGameMode().equalsIgnoreCase("hot seat")) {
         message = String.format("Congratulations! \"%s\" won!", winner);
       } else if (controller.getNickname().equals(winner)) {
         message = "Congratulations! YOU won!";

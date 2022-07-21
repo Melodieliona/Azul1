@@ -80,9 +80,13 @@ public class GameController {
     model.requestGameRestart();
   }
 
-  public void cancelGame() {
+  public void cancelGameRquest() {
     System.out.println("cancel request controller");
     model.requestGameCancel();
+  }
+
+  public void cancelGame() {
+    model.cancelGame();
   }
 
   public String getCurrentPlayer() {

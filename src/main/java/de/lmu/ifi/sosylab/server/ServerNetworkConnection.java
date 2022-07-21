@@ -592,6 +592,18 @@ public class ServerNetworkConnection {
     }
   }
 
+  public void sendGameCancel() {
+    try {
+      for (User user : users) {
+        JSONObject message = JsonMessage.gameCancel();
+        user.getWriter().write(message + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   /**
    * Broadcasts that a user has disconnected from the server to all still connected clients.
    *
@@ -706,4 +718,6 @@ public class ServerNetworkConnection {
   public void stop() {
     // stop connection
   }
+
+
 }

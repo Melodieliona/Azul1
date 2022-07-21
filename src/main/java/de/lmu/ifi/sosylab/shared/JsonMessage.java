@@ -235,7 +235,11 @@ public enum JsonMessage {
   }
 
   /**
-   * TODO Add Javadoc
+   * Creates the message to be sent to all players when the game has ended.
+   *
+   * @param endScores end scores of the players
+   * @param usernames usernames of the players
+   * @param winners winners
    */
   public static JSONObject gameEndedMessage(int[] endScores, ArrayList<String> winners,
                                             ArrayList<String> usernames) {
@@ -247,6 +251,18 @@ public enum JsonMessage {
       message.put(WINNERS, winnersField);
       message.put(SCORES_FIELD, endScoresField);
       message.put(NICK_FIELD, usernamesField);
+      return message;
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to create a json object.", e);
+    }
+  }
+
+  /**
+   * Creates the message to be sent to all players when the game has been canceled.
+   */
+  public static JSONObject gameCancel() {
+    try {
+      JSONObject message = createMessageOfType(GAME_CANCEL);
       return message;
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to create a json object.", e);
@@ -394,6 +410,8 @@ public enum JsonMessage {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
   }
+
+
 
   /**
    * Gets the type of JsonMessage.

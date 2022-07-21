@@ -14,4 +14,8 @@ public class GameCancelRequestEvent extends GameEvents {
   public String getName() {
     return "GameCancelRequest";
   }
+
+  public String getNickname() {
+    return nickname;
+  }
 }

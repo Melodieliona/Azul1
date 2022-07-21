@@ -163,7 +163,8 @@ public class LocalServerConnection {
                 break;
               case GAME_CANCEL_REQUEST:
                 String nick = JsonMessage.getNickname(jsonObject);
-                //game.handleGameCancelRequest(nick);
+                game.handleGameCancelRequest(nick);
+
                 break;
               default:
                 sendInvalidJsonError();
@@ -567,6 +568,16 @@ public class LocalServerConnection {
       socket.close();
     } catch (IOException e) {
       e.printStackTrace();
+    }
+  }
+
+  public void sendGameCancel() {
+    try {
+      JSONObject message = JsonMessage.gameCancelRequest(null);
+      writer.write(message + System.lineSeparator());
+      writer.flush();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
     }
   }
 }

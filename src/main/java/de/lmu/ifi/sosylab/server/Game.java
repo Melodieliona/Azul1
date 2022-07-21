@@ -1,5 +1,6 @@
 package de.lmu.ifi.sosylab.server;
 
+import de.lmu.ifi.sosylab.client.model.localserver.LocalUser;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
@@ -20,6 +21,10 @@ public class Game {
 
   private final int gameNumber;
   private int currentPlayer;
+
+  private int cancelRequests;
+
+  private List<User> usersWantCancel;
 
   private TileCollection bag;
 
@@ -49,7 +54,8 @@ public class Game {
     this.userList = List.copyOf(userList);
     this.gameNumber = gameNumber;
     this.connection = connection;
-
+    cancelRequests = 0;
+    usersWantCancel = new ArrayList<>();
 
     bag = new TileCollection();
     bag.addTiles(Tile.BLUE, 20);
@@ -220,6 +226,17 @@ public class Game {
     } else {
       sendInvalidPlacement(userList.get(currentPlayer).getName());
     }
+  }
+
+  public void handleGameCancelRequest(String nick) {
+
+    if(usersWantCancel.contains(new LocalUser(nick))) cancelRequests++;
+    if (cancelRequests == 4) sendGameCancel();
+
+  }
+
+  private void sendGameCancel() {
+    connection.sendGameCancel();
   }
 
   /**
