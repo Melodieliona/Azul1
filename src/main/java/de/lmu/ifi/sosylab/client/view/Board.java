@@ -33,7 +33,8 @@ public class Board extends JPanel {
    * @param name     - username.
    * @param img      - imports images.
    */
-  public Board(GameController controller, int tileSize, String name, Images img, int boardNumber, double prozent) {
+  public Board(GameController controller, int tileSize, String name, Images img, int boardNumber,
+               double prozent) {
     this.controller = controller;
     this.tileSize = tileSize;
     this.name = name;

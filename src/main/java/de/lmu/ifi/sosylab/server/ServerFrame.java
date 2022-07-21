@@ -1,10 +1,12 @@
 package de.lmu.ifi.sosylab.server;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.Serial;
+import javax.swing.*;
 
-
+/**
+ * TODO Add JavaDoc
+ * */
 public class ServerFrame extends JFrame {
   @Serial
   private static final long serialVersionUID = 1L;
@@ -12,10 +14,13 @@ public class ServerFrame extends JFrame {
   private transient JPanel panel;
   private transient JButton stopServerButton;
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public ServerFrame(ServerNetworkConnection connection) {
     super("~ Azul Server ~");
 
-    panel = new JPanel(new GridLayout(1,1,0,0));
+    panel = new JPanel(new GridLayout(1, 1, 0, 0));
 
     stopServerButton =  new JButton("STOP");
     stopServerButton.setBackground(Color.RED);

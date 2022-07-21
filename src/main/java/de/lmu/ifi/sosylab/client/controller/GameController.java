@@ -113,7 +113,7 @@ public class GameController {
     return model.getValidRows();
   }
 
-  public int[] getValidTiles(){
+  public int[] getValidTiles() {
     return model.getValidPlates();
   }
 

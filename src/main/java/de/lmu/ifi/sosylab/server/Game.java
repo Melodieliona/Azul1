@@ -233,16 +233,15 @@ public class Game {
    * Sends the corresponding message if all players
    * */
   public void handleGameCancelRequest(String nick) {
-
-    if(usersWantCancel.contains(nick)) {
-
-    } else {
+    if (!usersWantCancel.contains(nick)) {
       usersWantCancel.add(nick);
       cancelRequests++;
       connection.sendGameCancelRequest(userList, nick);
     }
-    if (cancelRequests == userList.size()-1) sendGameCancel();
 
+    if (cancelRequests == userList.size() - 1) {
+      sendGameCancel();
+    }
   }
 
   private void sendGameCancel() {
