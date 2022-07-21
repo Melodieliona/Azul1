@@ -751,9 +751,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   @Override
   public void dispose() {
-    super.dispose();
     model.removePropertyChangeListener(this);
-    //controller.dispose();
+    controller.dispose();
+    model.dispose();
+    super.dispose();
   }
 
   @Override
