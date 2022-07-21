@@ -240,9 +240,9 @@ public enum JsonMessage {
   public static JSONObject gameEndedMessage(int[] endScores, ArrayList<String> winners,
                                             ArrayList<String> usernames) {
     try {
-      String winnersField = winners.toString();
-      String endScoresField = Arrays.toString(endScores);
-      String usernamesField = usernames.toString();
+      String winnersField = winners.toString().replaceAll("\\[|]| ", "");
+      String endScoresField = Arrays.toString(endScores).replaceAll("\\[|]| ", "");
+      String usernamesField = usernames.toString().replaceAll("\\[|]| ", "");
       JSONObject message = createMessageOfType(GAME_ENDED);
       message.put(WINNERS, winnersField);
       message.put(SCORES_FIELD, endScoresField);

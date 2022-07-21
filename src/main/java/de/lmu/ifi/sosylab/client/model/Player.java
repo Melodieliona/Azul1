@@ -4,6 +4,8 @@ import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 
+import java.util.Objects;
+
 /**
  * TODO Javadoc
  */
@@ -49,5 +51,22 @@ public class Player {
 
   public void setScore(int score) {
     this.score = score;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(playerName, board, score);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (other == null || getClass() != other.getClass()) {
+      return false;
+    }
+    Player player = (Player) other;
+    return playerName.equals(player.playerName);
   }
 }
