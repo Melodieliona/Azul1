@@ -15,7 +15,7 @@ public class GameServer {
     Runtime.getRuntime().addShutdownHook(new Thread(connection::stop));
 
     //Start the server view
-    ServerFrame serverFrame = new ServerFrame(connection);
+    final ServerFrame serverFrame = new ServerFrame(connection);
     serverFrame.setVisible(true);
   }
 }
