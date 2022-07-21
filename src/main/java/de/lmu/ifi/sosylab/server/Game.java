@@ -228,11 +228,17 @@ public class Game {
     }
   }
 
+  /**
+   * Remembers the amout of players that want the game to be cancelled.
+   * Sends the corresponding message if all players
+   * */
   public void handleGameCancelRequest(String nick) {
-
-    if(usersWantCancel.contains(new LocalUser(nick))) cancelRequests++;
-    if (cancelRequests == 4) sendGameCancel();
-
+    if (usersWantCancel.contains(new LocalUser(nick))) {
+      cancelRequests++;
+    }
+    if (cancelRequests == userList.size()) {
+      sendGameCancel();
+    }
   }
 
   private void sendGameCancel() {
