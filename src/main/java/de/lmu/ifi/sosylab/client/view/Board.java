@@ -24,6 +24,7 @@ public class Board extends JPanel {
   private transient BufferedImage board;
   private int boardNumber;
   private transient Graphics2D g2D;
+  private transient double prozent;
 
   /**
    * Creates Board with name, Points and Tiles.
@@ -32,13 +33,14 @@ public class Board extends JPanel {
    * @param name     - username.
    * @param img      - imports images.
    */
-  public Board(GameController controller, int tileSize, String name, Images img, int boardNumber) {
+  public Board(GameController controller, int tileSize, String name, Images img, int boardNumber, double prozent) {
     this.controller = controller;
     this.tileSize = tileSize;
     this.name = name;
     board = img.getBoard();
     this.img = img;
     this.boardNumber = boardNumber;
+    this.prozent = prozent;
     setPanelSize();
   }
 
@@ -68,9 +70,9 @@ public class Board extends JPanel {
 
   private void createBoard() {
     g2D.drawImage(board, 0, 0, tileSize * 13, tileSize * 10, null);
-    g2D.setFont(new Font("Arial", Font.PLAIN, 15));
+    g2D.setFont(new Font("Arial", Font.PLAIN, (int) (15 * prozent)));
     g2D.setColor(Color.white);
-    g2D.drawString(name, 83, 35);
+    g2D.drawString(name, (int) (83 * prozent), (int) (prozent * 35));
     int score;
     try {
       score = controller.getPlayer(boardNumber).getScore();
@@ -78,7 +80,7 @@ public class Board extends JPanel {
       score = 0;
     }
 
-    g2D.drawString(String.valueOf(score), 250, 35);
+    g2D.drawString(String.valueOf(score), (int) (prozent * 250), (int) (prozent * 35));
   }
 
   /**
@@ -125,6 +127,7 @@ public class Board extends JPanel {
     try {
       Player player = controller.getPlayer(boardNumber);
       Tile[][] collection = player.getBoard().getTileWall();
+
       for (int i = 0; i < 5; i++) {
         for (int b = 0; b < 5; b++) {
           if (collection[i][b] != null) {

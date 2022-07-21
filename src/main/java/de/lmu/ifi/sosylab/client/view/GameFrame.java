@@ -14,10 +14,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -49,7 +46,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private static final String WAIT_CARD = "wait";
   private static final String[] songList = {"CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
   private static TileCollection[] collection;
-  private final int tileSize = 25;
+  private int tileSize = 25;
   JLabel loginLabel;
   int counterSecond;
   String formatedCounterSecond;
@@ -74,7 +71,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private transient List<User> playerList;
   private transient Game gamesettings = null;
   private int amountOfSelectedTiles;
-  private int[] score;
   private String tile_color;
   private transient Images images;
   private JPanel gameField;
@@ -87,6 +83,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private int numberOfPayersHS;
   private Timer timer;
   private JPanel middle;
+  private boolean sizeset = false;
+  private double prozent = 1;
 
   private JLabel playersInLobby;
   private JPanel cardDeck;
@@ -523,13 +521,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       case 1 -> {
         gameField.add(createBoard(0), BorderLayout.NORTH);
         gameField.add(createBoard(1), BorderLayout.SOUTH);
-        this.setSize(350, 900);
+        if (!sizeset) {
+          this.setSize((int) (350 * prozent), (int) (prozent * 900));
+        }
       }
       case 2 -> {
         gameField.add(createBoard(0), BorderLayout.NORTH);
         gameField.add(createBoard(1), BorderLayout.WEST);
         gameField.add(createBoard(2), BorderLayout.SOUTH);
-        this.setSize(700, 920);
+        this.setSize((int) (700 * prozent), (int) (920 * prozent));
       }
       case 3 -> {
         gameField.add(createBoard(0), BorderLayout.NORTH);
@@ -553,13 +553,105 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private Component createMiddle() {
     middle = new JPanel(new FlowLayout());
     middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    middle.setPreferredSize(new Dimension(325, 300));
+    middle.setPreferredSize(new Dimension((int) (325 * prozent), (int) (300 * prozent)));
 
+    middle.add(createSettingButton());
     createPlates();
     middle.add(createPile());
     return middle;
   }
 
+  private Component createSettingButton(){
+    BufferedImage setting = images.getSettings();
+    JLabel settings =new JLabel(new ImageIcon(setting));
+
+    settings.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        settingWindow();
+
+      }
+    });
+    return settings;
+  }
+
+  private Component settingWindow(){
+    JFrame settingWindow = new JFrame();
+    settingWindow.setVisible(true);
+    settingWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    settingWindow.setSize(new Dimension(400,300));
+
+    JPanel radioPanel = new JPanel();
+
+    JLabel winSize = new JLabel("Set Game Size: ");
+    radioPanel.add(winSize);
+    JRadioButton small = new JRadioButton("small");
+    small.setBounds(0,0,100,25);
+    small.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        prozent = 0.8;
+
+        images.setProzent(prozent);
+        tileSize = (int) (prozent * 25);
+        images.resize();
+
+        showGame();
+        gameField.removeAll();
+        createGameView();
+        repaint();
+      }
+    });
+    radioPanel.add(small);
+
+    JRadioButton medium = new JRadioButton("medium");
+    medium.setBounds(50,0,100,25);
+    medium.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        prozent = 1;
+
+        images.setProzent(prozent);
+        tileSize = (int) (prozent * 25);
+        images.resize();
+
+        showGame();
+        gameField.removeAll();
+        createGameView();
+        repaint();
+
+      }
+    });
+    radioPanel.add(medium);
+
+    JRadioButton big = new JRadioButton("big");
+    big.setBounds(100,0,100,25);
+    big.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        prozent = 1.2;
+
+        images.setProzent(prozent);
+        tileSize = (int) (prozent * 25);
+        images.resize();
+
+        showGame();
+        gameField.removeAll();
+        createGameView();
+        repaint();
+      }
+    });
+    radioPanel.add(big);
+
+    ButtonGroup windowSize = new ButtonGroup();
+    windowSize.add(small);
+    windowSize.add(medium);
+    windowSize.add(big);
+
+    settingWindow.add(radioPanel);
+
+    return settingWindow;
+  }
   /**
    * Creates the Plates in the middle with the tiles and adds a MouseListener.
    * The MouseListener gets the name of the clicked Component like tile_color and plate.
@@ -573,8 +665,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       for (int plateNumber = 1; plateNumber < collection.length; plateNumber++) {
         BufferedImage img = images.getPlate();
 
-        JLabel plate = new JLabel(new ImageIcon(img));
+        JLabel plate = new JLabel();
+        plate.removeAll();
+        plate.setIcon(new ImageIcon(img));
         plate.setName(String.valueOf(plateNumber));
+        plate.repaint();
 
         int x = 1;
         int y = 1;
@@ -587,7 +682,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             x = 1;
             y = 3;
           }
-          tile.setBounds(12 * x, 12 * y, 25, 25);
+          tile.setBounds((int) (12 * (x * prozent)), (int) (12 * (y * prozent)), tileSize, tileSize);
           x += 2;
           plate.add(tile);
         }
@@ -694,7 +789,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -board with name, points and placed tiles.
    */
   private Component createBoard(int boardNumber) {
-    Board b = new Board(controller, tileSize, playerNames.get(boardNumber), images, boardNumber);
+    Board b = new Board(controller, tileSize, playerNames.get(boardNumber), images, boardNumber, prozent);
 
     JPanel board = new JPanel();
     board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
@@ -706,7 +801,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       west.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
       board.add(west, BorderLayout.WEST);
     }
-
     board.add(b);
     b.addMouseListener(new MouseAdapter() {
       /**
@@ -950,7 +1044,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private void goBackOneCard() {
     showCard(GAMEMODE_CARD);
 
-  }
+}
 
   private String handleGameEndedEvent() {
     ArrayList<String> winners = controller.getWinners();

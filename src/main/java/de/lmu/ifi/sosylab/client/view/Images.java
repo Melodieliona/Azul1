@@ -2,6 +2,8 @@ package de.lmu.ifi.sosylab.client.view;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Imports the images and resizes them if needed.
@@ -19,6 +21,11 @@ public class Images {
   private BufferedImage tileStarter;
   private BufferedImage backgroundHomeScreen;
   private BufferedImage backgroundSetGameMode;
+  private BufferedImage resizedplate;
+  private BufferedImage settings;
+
+  private double prozent = 1;
+  private List<BufferedImage> pictures = new ArrayList<>();
 
   /**
    * Imports images and resizes them if needed.
@@ -32,33 +39,46 @@ public class Images {
    */
   private void importImages() {
     board = new ImportImage("images/Board.png").getImg();
+    pictures.add(board);
     tileRed = new ImportImage("images/TileRed.png").getImg();
+    pictures.add(tileRed);
     tileBlue = new ImportImage("images/TileBlue.png").getImg();
+    pictures.add(tileBlue);
     tileBlack = new ImportImage("images/TileBlack.png").getImg();
+    pictures.add(tileBlack);
     tileYellow = new ImportImage("images/TileYellow.png").getImg();
+    pictures.add(tileYellow);
     tileWhite = new ImportImage("images/TileWhite.png").getImg();
+    pictures.add(tileWhite);
     tileStarter = new ImportImage("images/TileStarter.png").getImg();
+    pictures.add(tileStarter);
     plate = new ImportImage("images/Plate.png").getImg();
+    pictures.add(plate);
     icon = new ImportImage("images/Icon.png").getImg();
     background = new ImportImage("images/Background.png").getImg();
     backgroundHomeScreen = new ImportImage("images/AzulHomeScreen.png").getImg();
     backgroundSetGameMode = new ImportImage("images/BackgroundSetGameMode.png").getImg();
+    settings = new ImportImage("images/Settings.png").getImg();
+    pictures.add(settings);
     resize();
   }
 
   /**
    * resizes chosen images.
    */
-  private void resize() {
-    plate = resizeImage(plate, 70, 70);
-    board = resizeImage(board, board.getWidth() / 2, board.getHeight() / 2);
-    tileRed = resizeImage(tileRed, 25, 25);
-    tileBlue = resizeImage(tileBlue, 25, 25);
-    tileBlack = resizeImage(tileBlack, 25, 25);
-    tileYellow = resizeImage(tileYellow, 25, 25);
-    tileWhite = resizeImage(tileWhite, 25, 25);
-    tileStarter = resizeImage(tileStarter, 25, 25);
-    backgroundSetGameMode = resizeImage(backgroundSetGameMode, 300, 400);
+  public void resize() {
+
+    plate = resizeImage(pictures.get(7), (int) (70 * prozent), (int) (70 * prozent));
+    board = resizeImage(pictures.get(0), (int) (324 * prozent), (int) (250 * prozent));
+    tileRed = resizeImage(pictures.get(1), (int) (25 * prozent), (int) (25 * prozent));
+    tileBlue = resizeImage(pictures.get(2), (int) (25 * prozent), (int) (25 * prozent));
+    tileBlack = resizeImage(pictures.get(3), (int) (25 * prozent), (int) (25 * prozent));
+    tileYellow = resizeImage(pictures.get(4), (int) (25 * prozent), (int) (25 * prozent));
+    tileWhite = resizeImage(pictures.get(5), (int) (25 * prozent), (int) (25 * prozent));
+    tileStarter = resizeImage(pictures.get(6), (int) (25 * prozent), (int) (25 * prozent));
+    backgroundSetGameMode = resizeImage(backgroundSetGameMode, (int) (300 * prozent), (int) (400 * prozent));
+    settings = resizeImage(pictures.get(8), (int) (50 * prozent), (int) (50 * prozent));
+    resizedplate = plate;
   }
 
   /**
@@ -80,6 +100,11 @@ public class Images {
     return resizedImage;
   }
 
+  public void setProzent(double prozent) {
+    this.prozent = prozent;
+  }
+
+
   /**
    * Getter for board.
    *
@@ -87,6 +112,10 @@ public class Images {
    */
   public BufferedImage getBoard() {
     return board;
+  }
+
+  public BufferedImage getSettings() {
+    return settings;
   }
 
   /**
@@ -140,7 +169,7 @@ public class Images {
    * @return - plate.
    */
   public BufferedImage getPlate() {
-    return plate;
+    return resizedplate;
   }
 
   /**
