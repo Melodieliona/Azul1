@@ -52,7 +52,6 @@ public class ServerNetworkConnection {
     } catch (IOException e) {
       System.out.println("Cannot create socket with port " + port + ".\n"
           + "Likely the port is already in use.");
-
       return;
     }
 
@@ -377,8 +376,6 @@ public class ServerNetworkConnection {
     }
   }
 
-  // TODO Integrate Floorline update into board update
-
   /**
    * Sends a message with all tiles that have been added to the floor line
    * to all other players of that game.
@@ -465,7 +462,7 @@ public class ServerNetworkConnection {
           user.getWriter().write(sendBoardUpdate + System.lineSeparator());
           user.getWriter().flush();
         } catch (IOException | JSONException e) {
-          System.out.println(e.getMessage());
+          e.printStackTrace();
         }
       }
     }
@@ -729,8 +726,6 @@ public class ServerNetworkConnection {
 
       // Check if game hasn't already been started (because a 4th user joined) and if there are
       // enough users for a game (at least 2)
-      System.out.println("Timer elapsed! Game will start now with "
-          + usersInGame.size() + " players.");
       if ((games.size() + 1 == nextGameNumber) && (usersInGame.size() > 1)) {
         sendTimerEnded();
         startGame();
@@ -747,6 +742,5 @@ public class ServerNetworkConnection {
   public void stop() {
     // stop connection
   }
-
 
 }

@@ -97,7 +97,6 @@ public class GameClientNetworkConnection {
         break;
       }
     }
-    System.out.println("Input loop ended.");
   }
 
   //TODO: Get rid of sout's
@@ -110,9 +109,7 @@ public class GameClientNetworkConnection {
   public void handleGameEvent(JSONObject object) {
     System.out.println(JsonMessage.typeOf(object));
     switch (JsonMessage.typeOf(object)) {
-      case LOGIN_SUCCESS -> {
-        handleLogin(object);
-      }
+      case LOGIN_SUCCESS -> handleLogin(object);
       case LOGIN_FAILED -> model.loginFailed();
       case USER_JOINED -> handleUserJoined(object);
       case USER_LEFT -> handleUserLeft(object);
@@ -163,13 +160,10 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleTileSelection(JSONObject object) {
-    System.out.println("tile selection received");
     String color = JsonMessage.getTileColor(object);
     int plate = Integer.parseInt(JsonMessage.getFactoryPlate(object));
     if (model.getNickname().equals(model.getCurrentPlayer())) {
-      System.out.println("approved");
       model.selectTiles(plate, color);
-      System.out.println("selected");
     } else {
       model.otherPlayerSelectedTiles(color, plate);
     }
@@ -217,9 +211,7 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   private void handleNextTurn(JSONObject object) {
-    System.out.println("handling next turn");
     String nick = JsonMessage.getNickname(object);
-    System.out.println("got nickname");
     model.nextPlayer(nick);
   }
 

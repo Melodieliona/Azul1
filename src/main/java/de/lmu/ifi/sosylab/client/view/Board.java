@@ -111,12 +111,11 @@ public class Board extends JPanel {
             case "WHITE" -> g2D.drawImage(img.getTileWhite(), x, y, null);
             default -> throw new IllegalArgumentException("Invalid color.");
           }
-
         }
       }
 
     } catch (NullPointerException e) {
-      System.out.println("LayingRows ist noch leer! (Board)");
+      e.printStackTrace();
     }
   }
 
@@ -151,7 +150,7 @@ public class Board extends JPanel {
         }
       }
     } catch (NullPointerException e) {
-      System.out.println("Tile[][] ist noch leer! (Board)");
+      e.printStackTrace();
     }
   }
 
@@ -186,7 +185,7 @@ public class Board extends JPanel {
 
       }
     } catch (NullPointerException e) {
-      System.out.println("MinusPoints ist noch leer! (Board)");
+      e.printStackTrace();
     }
   }
 
@@ -214,8 +213,8 @@ public class Board extends JPanel {
             case 1 -> g2D.drawRect(4 * tileSize, 3 * tileSize, tileSize * 2, tileSize);
             case 2 -> g2D.drawRect(3 * tileSize, 4 * tileSize, tileSize * 3, tileSize);
             case 3 -> g2D.drawRect(2 * tileSize, 5 * tileSize, tileSize * 4, tileSize);
-            case 4 -> g2D.drawRect(1 * tileSize, 6 * tileSize, tileSize * 5, tileSize);
-            case 5 -> g2D.drawRect(1 * tileSize, 8 * tileSize, tileSize * 7, tileSize);
+            case 4 -> g2D.drawRect(tileSize, 6 * tileSize, tileSize * 5, tileSize);
+            case 5 -> g2D.drawRect(tileSize, 8 * tileSize, tileSize * 7, tileSize);
             default -> throw new IllegalArgumentException("Invalid Row.");
           }
         }

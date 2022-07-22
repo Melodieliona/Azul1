@@ -102,7 +102,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @param model      The {@link GameModel} that handles the logic of the game.
    * @param controller The {@link GameController} that validates and forwards any user input.
    */
-  public GameFrame(GameController controller, GameModel model) throws IOException {
+  public GameFrame(GameController controller, GameModel model) {
     super("~ Azul ~");
 
     this.controller = requireNonNull(controller);
@@ -300,19 +300,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterMinute = 1;
     counterSecond = 60;
 
-    timer = new Timer(1000, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
+    timer = new Timer(1000, e -> {
 
-        counterMinute = 0;
-        counterSecond--;
-        formatedCounterSecond = dFormat.format(counterSecond);
-        formatedCounterMinute = dFormat.format(counterMinute);
-        counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
+      counterMinute = 0;
+      counterSecond--;
+      formatedCounterSecond = dFormat.format(counterSecond);
+      formatedCounterMinute = dFormat.format(counterMinute);
+      counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
 
-        counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
-
-      }
+      counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
 
     });
 
@@ -337,19 +333,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterSecond = 60;
 
     timer.stop();
-    timer = new Timer(1000, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
+    timer = new Timer(1000, e -> {
 
-        counterMinute = 0;
-        counterSecond--;
-        formatedCounterSecond = dFormat.format(counterSecond);
-        formatedCounterMinute = dFormat.format(counterMinute);
-        counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
+      counterMinute = 0;
+      counterSecond--;
+      formatedCounterSecond = dFormat.format(counterSecond);
+      formatedCounterMinute = dFormat.format(counterMinute);
+      counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
 
-        counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
-
-      }
+      counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
 
     });
 
@@ -414,43 +406,32 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
 
     switch (numberOfPlayers) {
-      case 2:
+      case 2 -> {
         center.add(playerOne);
         center.add(firstNicknameHS);
-
         center.add(playerTwo);
         center.add(secondNicknameHS);
-
-        break;
-
-      case 3:
+      }
+      case 3 -> {
         center.add(playerOne);
         center.add(firstNicknameHS);
-
         center.add(playerTwo);
         center.add(secondNicknameHS);
-
         center.add(playerThree);
         center.add(thirdNicknameHS);
-
-        break;
-
-      case 4:
+      }
+      case 4 -> {
         center.add(playerOne);
         center.add(firstNicknameHS);
-
         center.add(playerTwo);
         center.add(secondNicknameHS);
-
         center.add(playerThree);
         center.add(thirdNicknameHS);
-
         center.add(playerFour);
         center.add(fourthNicknameHS);
-
-        break;
-      default:
-        break;
+      }
+      default -> {
+      }
     }
 
     loginNames.add(center, BorderLayout.CENTER);
@@ -462,7 +443,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   /**
    * Set up the view in a way that is finally shown to the user.
    */
-  private void createView() throws IOException {
+  private void createView() {
     setContentPane(cardDeck);
     createSetGameModeView();
     createMultiplayerLoginView();
@@ -474,107 +455,77 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Add event listeners to all widgets wherever needed and let them execute the respective action.
    */
   private void addEventListeners() {
-    multiPlayer.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        showCard(LOGIN_M_CARD);
-        try {
-          controller.setGameMode("Multiplayer");
-        } catch (IOException ex) {
-          throw new RuntimeException(ex);
+    multiPlayer.addActionListener(e -> {
+      showCard(LOGIN_M_CARD);
+      try {
+        controller.setGameMode("Multiplayer");
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    });
+
+
+    hotSeat.addActionListener(e -> {
+      showCard(LOGIN_H_CARD);
+      try {
+        controller.setGameMode("Hot Seat");
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    });
+
+    songs.addActionListener(e -> {
+      String selectedSong = songs.getSelectedItem().toString();
+      switch (selectedSong) {
+        case "CHILL BEAT" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
+        case "MELODIC RHYTHM" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
+        case "RETRO CITY" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
+        default -> {
         }
       }
+      songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
+    });
+
+    playerNumberSelection.addActionListener(e -> {
+      numberOfPayersHS = (int) playerNumberSelection.getSelectedItem();
+      setPlayerNicknamesHS(numberOfPayersHS);
     });
 
 
-    hotSeat.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        showCard(LOGIN_H_CARD);
-        try {
-          controller.setGameMode("Hot Seat");
-        } catch (IOException ex) {
-          throw new RuntimeException(ex);
+    play.addActionListener(e -> {
+
+      if (model.getGameMode().equals("Multiplayer")) {
+        if (model.getPlayers().size() == 0) {
+          firstPlayerWait();
+          showCard(WAIT_CARD);
         }
-      }
-    });
+        controller.logInMultiplayer(nickName.getText());
+      } else if (model.getGameMode().equals("Hot seat")) {
 
-    songs.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        String selectedSong = songs.getSelectedItem().toString();
-        switch (selectedSong) {
-          case "CHILL BEAT" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
-          case "MELODIC RHYTHM" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
-          case "RETRO CITY" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
-          default -> {
-          }
+        if (numberOfPayersHS == 2) {
+          playerNames.add(firstNicknameHS.getText());
+          playerNames.add(secondNicknameHS.getText());
+
+        } else if (numberOfPayersHS == 3) {
+          playerNames.add(firstNicknameHS.getText());
+          playerNames.add(secondNicknameHS.getText());
+          playerNames.add(thirdNicknameHS.getText());
+
+        } else if (numberOfPayersHS == 4) {
+          playerNames.add(firstNicknameHS.getText());
+          playerNames.add(secondNicknameHS.getText());
+          playerNames.add(thirdNicknameHS.getText());
+          playerNames.add(fourthNicknameHS.getText());
         }
-        songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
+        controller.logInHotSeat(playerNames);
       }
     });
 
-    playerNumberSelection.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        numberOfPayersHS = (int) playerNumberSelection.getSelectedItem();
-        setPlayerNicknamesHS(numberOfPayersHS);
-      }
-    });
+    back.addActionListener(e -> goBackToFirstCard());
 
+    cancel.addActionListener(e -> controller.cancelGameRequest());
 
-    play.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        if (model.getGameMode().equals("Multiplayer")) {
-          if (model.getPlayers().size() == 0) {
-            firstPlayerWait();
-            showCard(WAIT_CARD);
-          }
-          controller.logInMultiplayer(nickName.getText());
-        } else if (model.getGameMode().equals("Hot seat")) {
-
-          if (numberOfPayersHS == 2) {
-            playerNames.add(firstNicknameHS.getText());
-            playerNames.add(secondNicknameHS.getText());
-
-          } else if (numberOfPayersHS == 3) {
-            playerNames.add(firstNicknameHS.getText());
-            playerNames.add(secondNicknameHS.getText());
-            playerNames.add(thirdNicknameHS.getText());
-
-          } else if (numberOfPayersHS == 4) {
-            playerNames.add(firstNicknameHS.getText());
-            playerNames.add(secondNicknameHS.getText());
-            playerNames.add(thirdNicknameHS.getText());
-            playerNames.add(fourthNicknameHS.getText());
-          }
-          controller.logInHotSeat(playerNames);
-        }
-      }
-    });
-
-    back.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        goBackToFirstCard();
-      }
-    });
-
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        controller.cancelGameRequest();
-      }
-    });
-
-    restart.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        controller.restartGameRequest();
-      }
-    });
+    restart.addActionListener(e -> controller.restartGameRequest());
   }
 
   /**
@@ -667,59 +618,50 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     radioPanel.add(winSize);
     JRadioButton small = new JRadioButton("small");
     small.setBounds(0, 0, 100, 25);
-    small.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        prozent = 0.8;
+    small.addItemListener(e -> {
+      prozent = 0.8;
 
-        images.setProzent(prozent);
-        tileSize = (int) (prozent * 25);
-        images.resize();
+      images.setProzent(prozent);
+      tileSize = (int) (prozent * 25);
+      images.resize();
 
-        showGame();
-        gameField.removeAll();
-        createGameView();
-        repaint();
-      }
+      showGame();
+      gameField.removeAll();
+      createGameView();
+      repaint();
     });
     radioPanel.add(small);
 
     JRadioButton medium = new JRadioButton("medium");
     medium.setBounds(50, 0, 100, 25);
-    medium.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        prozent = 1;
+    medium.addItemListener(e -> {
+      prozent = 1;
 
-        images.setProzent(prozent);
-        tileSize = (int) (prozent * 25);
-        images.resize();
+      images.setProzent(prozent);
+      tileSize = (int) (prozent * 25);
+      images.resize();
 
-        showGame();
-        gameField.removeAll();
-        createGameView();
-        repaint();
+      showGame();
+      gameField.removeAll();
+      createGameView();
+      repaint();
 
-      }
     });
     radioPanel.add(medium);
 
     JRadioButton big = new JRadioButton("big");
     big.setBounds(100, 0, 100, 25);
-    big.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        prozent = 1.2;
+    big.addItemListener(e -> {
+      prozent = 1.2;
 
-        images.setProzent(prozent);
-        tileSize = (int) (prozent * 25);
-        images.resize();
+      images.setProzent(prozent);
+      tileSize = (int) (prozent * 25);
+      images.resize();
 
-        showGame();
-        gameField.removeAll();
-        createGameView();
-        repaint();
-      }
+      showGame();
+      gameField.removeAll();
+      createGameView();
+      repaint();
     });
     radioPanel.add(big);
 
@@ -794,7 +736,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         middle.add(plate);
       }
     } catch (NullPointerException e) {
-      System.out.println("collection ist noch leer! (createPlates)");
+      //do nothing
     }
 
   }
@@ -805,11 +747,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
         "Tile Selection", JOptionPane.YES_NO_OPTION);
 
-    if (selection == 0) {
-      return true;
-    }
-    return false;
-
+    return selection == 0;
 
   }
 
@@ -846,7 +784,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           Point checkMouseTip = e.getPoint();
           tile_color = pile.getComponentAt(checkMouseTip).getName();
           if (tile_color != null) {
-            System.out.println("Tile " + tile_color + " was clicked on Plate 0");
             amountOfSelectedTiles = collection[0].getAmountTilesOfColor(Tile.getTile(tile_color));
             boolean confirmation = confirmTileSelection(0, tile_color, amountOfSelectedTiles, currentPlayer);
             if (confirmation) {
@@ -856,7 +793,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         }
       });
     } catch (NullPointerException e) {
-      System.out.println("Collection ist noch leer! (createPile)");
+      //do nothing
     }
     return pile;
   }
@@ -933,12 +870,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   @Override
   public void propertyChange(PropertyChangeEvent event) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        handleModelUpdate(event);
-      }
-    });
+    SwingUtilities.invokeLater(() -> handleModelUpdate(event));
   }
 
   /**
@@ -1054,11 +986,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof TilePlacementFailedEvent) {
 
-      JOptionPane.showMessageDialog(this, "Tile placement not allowed!", "Error!", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, "You can't place your tiles here!", "Error!", JOptionPane.ERROR_MESSAGE);
 
     } else if (newValue instanceof TileSelectionFailedEvent) {
 
-      JOptionPane.showMessageDialog(this, "Tile selection not allowed!", "Error!", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, "You can't select these tiles!", "Error!", JOptionPane.ERROR_MESSAGE);
 
     } else if (newValue instanceof BoardUpdatedEvent) {
       gameField.removeAll();
@@ -1096,16 +1028,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TimerEvent) {
-      System.out.println("Frame TimerEvent");
+
       if (timerEventCounter > 0) {
         timerEventCounter++;
-        System.out.println("Timers active (else if): " + timerEventCounter);
-
         timerRestart();
         showCard(TIMERUPDATE_CARD);
       } else if (timerEventCounter == 0) {
         timerEventCounter++;
-        System.out.println("Timers active: " + timerEventCounter);
         timerStart();
         showCard(TIMER_CARD);
       }

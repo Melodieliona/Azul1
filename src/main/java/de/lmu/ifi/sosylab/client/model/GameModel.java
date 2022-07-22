@@ -6,12 +6,10 @@ import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * The client-sided model for a game of Azul. Contains necessary data for the view.
@@ -127,7 +125,6 @@ public class GameModel {
    * @param source source of selected tiles (factory plates)
    */
   public void selectTilesRequest(int source, String color) {
-    System.out.println("tile request model");
     int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     connection.sendTileSelection(source, color, numberOfTiles);
   }
@@ -149,7 +146,6 @@ public class GameModel {
    * @param source source of selected tiles (factory plates)
    */
   public void selectTiles(int source, String color) {
-    System.out.println("tiles selected model");
     selectedTiles.clear();
     int numberOfTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     selectedTiles.addTiles(Tile.getTile(color), numberOfTiles);
@@ -505,7 +501,6 @@ public class GameModel {
   }
 
   public TileCollection[] getTilePlates() {
-    TileCollection[] copyofTilePlates = tilePlates.clone();
     return tilePlates;
   }
 

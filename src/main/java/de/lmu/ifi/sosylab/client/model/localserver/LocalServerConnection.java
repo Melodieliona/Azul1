@@ -64,7 +64,7 @@ public class LocalServerConnection {
         // Start a new thread for the hotseat client
         startHandler(clientSocket);
       } catch (IOException e) {
-        System.out.println(e.getMessage());
+        e.printStackTrace();
       }
     });
     waitForClientConnection.start();
@@ -125,7 +125,6 @@ public class LocalServerConnection {
                       sendUserJoined(clientNick);
 
                     } else {
-
                       sendLoginFailed();
                   }
 
@@ -134,7 +133,7 @@ public class LocalServerConnection {
                     startGame();
                   }
                 } catch (JSONException e) {
-                  System.out.println(e.getMessage());
+                  e.printStackTrace();
                 }
                 break;
               case TILE_SELECTION:
@@ -188,14 +187,13 @@ public class LocalServerConnection {
    * */
   private void sendInvalidJsonError() {
     try {
-      System.out.println("Invalid Json"); // for debugging
       JSONObject sendLoginSuccessJson = new JSONObject();
       sendLoginSuccessJson.put("type", "invalid json");
 
       writer.write(sendLoginSuccessJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -227,7 +225,7 @@ public class LocalServerConnection {
       writer.write(sendLoginSuccessJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -242,7 +240,7 @@ public class LocalServerConnection {
       writer.write(sendLoginFailedJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -258,7 +256,7 @@ public class LocalServerConnection {
       writer.write(sendUserJoined + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -273,7 +271,7 @@ public class LocalServerConnection {
       writer.write(sendNextPlayerJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -288,7 +286,7 @@ public class LocalServerConnection {
       writer.write(sendNextPlayerJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
 
   }
@@ -310,7 +308,7 @@ public class LocalServerConnection {
       writer.flush();
 
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -330,7 +328,7 @@ public class LocalServerConnection {
       writer.flush();
 
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -361,7 +359,7 @@ public class LocalServerConnection {
       writer.write(sendNewFloorLineTiles + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -417,7 +415,7 @@ public class LocalServerConnection {
         writer.write(sendBoardUpdate + System.lineSeparator());
         writer.flush();
       } catch (IOException | JSONException e) {
-        System.out.println(e.getMessage());
+        e.printStackTrace();
       }
     }
   }
@@ -464,7 +462,7 @@ public class LocalServerConnection {
       writer.write(sendFillPlates + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -491,7 +489,7 @@ public class LocalServerConnection {
       writer.flush();
 
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -507,7 +505,7 @@ public class LocalServerConnection {
       writer.write(sendNextPlayerJson + System.lineSeparator());
       writer.flush();
     } catch (IOException | JSONException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -522,7 +520,7 @@ public class LocalServerConnection {
       writer.flush();
 
     } catch (IOException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -561,7 +559,7 @@ public class LocalServerConnection {
       writer.flush();
 
     } catch (IOException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
