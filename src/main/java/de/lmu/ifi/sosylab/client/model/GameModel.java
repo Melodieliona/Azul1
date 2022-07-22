@@ -347,11 +347,6 @@ public class GameModel {
           players.add(new Player(nickname));
         }
       }
-    } else {
-      for (String nickname:
-           nicknames) {
-        players.add(new Player(nickname));
-      }
     }
     notifyListeners(new LoggedInEvent());
     isLoggedin = true;
@@ -368,11 +363,8 @@ public class GameModel {
    * Notifies the subscribed view that a new player joined the game.
    */
   public void userJoined(String name) {
-    if (gameMode.equals("Multiplayer")) {
+
       players.add(new Player(name));
-    } else {
-      //do nothing
-    }
 
     notifyListeners(new UserJoinedEvent(name));
   }
