@@ -794,9 +794,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       }
       pile.addMouseListener(new MouseAdapter() {
         /**
-         * TODO Add JavaDoc
+         * Overrides the reaction of a mouseclick
          *
-         * @param e
+         * @param e information of the clicked point
          */
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -843,7 +843,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     board.add(b);
     b.addMouseListener(new MouseAdapter() {
       /**
-       * TODO Add JavaDoc
+       * Overrides the reaction of a mouseclick
        *
        * @param e
        */
@@ -1130,3 +1130,4 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     return message;
   }
 }
+

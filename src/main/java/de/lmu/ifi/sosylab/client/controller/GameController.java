@@ -17,14 +17,14 @@ public class GameController {
   GameModel model;
 
   /**
-   * Todo JavaDoc
+   * Links the model to this controller.
    */
   public GameController(GameModel model) {
     this.model = model;
   }
 
   /**
-   * Todo JavaDoc
+   * Passed a multiplayer login request on to the model.
    */
   public void logInMultiplayer(String nickname) {
     new SwingWorker<Boolean, Void>() {
@@ -40,7 +40,7 @@ public class GameController {
   }
 
   /**
-   * Todo JavaDoc
+   * Passed a hotseat login request on to the model.
    */
   public void logInHotSeat(List<String> playersName) {
     new SwingWorker<Boolean, Void>() {
@@ -55,7 +55,9 @@ public class GameController {
     }.execute();
 
   }
-
+  /**
+   * Sends to the model the selected game mode.
+   */
   public void setGameMode(String gameMode) throws IOException {
     model.setGameMode(gameMode);
   }

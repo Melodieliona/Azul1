@@ -123,7 +123,7 @@ public class Images {
   }
 
   /**
-   * TODO summary
+   * Setter for the percentual size of the image.
    *
    * @param prozent - Sets prozent so that the images can be resized to small, medium and big.
    */
@@ -132,7 +132,7 @@ public class Images {
   }
 
   /**
-   * TODO summary
+   * Getter for the games current skin.
    *
    * @return - skin mode. Important for the Board so that
    *     the color can be adjusted (name, score ,...).

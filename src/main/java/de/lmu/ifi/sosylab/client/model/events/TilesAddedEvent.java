@@ -10,7 +10,11 @@ public class TilesAddedEvent extends GameEvents {
   private int minuspoints;
 
   /**
-   * TODO Javadoc
+   * Stores crucial information for the view.
+   * @param color  of the tile
+   * @param line where the tiles were placed
+   * @param numberOfTiles that were placed
+   * @param minuspoints after tile placement
    */
   public TilesAddedEvent(String color, int line, int numberOfTiles, int minuspoints) {
     this.color = color;
