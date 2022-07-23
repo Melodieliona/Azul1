@@ -24,8 +24,8 @@ public class Images {
   private  static BufferedImage settings;
 
   private double prozent = 1;
-  private String skin;
-  private List<BufferedImage> pictures = new ArrayList<>();
+  private final String skin;
+  private final List<BufferedImage> pictures = new ArrayList<>();
 
   /**
    * Imports images and resizes them if needed.
@@ -44,7 +44,7 @@ public class Images {
     backgroundHomeScreen = new ImportImage("images/AzulHomeScreen.png").getImg();
     backgroundSetGameMode = new ImportImage("images/BackgroundSetGameMode.png").getImg();
 
-    switch(skin){
+    switch (skin) {
       case "STANDARD" -> {
         board = new ImportImage("images/Board.png").getImg();
         tileRed = new ImportImage("images/TileRed.png").getImg();
@@ -72,8 +72,6 @@ public class Images {
       default -> System.out.println("Image modus not found!");
     }
 
-
-
     pictures.add(board);
     pictures.add(tileRed);
     pictures.add(tileBlue);
@@ -88,7 +86,7 @@ public class Images {
   }
 
   /**
-   * resizes chosen images.
+   * Resizes chosen images.
    */
   public void resize() {
     board = resizeImage(pictures.get(0), (int) (324 * prozent), (int) (250 * prozent));
@@ -124,11 +122,17 @@ public class Images {
     return resizedImage;
   }
 
+  /**
+   * @param prozent - Sets prozent so that the images can be resized to small, medium and big.
+   */
   public void setProzent(double prozent) {
     this.prozent = prozent;
   }
 
-  public String getSkin(){
+  /**
+   * @return - skin mode. Important for the Board so that the color can be adjusted (name, score ,...).
+   */
+  public String getSkin() {
     return skin;
   }
 
@@ -141,6 +145,11 @@ public class Images {
     return board;
   }
 
+  /**
+   * Getter for settings.
+   *
+   * @return - settingsIcon.
+   */
   public BufferedImage getSettings() {
     return settings;
   }

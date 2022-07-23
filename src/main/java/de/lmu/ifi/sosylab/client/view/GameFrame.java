@@ -83,7 +83,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private int numberOfPayersHS;
   private Timer timer;
   private JPanel middle;
-  private boolean sizeset = false;
   private double prozent = 1;
 
   private JLabel playersInLobby;
@@ -370,7 +369,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   /**
-   * Creates Card to enter nichnames in Hot Seat Mode.
+   * Creates Card to enter nicknames in Hot Seat Mode.
    */
 
   public void setPlayerNicknamesHS(int numberOfPlayers) {
@@ -561,14 +560,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     }
     boards.add(createMiddle(), BorderLayout.CENTER);
 
-    JPanel middle2 = new JPanel(new BorderLayout());
-    middle2.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    middle2.setPreferredSize(new Dimension((int) (325 * prozent), (int) (50 * prozent)));
-    middle2.add(createControl(), BorderLayout.NORTH);
+    JPanel setting = new JPanel(new BorderLayout());
+    setting.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    setting.setPreferredSize(new Dimension((int) (325 * prozent), (int) (50 * prozent)));
+    setting.add(createControl(), BorderLayout.NORTH);
 
-    gameField.add(middle2, BorderLayout.NORTH);
+    gameField.add(setting, BorderLayout.NORTH);
     gameField.add(boards, BorderLayout.CENTER);
-
 
     return gameField;
   }
@@ -622,7 +620,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   /**
-   * Sets the version the Player has chosen to play the Game in (Standard or Winter).
+   * Sets the version the Player has chosen to play the Game in (Standard or Winter) and the frame size.
    */
   private class itemListener implements ItemListener {
 
@@ -645,7 +643,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     }
   }
 
-  private Component setWindow() {
+  /**
+   * Creates a new frame for the settings window size and skin.
+   */
+  private void setWindow() {
     settingWindow = new JFrame();
     settingWindow.setLayout(new GridLayout(0, 1));
     settingWindow.setVisible(true);
@@ -681,8 +682,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     settingWindow.add(radioPanel, 0);
     setSkin();
-
-    return settingWindow;
   }
 
   /**

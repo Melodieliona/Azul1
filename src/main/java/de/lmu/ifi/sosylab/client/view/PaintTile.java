@@ -14,11 +14,11 @@ public class PaintTile extends JPanel {
 
   @Serial
   private static final long serialVersionUID = 1L;
-  private String color;
-  private transient Images img;
+  private final String color;
+  private final transient Images img;
 
   /**
-   * TODO Zusammenfassung
+   * Draws a tile.
    *
    * @param color - color to set this color.
    * @param img - import images.
