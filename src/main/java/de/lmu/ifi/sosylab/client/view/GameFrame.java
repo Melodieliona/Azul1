@@ -1,15 +1,13 @@
 package de.lmu.ifi.sosylab.client.view;
 
+import static java.util.Objects.requireNonNull;
+
 import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -21,8 +19,10 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.*;
 
 /**
  * The main view of the game user interface. It provides and connects all graphical elements
@@ -53,8 +53,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   String formatedCounterMinute;
   Integer[] numberOfPlayerOptions = {2, 3, 4};
   private final JComboBox<Integer> playerNumberSelection = new JComboBox<>(numberOfPlayerOptions);
-  private transient final GameModel model;
-  private transient final GameController controller;
+  private final transient GameModel model;
+  private final transient GameController controller;
   private CardLayout layout;
   private JTextField nickName;
   private JTextField firstNicknameHotSeat;
@@ -125,10 +125,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Enables Player to choose music in home screen.
    */
   public static void playMusic(String path) {
-
-
-    Thread musicThread = new Thread(() ->
-    {
+    Thread musicThread = new Thread(() -> {
       try {
         URL ip = GameFrame.class.getResource(path);
         AudioInputStream music = AudioSystem.getAudioInputStream(ip);
@@ -148,6 +145,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   /**
    * Sets what cars is visible at the moment.
+   *
    * @param cardName of card.
    */
   public void setCurrentCard(String cardName) {
@@ -201,7 +199,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates Card where the player chooses Game Mode. (Hot Seat or Multiplayer)
    */
   public void createSetGameModeView() {
-
     JPanel setGameMode = new JPanel(new BorderLayout());
     BufferedImage img = images.getBackgroundSetGameMode();
     JLabel background = new JLabel(new ImageIcon(img));
@@ -593,7 +590,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   /**
-   * Sets the version the Player has chosen to play the Game in (Standard or Winter) and the frame size.
+   * Sets the version the Player has chosen to play the Game in (Standard or Winter)
+   * and the frame size.
    */
   private class itemListener implements ItemListener {
     @Override
@@ -687,8 +685,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates the Plates in the middle with the tiles and adds a MouseListener.
    * The MouseListener gets the name of the clicked Component like tile_color and plate.
    * Afterwards the information is sent to controller.selectAllTiles.
-   * <p>
-   * If collection ist empty a NullPointerException is thrown.
+   *
+   * <p>If collection ist empty a NullPointerException is thrown.
    */
   private void createPlates() {
     try {
@@ -713,16 +711,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             x = 1;
             y = 3;
           }
-          tile.setBounds((int) (12 * (x * prozent)), (int) (12 * (y * prozent)), tileSize, tileSize);
+          tile.setBounds(
+              (int) (12 * (x * prozent)), (int) (12 * (y * prozent)), tileSize, tileSize);
           x += 2;
           plate.add(tile);
         }
         plate.addMouseListener(new MouseAdapter() {
-          /**
-           * {@inheritDoc}
-           *
-           * @param e
-           */
           @Override
           public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
@@ -733,8 +727,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
             tile_color = plate.getComponentAt(checkMouseTip).getName();
             if (plates != null && tile_color != null) {
               int plateNumber = Integer.parseInt(plates);
-              amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(Tile.getTile(tile_color));
-              boolean confirmation = confirmTileSelection(plateNumber, tile_color, amountOfSelectedTiles, currentPlayer);
+              amountOfSelectedTiles = collection[plateNumber].getAmountTilesOfColor(
+                  Tile.getTile(tile_color));
+              boolean confirmation = confirmTileSelection(
+                  plateNumber, tile_color, amountOfSelectedTiles, currentPlayer);
               if (confirmation) {
                 controller.selectAllTiles(plateNumber, tile_color);
               }
@@ -755,13 +751,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    *
    * @return - confirmation.
    */
-  private boolean confirmTileSelection(int plateNumber, String tile, int amount, String playerName) {
+  private boolean confirmTileSelection(
+      int plateNumber, String tile, int amount, String playerName) {
 
     if (controller.getGameMode().equals(MULTIPLAYER)) {
       if (!controller.getCurrentPlayer().equals(controller.getNickname())) {
 
-        JOptionPane.showMessageDialog(this, "Selection Failed. " +
-                "It is not your turn, wait for your turn!", "Error!", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Selection Failed. "
+            + "It is not your turn, wait for your turn!", "Error!", JOptionPane.ERROR_MESSAGE);
         return false;
       }
     }
@@ -778,8 +775,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates tile pile in the Middle and adds a MouseListener to each Tile.
    * The MouseListener gets the name of the clicked Component.
    * Afterwards the information is sent to controller.selectAllTiles.
-   * <p>
-   * If the pile is null a Exception is thrown.
+   *
+   * <p>If the pile is null a Exception is thrown.
    *
    * @return - pile.
    */
@@ -797,7 +794,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       }
       pile.addMouseListener(new MouseAdapter() {
         /**
-         * {@inheritDoc}
+         * TODO Add JavaDoc
          *
          * @param e
          */
@@ -808,8 +805,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           tile_color = pile.getComponentAt(checkMouseTip).getName();
           if (tile_color != null) {
             amountOfSelectedTiles = collection[0].getAmountTilesOfColor(Tile.getTile(tile_color));
-            boolean confirmation = confirmTileSelection
-                    (0, tile_color, amountOfSelectedTiles, currentPlayer);
+            boolean confirmation = confirmTileSelection(
+                0, tile_color, amountOfSelectedTiles, currentPlayer);
             if (confirmation) {
               controller.selectAllTiles(0, tile_color);
             }
@@ -830,7 +827,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return -board with name, points and placed tiles.
    */
   private Component createBoard(int boardNumber) {
-    Board b = new Board(controller, tileSize, playerNames.get(boardNumber), images, boardNumber, prozent);
+    Board b = new Board(
+        controller, tileSize, playerNames.get(boardNumber), images, boardNumber, prozent);
 
     JPanel board = new JPanel();
     board.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
@@ -845,7 +843,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     board.add(b);
     b.addMouseListener(new MouseAdapter() {
       /**
-       * {@inheritDoc}
+       * TODO Add JavaDoc
        *
        * @param e
        */
@@ -934,7 +932,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       }
     } else if (newValue instanceof UserJoinedEvent) {
       if (controller.getGameMode().equals("Multiplayer")) {
-        playersInLobby.setText(playersInLobby.getText() + "\n " + ((UserJoinedEvent) newValue).getUsername());
+        playersInLobby.setText(playersInLobby.getText() + "\n "
+            + ((UserJoinedEvent) newValue).getUsername());
         int numberOfPlayers = controller.getPlayers().size() - 1;
         ArrayList<Player> players = controller.getPlayers();
         String playerName = players.get(numberOfPlayers).getPlayerName();
@@ -1068,7 +1067,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof TimerEndedEvent) {
       showGame();
-
     }
   }
 
@@ -1097,7 +1095,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    */
   private void goBackToFirstCard() {
     showCard(GAMEMODE_CARD);
-
   }
 
   /**
