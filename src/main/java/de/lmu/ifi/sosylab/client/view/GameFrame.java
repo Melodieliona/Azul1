@@ -4,6 +4,8 @@ import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.client.model.events.*;
+import de.lmu.ifi.sosylab.server.Game;
+import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 
@@ -18,7 +20,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serial;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,10 +131,13 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Enables Player to choose music in home screen.
    */
   public static void playMusic(String path) {
+
+
     Thread musicThread = new Thread(() ->
     {
       try {
-        AudioInputStream music = AudioSystem.getAudioInputStream(new File(path).getAbsoluteFile());
+        URL ip = GameFrame.class.getResource(path);
+        AudioInputStream music = AudioSystem.getAudioInputStream(ip);
         Clip clip = AudioSystem.getClip();
         clip.open(music);
         clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -471,16 +478,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       }
     });
 
-    songs.addActionListener(e -> {
-      String selectedSong = songs.getSelectedItem().toString();
-      switch (selectedSong) {
-        case "CHILL BEAT" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
-        case "MELODIC RHYTHM" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
-        case "RETRO CITY" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
-        default -> {
+    songs.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        String selectedSong = songs.getSelectedItem().toString();
+        switch (selectedSong) {
+          case "CHILL BEAT" -> playMusic("songs/chillbeat.wav");
+          case "MELODIC RHYTHM" -> playMusic("songs/melodicrhythm.wav");
+          case "RETRO CITY" -> playMusic("songs/retrocity.wav");
+          default -> {
+          }
         }
+        songs.setEnabled(false);
       }
-      songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
     });
 
     playerNumberSelection.addActionListener(e -> {
