@@ -8,6 +8,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/java/de/lmu/ifi/sosylab/client/view/images" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/java/de/lmu/ifi/sosylab/client/view/songs" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

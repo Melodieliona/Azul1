@@ -3,6 +3,7 @@ package de.lmu.ifi.sosylab.client.view;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.imageio.ImageIO;
 
 /**
@@ -13,7 +14,7 @@ public class ImportImage {
   private final String path;
 
   /**
-   * TODO Add Summary
+   * Imports images.
    *
    * @param path - path for the picture.
    */
@@ -29,7 +30,7 @@ public class ImportImage {
     InputStream is = getClass().getResourceAsStream(path);
 
     try {
-      img = ImageIO.read(is);
+      img = ImageIO.read(Objects.requireNonNull(is));
 
     } catch (IOException e) {
       System.out.println("Image could not be imported.");

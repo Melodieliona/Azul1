@@ -11,20 +11,21 @@ import java.io.Serial;
 import javax.swing.*;
 
 /**
- * TODO Add JavaDoc
+ * Creates playerBoard with name, score and placed tiles.
+ * When it is the player's turn, it creates a border and shows the rows that can be clicked.
  */
 public class Board extends JPanel {
 
   @Serial
   private static final long serialVersionUID = 1L;
-  private int tileSize;
-  private transient GameController controller;
-  private transient Images img;
-  private String name;
-  private transient BufferedImage board;
-  private int boardNumber;
+  private final int tileSize;
+  private final transient GameController controller;
+  private final transient Images img;
+  private final String name;
+  private final transient BufferedImage board;
+  private final int boardNumber;
   private transient Graphics2D g2D;
-  private transient double prozent;
+  private final transient double prozent;
 
   /**
    * Creates Board with name, Points and Tiles.
@@ -46,7 +47,7 @@ public class Board extends JPanel {
   }
 
   /**
-   * sets panel size.
+   * Sets panel size.
    */
   private void setPanelSize() {
     Dimension size = new Dimension(board.getWidth(), board.getHeight());
@@ -69,10 +70,13 @@ public class Board extends JPanel {
     createValidRows();
   }
 
+  /**
+   * Creates Board with name and Score.
+   */
   private void createBoard() {
     g2D.drawImage(board, 0, 0, tileSize * 13, tileSize * 10, null);
     g2D.setFont(new Font("Arial", Font.BOLD, (int) (15 * prozent)));
-    if(img.getSkin().equals("STANDARD")) {
+    if (img.getSkin().equals("STANDARD")) {
       g2D.setColor(Color.white);
     } else {
       g2D.setColor(new Color(0, 110, 222));
@@ -194,12 +198,12 @@ public class Board extends JPanel {
   }
 
   /**
-   * Creates a green frame when it's the players turn.
+   * Creates a green or pink frame when it's the players turn.
    */
   private void createFrame() {
     if (name.equals(controller.getCurrentPlayer())) {
       g2D.setStroke(new BasicStroke(3));
-      if(img.getSkin().equals("STANDARD")) {
+      if (img.getSkin().equals("STANDARD")) {
         g2D.setColor(Color.GREEN);
       } else {
         g2D.setColor(new Color(255, 0, 251));
@@ -209,7 +213,7 @@ public class Board extends JPanel {
   }
 
   /**
-   * Creates a green frame when the row is clickable.
+   * Creates a green or pink frame when the row is clickable.
    */
   private void createValidRows() {
     try {
