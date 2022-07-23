@@ -31,6 +31,7 @@ public class Images {
    * Imports images and resizes them if needed.
    */
   Images() {
+
     importImages();
   }
 
@@ -76,8 +77,7 @@ public class Images {
     tileYellow = resizeImage(pictures.get(4), (int) (25 * prozent), (int) (25 * prozent));
     tileWhite = resizeImage(pictures.get(5), (int) (25 * prozent), (int) (25 * prozent));
     tileStarter = resizeImage(pictures.get(6), (int) (25 * prozent), (int) (25 * prozent));
-    backgroundSetGameMode = resizeImage(backgroundSetGameMode, (int) (300 * prozent),
-        (int) (400 * prozent));
+    backgroundSetGameMode = resizeImage(backgroundSetGameMode, 400, 500);
     settings = resizeImage(pictures.get(8), (int) (50 * prozent), (int) (50 * prozent));
     resizedplate = plate;
   }

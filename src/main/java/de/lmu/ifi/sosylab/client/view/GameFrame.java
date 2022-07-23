@@ -46,7 +46,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private static final String TIMERUPDATE_CARD = "resartedTimer";
   private static final String LOGINNAMES_CARD = "loginNames";
   private static final String WAIT_CARD = "wait";
-  private static final String[] songList = {"CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
+  private static final String[] songList = {"MUSIC","CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
   private static TileCollection[] collection;
   private int tileSize = 25;
   JLabel loginLabel;
@@ -78,8 +78,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JPanel gameField;
   private String currentPlayer;
 
-  private int frameWidth = 300;
-  private int frameHeight = 400;
+  private int frameWidth = 400;
+  private int frameHeight = 500;
   private String currentCard;
   private Font standardFont;
   private DecimalFormat dFormat;
@@ -121,10 +121,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     initializeWidgets();
     addEventListeners();
     createView();
+    this.setVisible(true);
 
     pack();
   }
 
+  /**
+   * Enables Player to choose music in home screen.
+   *
+   */
   public static void playMusic(String path) {
     Thread musicThread = new Thread(() ->
     {
@@ -143,8 +148,9 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     });
     musicThread.start();
   }
-
-
+  /**
+   * Sets what cars is visible at the moment.
+   */
   public void setCurrentCard(String cardName) {
     this.currentCard = cardName;
 
@@ -194,7 +200,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   /**
-   * Creates Card to set Game Mode. (Hot Seat or Multiplayer)
+   * Creates Card where the player chooses Game Mode. (Hot Seat or Multiplayer)
    */
   public void createSetGameModeView() {
 
@@ -244,18 +250,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    */
   public void createMultiplayerLoginView() {
 
-    JPanel login = new JPanel(new BorderLayout());
-    login.setPreferredSize(new Dimension(100, 100));
-    JPanel south = new JPanel(new GridLayout(1, 2));
-    south.setBackground(Color.CYAN);
-    south.add(back);
-    south.add(play);
-    login.add(south, BorderLayout.SOUTH);
-    JPanel center = new JPanel();
-    center.setBackground(Color.CYAN);
-    center.add(loginLabel);
-    center.add(nickName);
-    login.add(center);
+    JPanel login = new JPanel();
+    login.setBackground(Color.CYAN);
+    login.add(loginLabel);
+    login.add(nickName);
+    login.add(back);
+    login.add(play);
     cardDeck.add(login, LOGIN_M_CARD);
   }
 
@@ -381,8 +381,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     center.setBackground(Color.CYAN);
     center.setBackground(Color.CYAN);
     south.setBackground(Color.CYAN);
-    south.add(play);
     south.add(back);
+    south.add(play);
     loginNames.setPreferredSize(new Dimension(400, 100));
     cardDeck.add(loginNames, LOGINNAMES_CARD);
     showCard(LOGINNAMES_CARD);
@@ -787,8 +787,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     if (controller.getGameMode().equals(MULTIPLAYER)){
       if(!controller.getCurrentPlayer().equals(controller.getNickname())){
 
-        JOptionPane.showMessageDialog(this,
-                String.format("Selection Failed. It is not your turn, wait for your turn!"));
+        JOptionPane.showMessageDialog(this, "Selection Failed. It is not your turn, wait for your turn!", "Error!", JOptionPane.ERROR_MESSAGE);
         return false;
       }
     }
