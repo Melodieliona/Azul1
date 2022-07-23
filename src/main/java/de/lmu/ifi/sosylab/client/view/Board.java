@@ -5,10 +5,15 @@ import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.Serial;
-import javax.swing.*;
+import javax.swing.JPanel;
 
 /**
  * Creates playerBoard with name, score and placed tiles.
