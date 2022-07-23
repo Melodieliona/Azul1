@@ -10,9 +10,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Represents a single game of Azul.
- * Handles the game logic and notifies other players of changes.
- * */
+ * Represents a single game of Azul. Handles the game logic and notifies other players of changes.
+ */
 public class Game {
 
   private final ServerNetworkConnection connection;
@@ -46,10 +45,9 @@ public class Game {
   private static final Random RANDOM = new Random();
 
 
-
   /**
    * Initializes all necessary data for a game with a given amount of users.
-   * */
+   */
   public Game(int gameNumber, List<User> userList, ServerNetworkConnection connection) {
     this.userList = List.copyOf(userList);
     this.gameNumber = gameNumber;
@@ -93,12 +91,12 @@ public class Game {
   }
 
 
-
   /**
    * Fill plates with tiles from the bag.
    * Put start marker in the middle.
-   * */
+   */
   private void fillPlates() {
+    tilePlates[0].add(Tile.STARTING_MARKER);
     for (int i = 0; i < tilePlates.length; ++i) {
       tilePlates[i] = bag.drawTiles(4);
       // Check if all plates are full.
@@ -113,17 +111,17 @@ public class Game {
         }
       }
     }
-    tilePlates[0].add(Tile.STARTING_MARKER);
+
   }
 
   /**
    * Checks a requested tile selection for validity and if valid changes model accordingly.
    * Remembers who picked the start marker.
-   * */
+   */
   protected void handleTileSelection(String playerName, int source, Tile color) {
 
     int amount = tilePlates[source].getAmountTilesOfColor(color);
-    if (amount > 0 && !currentSelection.isEmpty()) {
+    if (amount > 0 && currentSelection.isEmpty()) {
 
       // Add starting marker to selection if it's the first pick out of the middle.
       if (source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
@@ -144,7 +142,7 @@ public class Game {
 
   /**
    * Checks a requested tile placement for validity and if valid changes model accordingly.
-   * */
+   */
   protected void handleTilePlacement(int targetRow, Tile color) {
     if (currentSelection.isEmpty()) {
       sendInvalidPlacement(userList.get(currentPlayer).getName());
@@ -225,6 +223,7 @@ public class Game {
 
     } else {
       sendInvalidPlacement(userList.get(currentPlayer).getName());
+      return;
     }
   }
 
@@ -362,8 +361,13 @@ public class Game {
    * */
   private void sendSuccessfulPlacement(TileCollection tileSelection, int layingRow) {
     String currentPlayer = userList.get(this.currentPlayer).getName();
-    Tile color = tileSelection.get(0);
     int amount = tileSelection.size();
+    Tile color;
+    if (amount > 0) {
+      color = tileSelection.get(0);
+    } else {
+      color = Tile.STARTING_MARKER;
+    }
 
     connection.sendTilePlacement(userList, currentPlayer, color, amount, layingRow);
   }
@@ -374,11 +378,11 @@ public class Game {
   }
 
   /**
-   * Sets the player whose turn it is to make a move next.
-   * Tells all other players whose turn it is next.
+   * Sets the player whose turn it is to make a move next. Tells all other players whose turn it is
+   * next.
    */
   private void setAndSendNextPlayer() {
-    if (currentPlayer == userList.size()) {
+    if (currentPlayer == userList.size() - 1) {
       currentPlayer = 0;
     } else {
       currentPlayer++;
@@ -401,7 +405,7 @@ public class Game {
     if (currentSelectionSource != 0) {
       int amountOfLeftTiles = tilePlates[currentSelectionSource].size();
       for (int i = 0; i < amountOfLeftTiles; i++) {
-        tilePlates[0].add(tilePlates[currentSelectionSource].remove(i));
+        tilePlates[0].add(tilePlates[currentSelectionSource].remove(0));
       }
     }
   }
@@ -441,7 +445,7 @@ public class Game {
       }
     }
 
-    int[] clickableRows = new int[rowList.size()];
+    int[] clickableRows = new int[rowList.size()+1];
     int i = 0;
     for (int row : rowList) {
       clickableRows[i] = row;
@@ -483,7 +487,7 @@ public class Game {
 
   /**
    * Returns the index number of this game.
-   * */
+   */
   public int getGameNumber() {
     return gameNumber;
   }
