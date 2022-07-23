@@ -1,6 +1,7 @@
 package de.lmu.ifi.sosylab.client.model.localserver;
 
 import de.lmu.ifi.sosylab.shared.GameBoard;
+import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
 
@@ -235,9 +236,19 @@ public class LocalGame {
     sendGameCancel();
   }
 
+  public void handleGameRestartRequest(String nick) {
+    userList.clear();
+    sendGameRestart();
+  }
+
+  private void sendGameRestart() {
+    connection.sendGameRestart();
+  }
+
   private void sendGameCancel() {
     connection.sendGameCancel();
     connection.stop();
+    System.out.println("connection stopped");
   }
 
   /**
@@ -481,16 +492,25 @@ public class LocalGame {
     return gameBoard;
   }
 
-  void dispose() {
+  private void clear(){
+    for (TileCollection tiles:
+        tilePlates) {
+      tiles.clear();
+    }
     userList.clear();
-    cancelRequests = 0;
     usersWantCancel.clear();
     bag.clear();
     trash.clear();
     currentSelection.clear();
+  }
+
+  void dispose() {
+    clear();
+    cancelRequests = 0;
     currentSelectionSource = -1;
     startsAtNextRound = null;
   }
+
 
 
 }

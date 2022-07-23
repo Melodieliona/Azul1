@@ -211,9 +211,11 @@ public enum JsonMessage {
    *
    * @return JsonMessage to be sent
    */
-  public static JSONObject gameRestartRequest() {
+  public static JSONObject gameRestartRequest(String nickname) {
     try {
-      return createMessageOfType(GAME_RESTART_REQUEST);
+      JSONObject message = createMessageOfType(GAME_RESTART_REQUEST);
+      message.put(NICK_FIELD, nickname);
+      return message;
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to create a json object.", e);
     }
@@ -263,6 +265,15 @@ public enum JsonMessage {
   public static JSONObject gameCancel() {
     try {
       JSONObject message = createMessageOfType(GAME_CANCEL);
+      return message;
+    } catch (JSONException e) {
+      throw new IllegalArgumentException("Failed to create a json object.", e);
+    }
+  }
+
+  public static JSONObject gameRestart() {
+    try {
+      JSONObject message = createMessageOfType(GAME_RESTART);
       return message;
     } catch (JSONException e) {
       throw new IllegalArgumentException("Failed to create a json object.", e);
@@ -410,6 +421,7 @@ public enum JsonMessage {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
   }
+
 
 
 

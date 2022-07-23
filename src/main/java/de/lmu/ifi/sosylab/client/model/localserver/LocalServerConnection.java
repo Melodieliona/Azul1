@@ -155,6 +155,11 @@ public class LocalServerConnection {
               case GAME_CANCEL_REQUEST:
                 String nick = JsonMessage.getNickname(jsonObject);
                 game.handleGameCancelRequest(nick);
+                break;
+
+              case GAME_RESTART_REQUEST:
+                String nickname = JsonMessage.getNickname(jsonObject);
+                game.handleGameRestartRequest(nickname);
 
                 break;
               default:
@@ -557,6 +562,7 @@ public class LocalServerConnection {
       JSONObject message = JsonMessage.gameCancel();
       writer.write(message + System.lineSeparator());
       writer.flush();
+      users.clear();
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -564,4 +570,15 @@ public class LocalServerConnection {
   }
 
 
+  public void sendGameRestart() {
+    try {
+      JSONObject message = JsonMessage.gameRestart();
+      writer.write(message + System.lineSeparator());
+      writer.flush();
+      startGame();
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

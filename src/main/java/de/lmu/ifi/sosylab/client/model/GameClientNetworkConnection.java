@@ -343,6 +343,9 @@ public class GameClientNetworkConnection {
     closeSocket();
   }
 
+  /**
+   * Closes socket.
+   */
   private synchronized void closeSocket() {
     if (socket != null) {
       try {
@@ -415,8 +418,8 @@ public class GameClientNetworkConnection {
   /**
    * TODO Add JavaDoc
    * */
-  public void sendGameRestartRequest() {
-    JSONObject request = JsonMessage.gameRestartRequest();
+  public void sendGameRestartRequest(String nick) {
+    JSONObject request = JsonMessage.gameRestartRequest(nick);
     send(request);
   }
 

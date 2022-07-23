@@ -69,15 +69,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JButton hotSeat;
   private JButton multiPlayer;
   private JComboBox<String> songs;
-  private transient List<User> playerList;
+
   private transient Game gamesettings = null;
   private int amountOfSelectedTiles;
   private String tile_color;
   private transient Images images;
   private JPanel gameField;
   private String currentPlayer;
-  private int frameWidth;
-  private int frameHeight;
+
   private String currentCard;
   private Font standardFont;
   private DecimalFormat dFormat;
@@ -143,23 +142,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     musicThread.start();
   }
 
-  /**
-   * Returns current Frame width.
-   *
-   * @return frameWidth
-   */
-  public int getFrameWidth() {
-    return this.frameWidth;
-  }
-
-  /**
-   * Returns current Frame height.
-   *
-   * @return frameHeight
-   */
-  public int getFrameHeight() {
-    return this.frameWidth;
-  }
 
   public void setCurrentCard(String cardName) {
     this.currentCard = cardName;
@@ -1002,6 +984,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
       JOptionPane.showMessageDialog(this, "The game has been canceled", "Game Canceled", JOptionPane.INFORMATION_MESSAGE);
       model.clear();
+      playerNames.clear();
+      model.dispose();
       goBackToFirstCard();
 
     } else if (newValue instanceof GameEndedEvent) {
@@ -1009,6 +993,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       String message = handleGameEndedEvent();
       JOptionPane.showMessageDialog(this, message, "Game Ended", JOptionPane.INFORMATION_MESSAGE);
       model.clear();
+      playerNames.clear();
+      model.dispose();
       goBackToFirstCard();
 
     } else if (newValue instanceof GameRestartedEvent) {

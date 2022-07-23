@@ -23,7 +23,12 @@ public class Game {
 
   private int cancelRequests;
 
+  private int restartRequests;
+
   private List<String> usersWantCancel;
+
+  private List<String> usersWantRestart;
+
 
   private TileCollection bag;
 
@@ -53,7 +58,9 @@ public class Game {
     this.gameNumber = gameNumber;
     this.connection = connection;
     cancelRequests = 0;
+    restartRequests = 0;
     usersWantCancel = new ArrayList<>();
+    usersWantRestart = new ArrayList<>();
 
     bag = new TileCollection();
     bag.addTiles(Tile.BLUE, 20);
@@ -96,7 +103,6 @@ public class Game {
    * Put start marker in the middle.
    */
   private void fillPlates() {
-    tilePlates[0].add(Tile.STARTING_MARKER);
     for (int i = 0; i < tilePlates.length; ++i) {
       tilePlates[i] = bag.drawTiles(4);
       // Check if all plates are full.
@@ -111,7 +117,7 @@ public class Game {
         }
       }
     }
-
+    tilePlates[0].add(Tile.STARTING_MARKER);
   }
 
   /**
@@ -121,7 +127,7 @@ public class Game {
   protected void handleTileSelection(String playerName, int source, Tile color) {
 
     int amount = tilePlates[source].getAmountTilesOfColor(color);
-    if (amount > 0 && currentSelection.isEmpty()) {
+    if (amount > 0 && !currentSelection.isEmpty()) {
 
       // Add starting marker to selection if it's the first pick out of the middle.
       if (source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
@@ -223,13 +229,12 @@ public class Game {
 
     } else {
       sendInvalidPlacement(userList.get(currentPlayer).getName());
-      return;
     }
   }
 
   /**
-   * Remembers the amout of players that want the game to be cancelled.
-   * Sends the corresponding message if all players
+   * Remembers the amount of players that want the game to be cancelled.
+   * Sends the corresponding message if all players.
    * */
   public void handleGameCancelRequest(String nick) {
     if (!usersWantCancel.contains(nick)) {
@@ -243,8 +248,38 @@ public class Game {
     }
   }
 
+
+  /**
+   * Remembers the amount of players that want the game to be restarted.
+   * Sends the corresponding message if all players.
+   */
+
+  public void handleGameRestartRequest(String nick) {
+    if (!usersWantRestart.contains(nick)) {
+      usersWantRestart.add(nick);
+      restartRequests++;
+      connection.sendGameRestartRequest(userList, nick);
+    }
+
+    if (cancelRequests == userList.size() - 1) {
+      sendGameRestart();
+    }
+  }
+
+  /**
+   * Sends game cancel message.
+   */
   private void sendGameCancel() {
     connection.sendGameCancel(userList);
+    userList.clear();
+  }
+
+  /**
+   * Sends game restart message.
+   */
+  private void sendGameRestart() {
+    connection.sendGameRestart(userList);
+    System.out.println("connection stopped");
   }
 
   /**
@@ -256,6 +291,7 @@ public class Game {
   private void endRound() {
     cancelRequests = 0;
     usersWantCancel.clear();
+    usersWantRestart.clear();
     // Laying tiles on wall, clearing layingRows accordingly and put left over tiles in the trash
     //
     for (GameBoard gameBoard : gameBoards) {
@@ -361,13 +397,8 @@ public class Game {
    * */
   private void sendSuccessfulPlacement(TileCollection tileSelection, int layingRow) {
     String currentPlayer = userList.get(this.currentPlayer).getName();
+    Tile color = tileSelection.get(0);
     int amount = tileSelection.size();
-    Tile color;
-    if (amount > 0) {
-      color = tileSelection.get(0);
-    } else {
-      color = Tile.STARTING_MARKER;
-    }
 
     connection.sendTilePlacement(userList, currentPlayer, color, amount, layingRow);
   }
@@ -382,7 +413,7 @@ public class Game {
    * next.
    */
   private void setAndSendNextPlayer() {
-    if (currentPlayer == userList.size() - 1) {
+    if (currentPlayer == userList.size()) {
       currentPlayer = 0;
     } else {
       currentPlayer++;
@@ -405,7 +436,7 @@ public class Game {
     if (currentSelectionSource != 0) {
       int amountOfLeftTiles = tilePlates[currentSelectionSource].size();
       for (int i = 0; i < amountOfLeftTiles; i++) {
-        tilePlates[0].add(tilePlates[currentSelectionSource].remove(0));
+        tilePlates[0].add(tilePlates[currentSelectionSource].remove(i));
       }
     }
   }
@@ -445,7 +476,7 @@ public class Game {
       }
     }
 
-    int[] clickableRows = new int[rowList.size()+1];
+    int[] clickableRows = new int[rowList.size()];
     int i = 0;
     for (int row : rowList) {
       clickableRows[i] = row;
@@ -491,5 +522,6 @@ public class Game {
   public int getGameNumber() {
     return gameNumber;
   }
+
 
 }

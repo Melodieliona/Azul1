@@ -83,6 +83,9 @@ public class GameController {
     model.requestGameCancel();
   }
 
+  public void restartGameRequest() {
+    model.requestGameRestart();
+  }
 
   public String getCurrentPlayer() {
     return model.getCurrentPlayer();
@@ -125,9 +128,7 @@ public class GameController {
     return model.getNickname();
   }
 
-  public void restartGameRequest() {
-    model.requestGameCancel();
-  }
+
 }
 
 

@@ -191,6 +191,16 @@ public class ServerNetworkConnection {
                 }
               }
 
+              case GAME_RESTART_REQUEST -> {
+                String nick = JsonMessage.getNickname(jsonObject);
+                for (Game game : games) {
+                  if (game.getGameNumber() == clientGameNumber) {
+                    game.handleGameRestartRequest(nick);
+                    break;
+                  }
+                }
+              }
+
               default -> {
               }
             }
@@ -577,6 +587,9 @@ public class ServerNetworkConnection {
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
       }
+      int gameNumber = userList.get(0).getGameNumber();
+      games.remove(gameNumber);
+      users.removeAll(userList);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -589,6 +602,24 @@ public class ServerNetworkConnection {
     try {
       for (User user : userList) {
         JSONObject message = JsonMessage.gameCancel();
+        user.getWriter().write(message + System.lineSeparator());
+        user.getWriter().flush();
+      }
+      int gameNumber = userList.get(0).getGameNumber();
+      games.remove(gameNumber-1);
+      users.removeAll(userList);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Sends a message to the client when the game was restarted.
+   * */
+  public void sendGameRestart(List<User> userList) {
+    try {
+      for (User user : userList) {
+        JSONObject message = JsonMessage.gameRestart();
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
       }
@@ -622,6 +653,24 @@ public class ServerNetworkConnection {
     try {
       for (User user : list) {
         JSONObject message = JsonMessage.gameCancelRequest(nickname);
+        user.getWriter().write(message + System.lineSeparator());
+        user.getWriter().flush();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Sends each player that someone made a restart request.
+   *
+   * @param list     the list of players in the game
+   * @param nickname the nick of the player that has made the request
+   */
+  public void sendGameRestartRequest(List<User> list, String nickname) {
+    try {
+      for (User user : list) {
+        JSONObject message = JsonMessage.gameRestartRequest(nickname);
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
       }
@@ -742,5 +791,6 @@ public class ServerNetworkConnection {
   public void stop() {
     // stop connection
   }
+
 
 }

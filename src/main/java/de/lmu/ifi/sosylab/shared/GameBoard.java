@@ -145,6 +145,10 @@ public class GameBoard {
     return floorLine.removeAllTiles();
   }
 
+  public void clearTileWall(){
+    tileWall = new Tile[5][5];
+  }
+
   /**
    * Returns this game board's tile wall.
    * */
@@ -256,4 +260,6 @@ public class GameBoard {
   public void setCurrentScore(int points) {
     currentScore = points;
   }
+
+
 }

@@ -111,7 +111,7 @@ public class GameModel {
    */
   public void nextPlayer(String nickname) {
     currentPlayer = nickname;
-    if (gameMode.equals("Hot seat")) {
+    if (gameMode.equalsIgnoreCase("Hot seat")) {
       this.nickname = nickname;
     }
     notifyListeners(new NextPlayerEvent(nickname));
@@ -136,7 +136,10 @@ public class GameModel {
    * @param line          desired row/line to place tiles
    */
   public void placeTilesRequest(int numberOfTiles, int line) {
-    connection.sendTilePlacement(numberOfTiles, line);
+    if(selectedTiles.isEmpty()) {
+    } else {
+      connection.sendTilePlacement(numberOfTiles, line);
+    }
   }
 
   /**
@@ -289,7 +292,13 @@ public class GameModel {
   }
 
   public void requestGameRestart() {
-    connection.sendGameRestartRequest();
+    String nickname;
+    if (gameMode.equalsIgnoreCase("Hot seat")) {
+      nickname = currentPlayer;
+    } else {
+      nickname = this.nickname;
+    }
+    connection.sendGameRestartRequest(nickname);
   }
 
   /**
@@ -297,7 +306,7 @@ public class GameModel {
    */
   public void requestGameCancel() {
     String nickname;
-    if (gameMode.equals("Hot seat")) {
+    if (gameMode.equalsIgnoreCase("Hot seat")) {
       nickname = currentPlayer;
     } else {
       nickname = this.nickname;
@@ -306,6 +315,8 @@ public class GameModel {
   }
 
   public void cancelGame() {
+    players.clear();
+    System.out.println("Players size "+players.size());
     notifyListeners(new GameCanceledEvent());
   }
 
@@ -334,7 +345,7 @@ public class GameModel {
    * TODO Add JavaDoc
    */
   public void loggedIn(String[] nicknames) {
-    if (gameMode.equals("Multiplayer")) {
+    if (gameMode.equalsIgnoreCase("Multiplayer")) {
       players.add(new Player(this.nickname));
       for (String nickname : nicknames) {
         if (players.contains(new Player(nickname)) || nickname.trim().isEmpty()) {
@@ -359,8 +370,11 @@ public class GameModel {
    * Notifies the subscribed view that a new player joined the game.
    */
   public void userJoined(String name) {
+      if (players.contains(new Player(name)) || nickname.trim().isEmpty()) {
 
-      players.add(new Player(name));
+      } else {
+        players.add(new Player(name));
+      }
 
     notifyListeners(new UserJoinedEvent(name));
   }
