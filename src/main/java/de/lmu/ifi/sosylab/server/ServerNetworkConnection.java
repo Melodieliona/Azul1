@@ -5,7 +5,6 @@ import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -163,7 +161,6 @@ public class ServerNetworkConnection {
                 // 0 = middle, 1-9 = plates
                 int plateOrMiddle = jsonObject.getInt("plate");
                 Tile selectionColor = Tile.getTile((String) jsonObject.get("color"));
-                System.out.println("Selection: Plate: " + plateOrMiddle + ", Color: " + jsonObject.getString("color") + " made by user: " + clientNick);
                 for (Game game : games) {
                   if (game.getGameNumber() == clientGameNumber) {
                     game.handleTileSelection(clientNick, plateOrMiddle, selectionColor);

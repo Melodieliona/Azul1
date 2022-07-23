@@ -646,7 +646,9 @@ public class GameModel {
    *
    * @return ArrayList of players
    */
-  public ArrayList<Player> getPlayers() { return new ArrayList<>(players); }
+  public ArrayList<Player> getPlayers() {
+    return new ArrayList<>(players);
+  }
 
   /**
    * Gets the tiles that are currently selected.

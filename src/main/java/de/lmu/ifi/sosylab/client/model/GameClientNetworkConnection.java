@@ -1,7 +1,6 @@
 package de.lmu.ifi.sosylab.client.model;
 
 import de.lmu.ifi.sosylab.shared.JsonMessage;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

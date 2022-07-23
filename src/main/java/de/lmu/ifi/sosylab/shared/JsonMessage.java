@@ -3,7 +3,6 @@ package de.lmu.ifi.sosylab.shared;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

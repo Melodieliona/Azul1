@@ -2,9 +2,7 @@ package de.lmu.ifi.sosylab.client.controller;
 
 import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.Player;
-import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

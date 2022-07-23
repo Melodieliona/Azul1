@@ -35,7 +35,7 @@ public class ServerFrame extends JFrame {
     stopServerButton.setSize(50, 50);
     stopServerButton.setMaximumSize(getSize());
 
-    stopServerButton.addActionListener(e ->{
+    stopServerButton.addActionListener(e -> {
       connection.sendGameCancelledServerShutDown();
       connection.stop();
         }
@@ -51,6 +51,7 @@ public class ServerFrame extends JFrame {
 
     pack();
   }
+
   @Override
   public void dispose() {
     super.dispose();

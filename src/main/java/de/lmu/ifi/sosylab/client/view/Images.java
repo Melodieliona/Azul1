@@ -123,6 +123,8 @@ public class Images {
   }
 
   /**
+   * TODO summary
+   *
    * @param prozent - Sets prozent so that the images can be resized to small, medium and big.
    */
   public void setProzent(double prozent) {
@@ -130,7 +132,10 @@ public class Images {
   }
 
   /**
-   * @return - skin mode. Important for the Board so that the color can be adjusted (name, score ,...).
+   * TODO summary
+   *
+   * @return - skin mode. Important for the Board so that
+   *     the color can be adjusted (name, score ,...).
    */
   public String getSkin() {
     return skin;

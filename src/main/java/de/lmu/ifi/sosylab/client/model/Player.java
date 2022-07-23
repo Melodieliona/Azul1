@@ -3,7 +3,6 @@ package de.lmu.ifi.sosylab.client.model;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.util.Objects;
 
 /**
