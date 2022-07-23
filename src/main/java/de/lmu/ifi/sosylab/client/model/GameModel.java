@@ -544,6 +544,10 @@ public class GameModel {
     }
   }
 
+  public void resetValidRows(){
+    validRows = new int [0];
+  }
+
   public int[] getValidPlates() {
     return validPlates.clone();
   }

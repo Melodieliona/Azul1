@@ -212,6 +212,7 @@ public class GameClientNetworkConnection {
    */
   private void handleNextTurn(JSONObject object) {
     String nick = JsonMessage.getNickname(object);
+    model.resetValidRows();
     model.nextPlayer(nick);
   }
 

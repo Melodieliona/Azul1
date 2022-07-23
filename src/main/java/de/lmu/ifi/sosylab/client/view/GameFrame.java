@@ -66,6 +66,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JTextField fourthNicknameHS;
   private JButton back;
   private JButton play;
+  private JFrame settingWindow;
   private transient List<String> playerNames;
   private JButton hotSeat;
   private JButton multiPlayer;
@@ -111,7 +112,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
 
     //Creates Game icon.
-    images = new Images();
+    images = new Images("STANDARD");
     BufferedImage icon = images.getIcon();
     this.setIconImage(icon);
 
@@ -284,19 +285,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterMinute = 1;
     counterSecond = 60;
 
-    timer = new Timer(1000, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
+    timer = new Timer(1000, e -> {
 
-        counterMinute = 0;
-        counterSecond--;
-        formatedCounterSecond = dFormat.format(counterSecond);
-        formatedCounterMinute = dFormat.format(counterMinute);
-        counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
+      counterMinute = 0;
+      counterSecond--;
+      formatedCounterSecond = dFormat.format(counterSecond);
+      formatedCounterMinute = dFormat.format(counterMinute);
+      counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
 
-        counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
-
-      }
+      counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
 
     });
 
@@ -321,19 +318,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterSecond = 60;
 
     timer.stop();
-    timer = new Timer(1000, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
+    timer = new Timer(1000, e -> {
 
-        counterMinute = 0;
-        counterSecond--;
-        formatedCounterSecond = dFormat.format(counterSecond);
-        formatedCounterMinute = dFormat.format(counterMinute);
-        counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
+      counterMinute = 0;
+      counterSecond--;
+      formatedCounterSecond = dFormat.format(counterSecond);
+      formatedCounterMinute = dFormat.format(counterMinute);
+      counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
 
-        counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
-
-      }
+      counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
 
     });
 
@@ -398,43 +391,32 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
 
     switch (numberOfPlayers) {
-      case 2:
+      case 2 -> {
         center.add(playerOne);
         center.add(firstNicknameHS);
-
         center.add(playerTwo);
         center.add(secondNicknameHS);
-
-        break;
-
-      case 3:
+      }
+      case 3 -> {
         center.add(playerOne);
         center.add(firstNicknameHS);
-
         center.add(playerTwo);
         center.add(secondNicknameHS);
-
         center.add(playerThree);
         center.add(thirdNicknameHS);
-
-        break;
-
-      case 4:
+      }
+      case 4 -> {
         center.add(playerOne);
         center.add(firstNicknameHS);
-
         center.add(playerTwo);
         center.add(secondNicknameHS);
-
         center.add(playerThree);
         center.add(thirdNicknameHS);
-
         center.add(playerFour);
         center.add(fourthNicknameHS);
-
-        break;
-      default:
-        break;
+      }
+      default -> {
+      }
     }
 
     loginNames.add(center, BorderLayout.CENTER);
@@ -446,7 +428,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   /**
    * Set up the view in a way that is finally shown to the user.
    */
-  private void createView() throws IOException {
+  private void createView() {
     setContentPane(cardDeck);
     createSetGameModeView();
     createMultiplayerLoginView();
@@ -458,28 +440,22 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Add event listeners to all widgets wherever needed and let them execute the respective action.
    */
   private void addEventListeners() {
-    multiPlayer.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        showCard(LOGIN_M_CARD);
-        try {
-          controller.setGameMode(MULTIPLAYER);
-        } catch (IOException ex) {
-          throw new RuntimeException(ex);
-        }
+    multiPlayer.addActionListener(e -> {
+      showCard(LOGIN_M_CARD);
+      try {
+        controller.setGameMode("Multiplayer");
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
       }
     });
 
 
-    hotSeat.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        showCard(LOGIN_H_CARD);
-        try {
-          controller.setGameMode("Hot Seat");
-        } catch (IOException ex) {
-          throw new RuntimeException(ex);
-        }
+    hotSeat.addActionListener(e -> {
+      showCard(LOGIN_H_CARD);
+      try {
+        controller.setGameMode("Hot Seat");
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
       }
     });
 
@@ -567,29 +543,40 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return - The Game Field with boards, pile and plates.
    */
   private Component createGameField() {
+    JPanel boards = new JPanel(new BorderLayout());
+    boards.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     switch (playerNames.size() - 1) {
       case 1 -> {
-        gameField.add(createBoard(0), BorderLayout.NORTH);
-        gameField.add(createBoard(1), BorderLayout.SOUTH);
-        this.setSize((int) (350 * prozent), (int) (prozent * 900));
+        boards.add(createBoard(0), BorderLayout.NORTH);
+        boards.add(createBoard(1), BorderLayout.SOUTH);
+        this.setSize((int) (350 * prozent), (int) (prozent * 950));
       }
       case 2 -> {
-        gameField.add(createBoard(0), BorderLayout.NORTH);
-        gameField.add(createBoard(1), BorderLayout.WEST);
-        gameField.add(createBoard(2), BorderLayout.SOUTH);
-        this.setSize((int) (700 * prozent), (int) (920 * prozent));
+        boards.add(createBoard(0), BorderLayout.NORTH);
+        boards.add(createBoard(1), BorderLayout.WEST);
+        boards.add(createBoard(2), BorderLayout.SOUTH);
+        this.setSize((int) (700 * prozent), (int) (970 * prozent));
       }
       case 3 -> {
-        gameField.add(createBoard(0), BorderLayout.NORTH);
-        gameField.add(createBoard(1), BorderLayout.EAST);
-        gameField.add(createBoard(2), BorderLayout.SOUTH);
-        gameField.add(createBoard(3), BorderLayout.WEST);
-        this.setSize((int) (1020 * prozent), (int) (880 * prozent));
+        boards.add(createBoard(0), BorderLayout.NORTH);
+        boards.add(createBoard(1), BorderLayout.EAST);
+        boards.add(createBoard(2), BorderLayout.SOUTH);
+        boards.add(createBoard(3), BorderLayout.WEST);
+        this.setSize((int) (1020 * prozent), (int) (930 * prozent));
       }
       default -> {
       }
     }
-    gameField.add(createMiddle(), BorderLayout.CENTER);
+    boards.add(createMiddle(), BorderLayout.CENTER);
+
+    JPanel middle2 = new JPanel(new BorderLayout());
+    middle2.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    middle2.setPreferredSize(new Dimension((int) (325 * prozent), (int) (50 * prozent)));
+    middle2.add(createControl(), BorderLayout.NORTH);
+
+    gameField.add(middle2, BorderLayout.NORTH);
+    gameField.add(boards, BorderLayout.CENTER);
+
 
 
     return gameField;
@@ -601,18 +588,14 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return - middle.
    */
   private Component createMiddle() {
-    JPanel middle2 = new JPanel(new BorderLayout());
-    middle2.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-    middle2.setPreferredSize(new Dimension((int) (325 * prozent), (int) (300 * prozent)));
-    middle2.add(createControl(), BorderLayout.NORTH);
 
     middle = new JPanel(new FlowLayout());
     middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+    middle.setPreferredSize(new Dimension((int) (325 * prozent), (int) (300 * prozent)));
 
     createPlates();
     middle.add(createPile());
-    middle2.add(middle, BorderLayout.CENTER);
-    return middle2;
+    return middle;
   }
 
   private Component createControl() {
@@ -639,11 +622,34 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     return settings;
   }
 
+private class itemListener implements ItemListener{
+
+  @Override
+  public void itemStateChanged(ItemEvent e) {
+      String item = ((JRadioButton) e.getSource()).getName();
+      if(item.equals("STANDARD") || item.equals("WINTER")){
+        images = new Images(item);
+        createGameView();
+      } else {
+        prozent = Double.parseDouble(item);
+
+        images.setProzent(prozent);
+        tileSize = (int) (prozent * 25);
+        images.resize();
+      }
+      showGame();
+      gameField.removeAll();
+      createGameView();
+      repaint();
+  }
+}
+
   private Component setWindow() {
-    JFrame settingWindow = new JFrame();
+    settingWindow = new JFrame();
+    settingWindow.setLayout(new GridLayout(0,1));
     settingWindow.setVisible(true);
     settingWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    settingWindow.setSize(new Dimension(400, 300));
+    settingWindow.setSize(new Dimension(400, 150));
 
     JPanel radioPanel = new JPanel();
 
@@ -651,60 +657,20 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     radioPanel.add(winSize);
     JRadioButton small = new JRadioButton("small");
     small.setBounds(0, 0, 100, 25);
-    small.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        prozent = 0.8;
-
-        images.setProzent(prozent);
-        tileSize = (int) (prozent * 25);
-        images.resize();
-
-        showGame();
-        gameField.removeAll();
-        createGameView();
-        repaint();
-      }
-    });
+    small.setName("0.8");
+    small.addItemListener(new itemListener());
     radioPanel.add(small);
 
     JRadioButton medium = new JRadioButton("medium");
     medium.setBounds(50, 0, 100, 25);
-    medium.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        prozent = 1;
-
-        images.setProzent(prozent);
-        tileSize = (int) (prozent * 25);
-        images.resize();
-
-        showGame();
-        gameField.removeAll();
-        createGameView();
-        repaint();
-
-      }
-    });
+    medium.setName("1");
+    medium.addItemListener(new itemListener());
     radioPanel.add(medium);
 
     JRadioButton big = new JRadioButton("big");
     big.setBounds(100, 0, 100, 25);
-    big.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        prozent = 1.2;
-
-        images.setProzent(prozent);
-        tileSize = (int) (prozent * 25);
-        images.resize();
-
-        showGame();
-        gameField.removeAll();
-        createGameView();
-        repaint();
-      }
-    });
+    big.setName("1.2");
+    big.addItemListener(new itemListener());
     radioPanel.add(big);
 
     ButtonGroup windowSize = new ButtonGroup();
@@ -712,9 +678,34 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     windowSize.add(medium);
     windowSize.add(big);
 
-    settingWindow.add(radioPanel);
+    settingWindow.add(radioPanel, 0);
+    setSkin();
 
     return settingWindow;
+  }
+
+  private void setSkin(){
+    JPanel radioPanel = new JPanel();
+
+    JLabel skin = new JLabel("Set Game Skin: ");
+    radioPanel.add(skin);
+    JRadioButton standard = new JRadioButton("Standard");
+    standard.setBounds(0, 0, 100, 25);
+    standard.setName("STANDARD");
+    standard.addItemListener(new itemListener());
+    radioPanel.add(standard);
+
+    JRadioButton winter = new JRadioButton("Winter");
+    winter.setBounds(50, 0, 100, 25);
+    winter.setName("WINTER");
+    winter.addItemListener(new itemListener());
+    radioPanel.add(winter);
+
+    ButtonGroup skins = new ButtonGroup();
+    skins.add(standard);
+    skins.add(winter);
+
+    settingWindow.add(radioPanel,1 );
   }
 
   /**
@@ -778,10 +769,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         middle.add(plate);
       }
     } catch (NullPointerException e) {
-      System.out.println("collection ist noch leer! (createPlates)");
+      //do nothing
     }
 
   }
+
   private boolean confirmTileSelection(int plateNumber, String tile, int amount, String playerName) {
 
     if (controller.getGameMode().equals(MULTIPLAYER)){
@@ -795,10 +787,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
         "Tile Selection", JOptionPane.YES_NO_OPTION);
 
-    if (selection == 0) {
-      return true;
-    }
-    return false;
+    return selection == 0;
 
   }
 
@@ -835,19 +824,16 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           Point checkMouseTip = e.getPoint();
           tile_color = pile.getComponentAt(checkMouseTip).getName();
           if (tile_color != null) {
-            System.out.println("Tile " + tile_color + " was clicked on Plate 0");
             amountOfSelectedTiles = collection[0].getAmountTilesOfColor(Tile.getTile(tile_color));
             boolean confirmation = confirmTileSelection(0, tile_color, amountOfSelectedTiles, currentPlayer);
             if (confirmation) {
               controller.selectAllTiles(0, tile_color);
             }
-
-
           }
         }
       });
     } catch (NullPointerException e) {
-      System.out.println("Collection ist noch leer! (createPile)");
+      //do nothing
     }
     return pile;
   }
@@ -924,12 +910,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   @Override
   public void propertyChange(PropertyChangeEvent event) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        handleModelUpdate(event);
-      }
-    });
+    SwingUtilities.invokeLater(() -> handleModelUpdate(event));
   }
 
   /**
