@@ -631,11 +631,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         createGameView();
       } else {
         prozent = Double.parseDouble(item);
-
-        images.setProzent(prozent);
-        tileSize = (int) (prozent * 25);
-        images.resize();
       }
+      images.setProzent(prozent);
+      tileSize = (int) (prozent * 25);
+      images.resize();
       showGame();
       gameField.removeAll();
       createGameView();
@@ -853,7 +852,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     if (playerNames.size() - 1 == 2) {
       board.setLayout(new BorderLayout());
       JPanel west = new JPanel();
-      west.setPreferredSize(new Dimension(20, 300));
+      west.setPreferredSize(new Dimension((int) (20 * prozent), (int) (300 * prozent)));
       west.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
       board.add(west, BorderLayout.WEST);
     }

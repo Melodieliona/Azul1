@@ -71,8 +71,12 @@ public class Board extends JPanel {
 
   private void createBoard() {
     g2D.drawImage(board, 0, 0, tileSize * 13, tileSize * 10, null);
-    g2D.setFont(new Font("Arial", Font.PLAIN, (int) (15 * prozent)));
-    g2D.setColor(Color.white);
+    g2D.setFont(new Font("Arial", Font.BOLD, (int) (15 * prozent)));
+    if(img.getSkin().equals("STANDARD")) {
+      g2D.setColor(Color.white);
+    } else {
+      g2D.setColor(new Color(0, 110, 222));
+    }
     g2D.drawString(name, (int) (83 * prozent), (int) (prozent * 35));
     int score;
     try {
@@ -194,7 +198,12 @@ public class Board extends JPanel {
    */
   private void createFrame() {
     if (name.equals(controller.getCurrentPlayer())) {
-      g2D.setColor(Color.GREEN);
+      g2D.setStroke(new BasicStroke(3));
+      if(img.getSkin().equals("STANDARD")) {
+        g2D.setColor(Color.GREEN);
+      } else {
+        g2D.setColor(new Color(255, 0, 251));
+      }
       g2D.drawRect(0, 0, board.getWidth() - 1, board.getHeight() - 1);
     }
   }

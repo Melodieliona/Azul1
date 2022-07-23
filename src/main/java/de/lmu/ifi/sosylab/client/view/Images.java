@@ -83,6 +83,7 @@ public class Images {
     pictures.add(tileStarter);
     pictures.add(plate);
     pictures.add(settings);
+    pictures.add(background);
     resize();
   }
 
@@ -90,7 +91,6 @@ public class Images {
    * resizes chosen images.
    */
   public void resize() {
-    plate = resizeImage(pictures.get(7), (int) (70 * prozent), (int) (70 * prozent));
     board = resizeImage(pictures.get(0), (int) (324 * prozent), (int) (250 * prozent));
     tileRed = resizeImage(pictures.get(1), (int) (25 * prozent), (int) (25 * prozent));
     tileBlue = resizeImage(pictures.get(2), (int) (25 * prozent), (int) (25 * prozent));
@@ -98,9 +98,11 @@ public class Images {
     tileYellow = resizeImage(pictures.get(4), (int) (25 * prozent), (int) (25 * prozent));
     tileWhite = resizeImage(pictures.get(5), (int) (25 * prozent), (int) (25 * prozent));
     tileStarter = resizeImage(pictures.get(6), (int) (25 * prozent), (int) (25 * prozent));
-    backgroundSetGameMode = resizeImage(backgroundSetGameMode, 400, 500);
-    settings = resizeImage(pictures.get(8), (int) (50 * prozent), (int) (50 * prozent));
+    plate = resizeImage(pictures.get(7), (int) (70 * prozent), (int) (70 * prozent));
     settings = resizeImage(pictures.get(8), (int) (25 * prozent), (int) (25 * prozent));
+    background = resizeImage(pictures.get(9), 1300, pictures.get(9).getHeight());
+    backgroundSetGameMode = resizeImage(backgroundSetGameMode, 400, 500);
+
   }
 
   /**
@@ -124,6 +126,10 @@ public class Images {
 
   public void setProzent(double prozent) {
     this.prozent = prozent;
+  }
+
+  public String getSkin(){
+    return skin;
   }
 
   /**
