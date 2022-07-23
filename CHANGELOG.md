@@ -27,18 +27,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Interacting with the tiles.
 
 
-
 - For online mode:
-    -Waiting room for players.
-    -Seeing actions from other players.
-    -Request cancel option.
-    -Request restart option.
+    - Waiting room for players.
+    - Seeing actions from other players.
+    - Request cancel option.
+    - Request restart option.
    
 
 - For hot seat mode:
-    -Correctly changing turns
-    -Cancel option.
-    -Restart option.
+    - Correctly changing turns
+    - Cancel option.
+    - Restart option.
     
 
 
