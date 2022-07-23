@@ -1,4 +1,4 @@
-##Protocol
+## Protocol
 
 The program follows the client/server paradigma for the implementation of the game. The JSON protocl was used to communicate between Server and Client. Following the JSON messages exchanged between server and client will be listed and discussed in chronological order. 
 
