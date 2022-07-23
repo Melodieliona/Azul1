@@ -68,12 +68,13 @@ public class GameModel {
     }
   }
 
+  /**
+   * Gets the gameMode.
+   *
+   * @return game mode as string.
+   */
   public String getGameMode() {
     return gameMode;
-  }
-
-  public int getNumberOfPlayers() {
-    return players.size() - 1;
   }
 
   /**
@@ -86,7 +87,7 @@ public class GameModel {
   }
 
   /**
-   * TODO Javadoc
+   * Tries to send a log in request for online.
    */
   public void logInMultiplayer(String name) {
     connection.sendLogin(name);
@@ -95,7 +96,7 @@ public class GameModel {
 
 
   /**
-   * TODO Javadoc
+   * Tries to send a log in request for hot seat.
    */
   public void logInHotSeat(String[] playersName) {
     connection.sendPlayers(playersName.length);
@@ -231,15 +232,17 @@ public class GameModel {
    * @param color type of tile
    */
   public void otherPlayerSelectedTiles(String color, int source) {
-    selectedTiles.removeAllTiles();
+    selectedTiles.clear();
     int numberOfSelectedTiles = tilePlates[source].getAmountTilesOfColor(Tile.getTile(color));
     selectedTiles.addTiles(Tile.getTile(color), numberOfSelectedTiles);
-    tilePlates[source].removeTilesOfColor(Tile.getTile(color));
+    tilePlates[source].removeAll(tilePlates[source].removeTilesOfColor(Tile.getTile(color)));
     if (source != 0) {
-      tilePlates[0].addAll(tilePlates[source]);
+      tilePlates[0].addAllTiles(tilePlates[source]);
+      tilePlates[source].clear();
     } else {
       if (tilePlates[0].contains(Tile.STARTING_MARKER)) {
         selectedTiles.add(Tile.STARTING_MARKER);
+        tilePlates[0].removeAll(tilePlates[0].removeTilesOfColor(Tile.STARTING_MARKER));
       }
     }
     notifyListeners(
@@ -258,7 +261,7 @@ public class GameModel {
     for (Player player :
         players) {
       if (player.getPlayerName().equals(currentPlayer)) {
-        player.placeTiles(row, selectedTiles.getContainedColors().get(0).getColor(), amount);
+        player.placeTiles(row, actualColor, amount);
       }
     }
     notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, amount, row, 0));

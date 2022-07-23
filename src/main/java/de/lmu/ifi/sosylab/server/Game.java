@@ -369,7 +369,7 @@ public class Game {
     // Nächsten Spieler anhand Startmarker ermitteln, setzen und benachrichtigen.
     for (User user : userList) {
       if (user.getName().equals(startsAtNextRound)) {
-        currentPlayer = userList.indexOf(user) + 1;
+        currentPlayer = userList.indexOf(user);
         startsAtNextRound = "";
         break;
       }
@@ -495,7 +495,7 @@ public class Game {
       }
     }
 
-    int[] clickableRows = new int[rowList.size()];
+    int[] clickableRows = new int[rowList.size()+1];
     int i = 0;
     for (int row : rowList) {
       clickableRows[i] = row;

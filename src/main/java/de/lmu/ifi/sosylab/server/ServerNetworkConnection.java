@@ -163,6 +163,7 @@ public class ServerNetworkConnection {
                 // 0 = middle, 1-9 = plates
                 int plateOrMiddle = jsonObject.getInt("plate");
                 Tile selectionColor = Tile.getTile((String) jsonObject.get("color"));
+                System.out.println("Selection: Plate: " + plateOrMiddle + ", Color: " + jsonObject.getString("color") + " made by user: " + clientNick);
                 for (Game game : games) {
                   if (game.getGameNumber() == clientGameNumber) {
                     game.handleTileSelection(clientNick, plateOrMiddle, selectionColor);
@@ -662,7 +663,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
 
-      //TODO stop the server
+      stop();
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -681,7 +682,6 @@ public class ServerNetworkConnection {
         JSONObject message = JsonMessage.gameCancelRequest(nickname);
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
-        stop();
       }
     } catch (IOException e) {
       e.printStackTrace();
