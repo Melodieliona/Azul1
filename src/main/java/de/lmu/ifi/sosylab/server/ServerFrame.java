@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 /**
  * Creates the exit button to stop the Azul server.
- * */
+ */
 public class ServerFrame extends JFrame {
   @Serial
   private static final long serialVersionUID = 1L;
@@ -28,7 +28,7 @@ public class ServerFrame extends JFrame {
 
     panel = new JPanel(new GridLayout(1, 1, 0, 0));
 
-    stopServerButton =  new JButton("STOP");
+    stopServerButton = new JButton("STOP");
     stopServerButton.setBackground(Color.RED);
     stopServerButton.setOpaque(true);
     stopServerButton.setBorderPainted(false);
@@ -36,8 +36,9 @@ public class ServerFrame extends JFrame {
     stopServerButton.setMaximumSize(getSize());
 
     stopServerButton.addActionListener(e -> {
-      connection.sendGameCancelledServerShutDown();
-      connection.stop();
+          connection.sendGameCancelledServerShutDown();
+          connection.stop();
+          dispose();
         }
     );
 
@@ -47,7 +48,7 @@ public class ServerFrame extends JFrame {
     this.add(panel);
 
     setPreferredSize(new Dimension(200, 200));
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     pack();
   }
@@ -56,4 +57,5 @@ public class ServerFrame extends JFrame {
   public void dispose() {
     super.dispose();
   }
+
 }
