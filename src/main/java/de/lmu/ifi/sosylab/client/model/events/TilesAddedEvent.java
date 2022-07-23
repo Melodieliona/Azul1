@@ -11,6 +11,7 @@ public class TilesAddedEvent extends GameEvents {
 
   /**
    * Stores crucial information for the view.
+   *
    * @param color  of the tile
    * @param line where the tiles were placed
    * @param numberOfTiles that were placed

@@ -55,6 +55,7 @@ public class GameController {
     }.execute();
 
   }
+
   /**
    * Sends to the model the selected game mode.
    */
