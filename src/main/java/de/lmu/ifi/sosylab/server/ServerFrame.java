@@ -15,9 +15,6 @@ public class ServerFrame extends JFrame {
   @Serial
   private static final long serialVersionUID = 1L;
 
-  private transient JPanel panel;
-  private transient JButton stopServerButton;
-
   /**
    * Creates the frame of the server.
    *
@@ -26,9 +23,9 @@ public class ServerFrame extends JFrame {
   public ServerFrame(ServerNetworkConnection connection) {
     super("~ Azul Server ~");
 
-    panel = new JPanel(new GridLayout(1, 1, 0, 0));
+    final JPanel panel = new JPanel(new GridLayout(1, 1, 0, 0));
 
-    stopServerButton = new JButton("STOP");
+    final JButton stopServerButton = new JButton("STOP");
     stopServerButton.setBackground(Color.RED);
     stopServerButton.setOpaque(true);
     stopServerButton.setBorderPainted(false);
@@ -36,11 +33,10 @@ public class ServerFrame extends JFrame {
     stopServerButton.setMaximumSize(getSize());
 
     stopServerButton.addActionListener(e -> {
-          connection.sendGameCancelledServerShutDown();
-          connection.stop();
-          dispose();
-        }
-    );
+      connection.sendGameCancelledServerShutDown();
+      connection.stop();
+      dispose();
+    });
 
     panel.setBackground(Color.GRAY);
     panel.add(stopServerButton);
