@@ -1065,9 +1065,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       playerNames.clear();
       model.dispose();
       goBackToFirstCard();
+      playersInLobby.setText("Players waiting for game: ");
 
     } else if (newValue instanceof GameEndedEvent) {
-
+      playersInLobby.setText("Players waiting for game: ");
       String message = handleGameEndedEvent();
       JOptionPane.showMessageDialog(this, message,
               "Game Ended", JOptionPane.INFORMATION_MESSAGE);
