@@ -2,11 +2,31 @@ package de.lmu.ifi.sosylab.client.model;
 
 import static java.util.Objects.requireNonNull;
 
-import de.lmu.ifi.sosylab.client.model.events.*;
+import de.lmu.ifi.sosylab.client.model.events.BoardUpdatedEvent;
+import de.lmu.ifi.sosylab.client.model.events.FloorLineEvent;
+import de.lmu.ifi.sosylab.client.model.events.GameCancelRequestEvent;
+import de.lmu.ifi.sosylab.client.model.events.GameCanceledEvent;
+import de.lmu.ifi.sosylab.client.model.events.GameEndedEvent;
+import de.lmu.ifi.sosylab.client.model.events.GameEvents;
+import de.lmu.ifi.sosylab.client.model.events.GameRestartRequestEvent;
+import de.lmu.ifi.sosylab.client.model.events.GameRestartedEvent;
+import de.lmu.ifi.sosylab.client.model.events.LoggedInEvent;
+import de.lmu.ifi.sosylab.client.model.events.LoginFailedEvent;
+import de.lmu.ifi.sosylab.client.model.events.MiddleTilesUpdateEvent;
+import de.lmu.ifi.sosylab.client.model.events.NextPlayerEvent;
+import de.lmu.ifi.sosylab.client.model.events.OtherPlayerPlacedTilesEvent;
+import de.lmu.ifi.sosylab.client.model.events.OtherPlayerSelectedTilesEvent;
+import de.lmu.ifi.sosylab.client.model.events.TilePlacementFailedEvent;
+import de.lmu.ifi.sosylab.client.model.events.TileSelectionFailedEvent;
+import de.lmu.ifi.sosylab.client.model.events.TilesAddedEvent;
+import de.lmu.ifi.sosylab.client.model.events.TilesSelectedEvent;
+import de.lmu.ifi.sosylab.client.model.events.TimerEndedEvent;
+import de.lmu.ifi.sosylab.client.model.events.TimerEvent;
+import de.lmu.ifi.sosylab.client.model.events.UserJoinedEvent;
+import de.lmu.ifi.sosylab.client.model.events.UserLeftEvent;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -538,7 +558,8 @@ public class GameModel {
   /**
    * Gets the tiles plates.
    *
-   * @return an array of tile collections, index 0 is the floor of the factory, other indexes are the factory plates.
+   * @return an array of tile collections, index 0 is the floor of the factory,
+   *     other indexes are the factory plates.
    */
   public TileCollection[] getTilePlates() {
     return tilePlates;
