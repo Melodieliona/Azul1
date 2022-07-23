@@ -6,7 +6,6 @@ import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -138,6 +137,7 @@ public class GameModel {
    */
   public void placeTilesRequest(int numberOfTiles, int line) {
     if (selectedTiles.isEmpty()) {
+      //do nothing
     } else {
       connection.sendTilePlacement(numberOfTiles, line);
     }
@@ -292,6 +292,9 @@ public class GameModel {
     notifyListeners(new MiddleTilesUpdateEvent());
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void requestGameRestart() {
     String nickname;
     if (gameMode.equalsIgnoreCase("Hot seat")) {
@@ -315,16 +318,21 @@ public class GameModel {
     connection.sendGameCancelRequest(nickname);
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void cancelGame() {
     players.clear();
     System.out.println("Players size " + players.size());
     notifyListeners(new GameCanceledEvent());
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void restartGame() {
     selectedTiles.clear();
-    for (Player player :
-        players) {
+    for (Player player : players) {
       player.setScore(0);
       player.clearBoard();
     }
@@ -350,7 +358,7 @@ public class GameModel {
       players.add(new Player(this.nickname));
       for (String nickname : nicknames) {
         if (players.contains(new Player(nickname)) || nickname.trim().isEmpty()) {
-
+          //do nothing
         } else {
           players.add(new Player(nickname));
         }
@@ -372,7 +380,7 @@ public class GameModel {
    */
   public void userJoined(String name) {
     if (players.contains(new Player(name))) {
-
+      //do nothing
     } else {
       players.add(new Player(name));
     }
@@ -576,6 +584,9 @@ public class GameModel {
     return nicksFromWinners;
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public void clear() {
     gameMode = null;
     players.clear();
