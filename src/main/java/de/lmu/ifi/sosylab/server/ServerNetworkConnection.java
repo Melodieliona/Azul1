@@ -213,14 +213,14 @@ public class ServerNetworkConnection {
           e.printStackTrace();
         } finally {
           // Remove user
-          User removeUser = null;
+          User removedUser = null;
           for (User user : users) {
             if (clientNick.equals(user.getName())) {
-              removeUser = user;
+              removedUser = user;
               break;
             }
           }
-          users.remove(removeUser);
+          users.remove(removedUser);
 
           // Close the socket
           try {
@@ -230,8 +230,17 @@ public class ServerNetworkConnection {
           }
 
           // Inform other users
-          if (!(removeUser == null)) {
-            sendUserLeft(removeUser.getName());
+          if (!(removedUser == null)) {
+            sendUserLeft(removedUser.getName());
+
+            ArrayList<User> gameCancelledToUsers = new ArrayList<>();
+            for (User user : users) {
+              if(user.getGameNumber() == clientGameNumber) {
+                gameCancelledToUsers.add(user);
+              }
+            }
+            sendGameCancel(gameCancelledToUsers);
+
           }
         }
       }
