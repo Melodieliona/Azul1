@@ -638,6 +638,9 @@ public class ServerNetworkConnection {
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
       }
+
+      //TODO stop the server
+
     } catch (IOException e) {
       e.printStackTrace();
     }
