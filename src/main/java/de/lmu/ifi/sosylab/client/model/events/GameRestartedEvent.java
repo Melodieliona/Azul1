@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO JavaDoc
- * */
+ * Fired when the game is restarted.
+ */
 public class GameRestartedEvent extends GameEvents {
   @Override
   public String getName() {

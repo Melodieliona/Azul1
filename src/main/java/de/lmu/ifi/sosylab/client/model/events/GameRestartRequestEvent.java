@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO JavaDoc
- * */
+ * Fired when a request has been made to restart game.
+ */
 public class GameRestartRequestEvent extends GameEvents {
   private String nickname;
 

@@ -4,6 +4,7 @@ import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,6 @@ import javax.swing.SwingWorker;
  * The controller of the Azul-UI.
  */
 public class GameController {
-
 
 
   GameModel model;

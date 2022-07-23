@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Add JavaDoc
- * */
+ * Event to be fired when timer has ended.
+ */
 public class TimerEndedEvent extends GameEvents {
   @Override
   public String getName() {

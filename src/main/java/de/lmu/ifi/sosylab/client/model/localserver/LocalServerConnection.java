@@ -543,11 +543,8 @@ public class LocalServerConnection {
    * Stop the network-connection.
    */
   public void stop() {
-    System.out.println("clearing local game");
     game.dispose();
-    System.out.println("shuting down local");
     users.clear();
-    System.out.println("names are free");
     executorService.shutdownNow();
     try {
       socket.close();
@@ -572,8 +569,8 @@ public class LocalServerConnection {
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * Manages sending a game restart message.
+   */
   public void sendGameRestart() {
     try {
       JSONObject message = JsonMessage.gameRestart();

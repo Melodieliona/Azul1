@@ -4,7 +4,7 @@ import java.io.OutputStreamWriter;
 
 /**
  * Stores the data corresponding to a single user / connected client.
- * */
+ */
 
 public class User {
   private final String name;
@@ -13,7 +13,7 @@ public class User {
 
   /**
    * Represents a single Player.
-   * */
+   */
   protected User(String name, OutputStreamWriter writer, int gameNumber) {
     this.name = name;
     this.gameNumber = gameNumber;

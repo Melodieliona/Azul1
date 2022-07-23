@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Javadoc
- * */
+ * Event to be fired when a user has left.
+ */
 public class UserLeftEvent extends GameEvents {
   String userName;
 

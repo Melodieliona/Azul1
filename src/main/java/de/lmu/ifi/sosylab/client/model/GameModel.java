@@ -138,7 +138,7 @@ public class GameModel {
   /**
    * Sends a request to the server to place tiles.
    *
-   * @param line          desired row/line to place tiles
+   * @param line desired row/line to place tiles
    */
   public void placeTilesRequest(int line) {
     if (selectedTiles.isEmpty()) {
@@ -566,8 +566,8 @@ public class GameModel {
     }
   }
 
-  public void resetValidRows(){
-    validRows = new int [0];
+  public void resetValidRows() {
+    validRows = new int[0];
   }
 
   /**

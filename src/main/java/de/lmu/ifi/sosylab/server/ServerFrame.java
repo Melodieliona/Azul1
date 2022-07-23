@@ -19,8 +19,10 @@ public class ServerFrame extends JFrame {
   private transient JButton stopServerButton;
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * Creates the frame of the server.
+   *
+   * @param connection the ServerNetworkConnection
+   */
   public ServerFrame(ServerNetworkConnection connection) {
     super("~ Azul Server ~");
 

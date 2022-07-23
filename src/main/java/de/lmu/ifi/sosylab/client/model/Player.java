@@ -3,10 +3,11 @@ package de.lmu.ifi.sosylab.client.model;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.util.Objects;
 
 /**
- * TODO Javadoc
+ * A given player. This class is to be used to manage all information relevant for the players.
  */
 public class Player {
 
@@ -17,7 +18,9 @@ public class Player {
   private int score;
 
   /**
-   * TODO Javadoc
+   * Constructor of the class.
+   *
+   * @param name nickname of the player.
    */
   public Player(String name) {
     playerName = name;
@@ -26,7 +29,11 @@ public class Player {
   }
 
   /**
-   * TODO Javadoc
+   * Places tiles in the board of a player.
+   *
+   * @param line          the line in which the tiles should be placed
+   * @param color         the color of the tiles
+   * @param numberOfTiles amount of tiles
    */
   public void placeTiles(int line, String color, int numberOfTiles) {
     TileCollection tiles = new TileCollection();
@@ -34,25 +41,49 @@ public class Player {
     board.getLayingRow(line).layTilesOnRow(tiles);
   }
 
+  /**
+   * Gets the nickname of the player.
+   *
+   * @return the nickname
+   */
   public String getPlayerName() {
     return playerName;
   }
 
+  /**
+   * Gets the board of the player.
+   *
+   * @return the board
+   */
   public GameBoard getBoard() {
     return board;
   }
 
+  /**
+   * Gets the score of the player.
+   *
+   * @return the score
+   */
   public int getScore() {
     return score;
   }
 
+  /**
+   * Sets the score of the player.
+   *
+   * @param score score to be set
+   */
   public void setScore(int score) {
     this.score = score;
   }
 
+  /**
+   * Clears the board of the player.
+   */
   public void clearBoard() {
     this.board = new GameBoard(this.playerName);
   }
+
 
   @Override
   public int hashCode() {

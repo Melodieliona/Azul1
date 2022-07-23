@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Javadoc
- * */
+ * Event to be fired when the tile placement failed.
+ */
 public class TilePlacementFailedEvent extends
     GameEvents {
 

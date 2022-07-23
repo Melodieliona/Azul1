@@ -495,7 +495,7 @@ public class Game {
       }
     }
 
-    int[] clickableRows = new int[rowList.size()+1];
+    int[] clickableRows = new int[rowList.size() + 1];
     int i = 0;
     for (int row : rowList) {
       clickableRows[i] = row;
@@ -521,7 +521,9 @@ public class Game {
   }
 
   /**
-   * Returns a players game board.
+   * Gets the board.
+   *
+   * @return a players game board.
    */
   private GameBoard getPlayersGameBoard(String playerName) {
     GameBoard gameBoard = null;
@@ -558,7 +560,7 @@ public class Game {
   }
 
   /**
-   * Disposes the model.
+   * Disposes the game.
    */
   void dispose() {
     clear();

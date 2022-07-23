@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Javadoc
- * */
+ * Event to be fired when tiles have been placed.
+ */
 public class TilesAddedEvent extends GameEvents {
   private String color;
   private int line;
@@ -11,7 +11,7 @@ public class TilesAddedEvent extends GameEvents {
 
   /**
    * TODO Javadoc
-   * */
+   */
   public TilesAddedEvent(String color, int line, int numberOfTiles, int minuspoints) {
     this.color = color;
     this.line = line;

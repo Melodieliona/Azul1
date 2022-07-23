@@ -2,7 +2,7 @@ package de.lmu.ifi.sosylab.shared;
 
 /**
  * A game board containing the score, tile wall and laying rows of one player.
- * */
+ */
 public class GameBoard {
 
   // rows / columns start with 0
@@ -20,7 +20,7 @@ public class GameBoard {
 
   /**
    * Initializes one game board.
-   * */
+   */
   public GameBoard(String playerName) {
     this.playerName = playerName;
     currentScore = 0;
@@ -37,7 +37,7 @@ public class GameBoard {
 
   /**
    * Puts a tile of given color at the right spot on a wall row.
-   * */
+   */
   public void layWallTile(int row, Tile color) {
     tileWall[getLayingRow(row).columnOfColor(color)][row] = color;
   }
@@ -45,7 +45,7 @@ public class GameBoard {
   /**
    * Adds selected tiles to the floor line. Returns all tiles that didn't fit on the floor line.
    * Updates minus points after new tiles are placed on the floor line.
-   * */
+   */
   public TileCollection addToFloorLine(TileCollection floorLineTiles) {
     TileCollection tilesDidntFit = new TileCollection();
     for (Tile tile : floorLineTiles) {
@@ -62,16 +62,16 @@ public class GameBoard {
   /**
    * Calculates plus points after every round and adds them to 'pluspoints'.
    * Update the current score.
-   * */
+   */
   public void updatePlusPoints(int row, int column) {
 
     // Check if placed tile is part of a row
     boolean isPartOfRow = (((column + 1 < 5) && (tileWall[column + 1][row] != null))
-                          || ((column - 1 >= 0) && (tileWall[column - 1][row] != null)));
+        || ((column - 1 >= 0) && (tileWall[column - 1][row] != null)));
 
     //Check if placed tile is part of a column
     boolean isPartOfColumn = (((row + 1 < 5) && (tileWall[column][row + 1] != null))
-                             || ((row - 1 >= 0) && (tileWall[column][row - 1] != null)));
+        || ((row - 1 >= 0) && (tileWall[column][row - 1] != null)));
 
     if (isPartOfRow) {
       // Add points for rows
@@ -112,7 +112,7 @@ public class GameBoard {
   /**
    * Sets the minus points for the current amount of tiles on the floor line.
    * Updates the current score.
-   * */
+   */
   private void subtractMinusPoints() {
     int minusPoints;
     switch (floorLine.size()) {
@@ -125,7 +125,7 @@ public class GameBoard {
       case 6 -> minusPoints = 11;
       case 7 -> minusPoints = 14;
       default -> throw new IllegalArgumentException("Tried to set minus points for more than 7 "
-        + "tiles on the floor line. 7 tiles is the maximum amount.");
+          + "tiles on the floor line. 7 tiles is the maximum amount.");
     }
 
     //Update current score
@@ -139,19 +139,15 @@ public class GameBoard {
    * Subtracts minus-points from plus-points and clears the floor line.
    *
    * @return The removed tiles
-   * */
+   */
   public TileCollection clearFloorLine() {
     subtractMinusPoints();
     return floorLine.removeAllTiles();
   }
 
-  public void clearTileWall() {
-    tileWall = new Tile[5][5];
-  }
-
   /**
    * Returns this game board's tile wall.
-   * */
+   */
   public Tile[][] getTileWall() {
     //TODO Test if copy is correct
     return tileWall;
@@ -159,14 +155,14 @@ public class GameBoard {
 
   /**
    * Returns the requested laying row.
-   * */
+   */
   public LayingRow getLayingRow(int row) {
     return layingRows[row];
   }
 
   /**
    * Returns all laying rows.
-   * */
+   */
   public LayingRow[] getLayingRows() {
     return layingRows;
   }
@@ -241,7 +237,7 @@ public class GameBoard {
 
   /**
    * Returns the current (the final at the time this method gets invoked) score of this player.
-   * */
+   */
   public int getCurrentScore() {
     return currentScore;
   }
@@ -253,13 +249,11 @@ public class GameBoard {
     return playerName;
   }
 
+  /**
+   * Returns the floorline.
+   */
   public TileCollection getFloorLine() {
     return floorLine;
   }
-
-  public void setCurrentScore(int points) {
-    currentScore = points;
-  }
-
 
 }

@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Javadoc
- * */
+ * To be fired when the logIn was successful.
+ */
 public class LoggedInEvent extends GameEvents {
   @Override
   public String getName() {

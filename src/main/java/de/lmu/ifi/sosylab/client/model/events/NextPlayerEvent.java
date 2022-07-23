@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Add JavaDoc
- * */
+ * To be fired when a next player has been declared.
+ */
 public class NextPlayerEvent extends GameEvents {
 
   private String nextPlayer;

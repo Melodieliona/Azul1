@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Javadoc
- * */
+ * Event to be fired when another player has placed tiles.
+ */
 public class OtherPlayerPlacedTilesEvent extends GameEvents {
   private String color;
   private int numberOfTiles;
@@ -11,8 +11,14 @@ public class OtherPlayerPlacedTilesEvent extends GameEvents {
   private String name;
 
   /**
-   * TODO Javadoc
-   * */
+   * Constructor.
+   *
+   * @param color         color of tiles
+   * @param line          line
+   * @param minuspoints   minuspoints
+   * @param name          name of player
+   * @param numberOfTiles amount of tiles
+   */
   public OtherPlayerPlacedTilesEvent(
       String name, String color, int numberOfTiles, int line, int minuspoints) {
     this.name = name;

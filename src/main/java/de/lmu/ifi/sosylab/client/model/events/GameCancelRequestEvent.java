@@ -2,7 +2,7 @@ package de.lmu.ifi.sosylab.client.model.events;
 
 /**
  * This event is fired when
- * */
+ */
 public class GameCancelRequestEvent extends GameEvents {
   private String nickname;
 

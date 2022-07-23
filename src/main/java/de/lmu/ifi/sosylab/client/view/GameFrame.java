@@ -46,7 +46,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private static final String TIMERUPDATE_CARD = "resartedTimer";
   private static final String LOGINNAMES_CARD = "loginNames";
   private static final String WAIT_CARD = "wait";
-  private static final String[] songList = {"MUSIC","CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
+  private static final String[] songList = {"MUSIC", "CHILL BEAT", "RETRO CITY", "MELODIC RHYTHM"};
   private static TileCollection[] collection;
   private int tileSize = 25;
   JLabel loginLabel;
@@ -104,7 +104,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @param model      The {@link GameModel} that handles the logic of the game.
    * @param controller The {@link GameController} that validates and forwards any user input.
    */
-  public GameFrame(GameController controller, GameModel model) throws IOException {
+  public GameFrame(GameController controller, GameModel model) {
     super("~ Azul ~");
 
     this.controller = requireNonNull(controller);
@@ -129,7 +129,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   /**
    * Enables Player to choose music in home screen.
-   *
    */
   public static void playMusic(String path) {
     Thread musicThread = new Thread(() ->
@@ -149,6 +148,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     });
     musicThread.start();
   }
+
   /**
    * Sets what cars is visible at the moment.
    */
@@ -578,7 +578,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     gameField.add(boards, BorderLayout.CENTER);
 
 
-
     return gameField;
   }
 
@@ -622,12 +621,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     return settings;
   }
 
-private class itemListener implements ItemListener{
+  private class itemListener implements ItemListener {
 
-  @Override
-  public void itemStateChanged(ItemEvent e) {
+    @Override
+    public void itemStateChanged(ItemEvent e) {
       String item = ((JRadioButton) e.getSource()).getName();
-      if(item.equals("STANDARD") || item.equals("WINTER")){
+      if (item.equals("STANDARD") || item.equals("WINTER")) {
         images = new Images(item);
         createGameView();
       } else {
@@ -641,12 +640,12 @@ private class itemListener implements ItemListener{
       gameField.removeAll();
       createGameView();
       repaint();
+    }
   }
-}
 
   private Component setWindow() {
     settingWindow = new JFrame();
-    settingWindow.setLayout(new GridLayout(0,1));
+    settingWindow.setLayout(new GridLayout(0, 1));
     settingWindow.setVisible(true);
     settingWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     settingWindow.setSize(new Dimension(400, 150));
@@ -684,7 +683,7 @@ private class itemListener implements ItemListener{
     return settingWindow;
   }
 
-  private void setSkin(){
+  private void setSkin() {
     JPanel radioPanel = new JPanel();
 
     JLabel skin = new JLabel("Set Game Skin: ");
@@ -705,7 +704,7 @@ private class itemListener implements ItemListener{
     skins.add(standard);
     skins.add(winter);
 
-    settingWindow.add(radioPanel,1 );
+    settingWindow.add(radioPanel, 1);
   }
 
   /**
@@ -776,8 +775,8 @@ private class itemListener implements ItemListener{
 
   private boolean confirmTileSelection(int plateNumber, String tile, int amount, String playerName) {
 
-    if (controller.getGameMode().equals(MULTIPLAYER)){
-      if(!controller.getCurrentPlayer().equals(controller.getNickname())){
+    if (controller.getGameMode().equals(MULTIPLAYER)) {
+      if (!controller.getCurrentPlayer().equals(controller.getNickname())) {
 
         JOptionPane.showMessageDialog(this, "Selection Failed. It is not your turn, wait for your turn!", "Error!", JOptionPane.ERROR_MESSAGE);
         return false;

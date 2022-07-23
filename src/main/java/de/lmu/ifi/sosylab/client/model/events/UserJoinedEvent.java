@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Javadoc
- * */
+ * Event to be fired when a user has joined.
+ */
 public class UserJoinedEvent extends GameEvents {
   String userName;
 

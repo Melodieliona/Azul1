@@ -1,8 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.events;
 
 /**
- * TODO Javadoc
- * */
+ * Event to be fired when tiles have been selected.
+ */
 public class TilesSelectedEvent extends GameEvents {
 
   private int source;
@@ -10,8 +10,12 @@ public class TilesSelectedEvent extends GameEvents {
   private int numberOfTiles;
 
   /**
-   * TODO Javadoc
-   * */
+   * Constructor.
+   *
+   * @param source        source plate
+   * @param color         color of tiles
+   * @param numberOfTiles amount of tiles
+   */
   public TilesSelectedEvent(int source, String color, int numberOfTiles) {
     this.source = source;
     this.color = color;

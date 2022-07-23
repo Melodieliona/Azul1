@@ -3,6 +3,7 @@ package de.lmu.ifi.sosylab.client.model.localserver;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -512,6 +513,9 @@ public class LocalGame {
     return gameBoard;
   }
 
+  /**
+   * Clear collections in the class.
+   */
   private void clear() {
     for (TileCollection tiles : tilePlates) {
       tiles.clear();
@@ -523,6 +527,9 @@ public class LocalGame {
     currentSelection.clear();
   }
 
+  /**
+   * Disposes the game.
+   */
   void dispose() {
     clear();
     cancelRequests = 0;

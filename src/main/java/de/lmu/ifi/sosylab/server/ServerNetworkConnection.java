@@ -235,7 +235,7 @@ public class ServerNetworkConnection {
 
             ArrayList<User> gameCancelledToUsers = new ArrayList<>();
             for (User user : users) {
-              if(user.getGameNumber() == clientGameNumber) {
+              if (user.getGameNumber() == clientGameNumber) {
                 gameCancelledToUsers.add(user);
               }
             }
@@ -621,7 +621,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
       int gameNumber = userList.get(0).getGameNumber();
-      games.remove(gameNumber-1);
+      games.remove(gameNumber - 1);
       users.removeAll(userList);
     } catch (IOException e) {
       e.printStackTrace();
@@ -824,10 +824,12 @@ public class ServerNetworkConnection {
    * Stop the network-connection.
    */
   public void stop() {
-    System.out.println("shuting down remote");
+    for (Game game :
+        games) {
+      game.dispose();
+    }
     users.clear();
     games.clear();
-    System.out.println("all names are free");
     executorService.shutdownNow();
     try {
       serverSocket.close();

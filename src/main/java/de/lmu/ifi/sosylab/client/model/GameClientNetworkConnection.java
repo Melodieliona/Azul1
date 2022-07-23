@@ -1,6 +1,7 @@
 package de.lmu.ifi.sosylab.client.model;
 
 import de.lmu.ifi.sosylab.shared.JsonMessage;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -75,7 +77,7 @@ public class GameClientNetworkConnection {
    * Sets up connection.
    *
    * @param socket of the established connection
-   * @throws IOException
+   * @throws IOException exception
    */
   private synchronized void setupConnection(Socket socket) throws IOException {
     this.socket = socket;
@@ -88,7 +90,6 @@ public class GameClientNetworkConnection {
 
   /**
    * Tries to read input from server.
-   *
    */
   private void doInputLoop() {
     while (!Thread.currentThread().isInterrupted()) {
@@ -412,7 +413,7 @@ public class GameClientNetworkConnection {
   public void sendTileSelection(int source, String color, int numberOfTiles) {
     JSONObject tileSelection = JsonMessage.selectTile(color, source);
     send(tileSelection);
-    System.out.println("Selection: Plate: "+source+", Color: "+color+" made.");
+    System.out.println("Selection: Plate: " + source + ", Color: " + color + " made.");
   }
 
   /**

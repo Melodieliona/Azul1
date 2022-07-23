@@ -3,6 +3,7 @@ package de.lmu.ifi.sosylab.shared;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -209,6 +210,7 @@ public enum JsonMessage {
   /**
    * Creates a message to be sent when a player wants to send a game restart request.
    *
+   * @param nickname of the player
    * @return JsonMessage to be sent
    */
   public static JSONObject gameRestartRequest(String nickname) {
@@ -224,6 +226,7 @@ public enum JsonMessage {
   /**
    * Creates a message to be sent when a player wants to send a game cancel request.
    *
+   * @param nickname of the player
    * @return JsonMessage to be sent
    */
   public static JSONObject gameCancelRequest(String nickname) {
@@ -241,7 +244,7 @@ public enum JsonMessage {
    *
    * @param endScores end scores of the players
    * @param usernames usernames of the players
-   * @param winners winners
+   * @param winners   winners
    */
   public static JSONObject gameEndedMessage(int[] endScores, ArrayList<String> winners,
                                             ArrayList<String> usernames) {
@@ -261,6 +264,8 @@ public enum JsonMessage {
 
   /**
    * Creates the message to be sent to all players when the game has been canceled.
+   *
+   * @return the message
    */
   public static JSONObject gameCancel() {
     try {
@@ -272,8 +277,10 @@ public enum JsonMessage {
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * Creates the message to be sent to all players when the game has been restarted.
+   *
+   * @return the message
+   */
   public static JSONObject gameRestart() {
     try {
       JSONObject message = createMessageOfType(GAME_RESTART);
@@ -393,7 +400,10 @@ public enum JsonMessage {
   }
 
   /**
-   * TODO Add JavaDoc
+   * Gets the floortiles out of the JsonMessage.
+   *
+   * @param object the JSONObject
+   * @return the floortiles
    */
   public static String getFloorTile(JSONObject object, int index) {
     try {
@@ -404,7 +414,10 @@ public enum JsonMessage {
   }
 
   /**
-   * TODO Add JavaDoc
+   * Gets the amounts of tiles out of the JsonMessage.
+   *
+   * @param object the JSONObject
+   * @return the winners
    */
   public static String getAmounts(JSONObject object) {
     try {
@@ -415,7 +428,10 @@ public enum JsonMessage {
   }
 
   /**
-   * TODO Add JavaDoc
+   * Gets the winners of the game out of the JsonMessage.
+   *
+   * @param object the JSONObject
+   * @return the winners
    */
   public static String getWinners(JSONObject object) {
     try {
@@ -424,8 +440,6 @@ public enum JsonMessage {
       throw new IllegalArgumentException("Failed to read a json object.", e);
     }
   }
-
-
 
 
   /**
