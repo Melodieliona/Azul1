@@ -103,7 +103,7 @@ public class Game {
    * Put start marker in the middle.
    */
   private void fillPlates() {
-    for (int i = 0; i < tilePlates.length; ++i) {
+    for (int i = 1; i < tilePlates.length; ++i) {
       tilePlates[i] = bag.drawTiles(4);
       // Check if all plates are full.
       // If not, refill bag with the trash and fill up plates with tiles from the bag.
