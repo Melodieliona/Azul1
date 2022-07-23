@@ -145,7 +145,7 @@ public class GameBoard {
     return floorLine.removeAllTiles();
   }
 
-  public void clearTileWall(){
+  public void clearTileWall() {
     tileWall = new Tile[5][5];
   }
 

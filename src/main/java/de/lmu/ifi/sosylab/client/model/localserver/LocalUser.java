@@ -1,7 +1,5 @@
 package de.lmu.ifi.sosylab.client.model.localserver;
 
-import de.lmu.ifi.sosylab.client.model.Player;
-
 import java.util.Objects;
 
 /**

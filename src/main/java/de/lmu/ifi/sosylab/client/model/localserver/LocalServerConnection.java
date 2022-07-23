@@ -569,7 +569,9 @@ public class LocalServerConnection {
     }
   }
 
-
+  /**
+   * TODO Add JavaDoc
+   * */
   public void sendGameRestart() {
     try {
       JSONObject message = JsonMessage.gameRestart();

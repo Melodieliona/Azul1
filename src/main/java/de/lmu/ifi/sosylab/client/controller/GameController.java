@@ -104,10 +104,13 @@ public class GameController {
   }
 
   public Player getPlayer(int player) {
-
     return model.getPlayers().get(player);
   }
-  public ArrayList<Player> getPlayers(){return model.getPlayers(); }
+
+  public ArrayList<Player> getPlayers() {
+    return model.getPlayers();
+  }
+
   public int[] getValidRow() {
     return model.getValidRows();
   }

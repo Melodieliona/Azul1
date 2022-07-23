@@ -1,10 +1,8 @@
 package de.lmu.ifi.sosylab.client.model.localserver;
 
 import de.lmu.ifi.sosylab.shared.GameBoard;
-import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -492,9 +490,8 @@ public class LocalGame {
     return gameBoard;
   }
 
-  private void clear(){
-    for (TileCollection tiles:
-        tilePlates) {
+  private void clear() {
+    for (TileCollection tiles : tilePlates) {
       tiles.clear();
     }
     userList.clear();

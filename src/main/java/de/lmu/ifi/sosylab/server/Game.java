@@ -1,6 +1,5 @@
 package de.lmu.ifi.sosylab.server;
 
-import de.lmu.ifi.sosylab.client.model.localserver.LocalUser;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;

@@ -50,8 +50,8 @@ public class Player {
     this.score = score;
   }
 
-  public void clearBoard(){
-    this.board=new GameBoard(this.playerName);
+  public void clearBoard() {
+    this.board = new GameBoard(this.playerName);
   }
 
   @Override

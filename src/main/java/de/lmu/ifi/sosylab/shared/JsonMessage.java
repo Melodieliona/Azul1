@@ -271,6 +271,9 @@ public enum JsonMessage {
     }
   }
 
+  /**
+   * TODO Add JavaDoc
+   * */
   public static JSONObject gameRestart() {
     try {
       JSONObject message = createMessageOfType(GAME_RESTART);
