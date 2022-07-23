@@ -6,6 +6,7 @@ import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -136,7 +137,7 @@ public class GameModel {
    * @param line          desired row/line to place tiles
    */
   public void placeTilesRequest(int numberOfTiles, int line) {
-    if(selectedTiles.isEmpty()) {
+    if (selectedTiles.isEmpty()) {
     } else {
       connection.sendTilePlacement(numberOfTiles, line);
     }
@@ -316,14 +317,14 @@ public class GameModel {
 
   public void cancelGame() {
     players.clear();
-    System.out.println("Players size "+players.size());
+    System.out.println("Players size " + players.size());
     notifyListeners(new GameCanceledEvent());
   }
 
   public void restartGame() {
     selectedTiles.clear();
-    for (Player player:
-         players) {
+    for (Player player :
+        players) {
       player.setScore(0);
       player.clearBoard();
     }
@@ -370,11 +371,11 @@ public class GameModel {
    * Notifies the subscribed view that a new player joined the game.
    */
   public void userJoined(String name) {
-      if (players.contains(new Player(name)) || nickname.trim().isEmpty()) {
+    if (players.contains(new Player(name))) {
 
-      } else {
-        players.add(new Player(name));
-      }
+    } else {
+      players.add(new Player(name));
+    }
 
     notifyListeners(new UserJoinedEvent(name));
   }

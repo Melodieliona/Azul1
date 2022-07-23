@@ -5,6 +5,7 @@ import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +15,9 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +29,10 @@ public class ServerNetworkConnection {
 
   private final ServerNetworkConnection connection;
 
+  private final ServerSocket serverSocket;
+
+  private final ExecutorService executorService;
+
   List<User> users;
 
   List<Game> games;
@@ -34,10 +42,12 @@ public class ServerNetworkConnection {
   /**
    * Initializes the User list, which stores all clients that are currently connected.
    */
-  public ServerNetworkConnection() {
+  public ServerNetworkConnection() throws IOException {
     users = new ArrayList<>();
     games = new ArrayList<>();
     connection = this;
+    executorService = Executors.newCachedThreadPool();
+    serverSocket = new ServerSocket(port);
   }
 
   /**
@@ -46,23 +56,14 @@ public class ServerNetworkConnection {
    */
   public void start() {
 
-    ServerSocket serverSocket;
-    try {
-      serverSocket = new ServerSocket(port);
-    } catch (IOException e) {
-      System.out.println("Cannot create socket with port " + port + ".\n"
-          + "Likely the port is already in use.");
-      return;
-    }
-
     Thread acceptThread = new Thread(() -> {
-      Socket socket;
+      Socket clientSocket;
       try {
         try {
           while (true) {
-            socket = serverSocket.accept();
+            clientSocket = serverSocket.accept();
             // Start thread for every new client
-            startHandler(socket);
+            startHandler(clientSocket);
           }
         } finally {
           serverSocket.close();
@@ -101,7 +102,7 @@ public class ServerNetworkConnection {
 
 
           while (keepReading) {
-
+            //String clientNick;
             // Wait for a single message from the client.
             // If readLine is null, means that socket is closed / client disconnected.
             JSONObject jsonObject;
@@ -202,6 +203,8 @@ public class ServerNetworkConnection {
               }
 
               default -> {
+                sendInvalidJsonError(clientNick);
+                break;
               }
             }
           }
@@ -234,6 +237,26 @@ public class ServerNetworkConnection {
     };
 
     newConnectionThread.start();
+  }
+
+  /**
+   * Tells client that it sent an invalid json message.
+   */
+  private void sendInvalidJsonError(String clientNick) {
+    try {
+      JSONObject sendLoginSuccessJson = new JSONObject();
+      sendLoginSuccessJson.put("type", "invalid json");
+      for (User user :
+          users) {
+        if (user.getName().equals(clientNick)) {
+          user.getWriter().write(sendLoginSuccessJson + System.lineSeparator());
+          user.getWriter().flush();
+        }
+      }
+
+    } catch (IOException | JSONException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -597,7 +620,7 @@ public class ServerNetworkConnection {
 
   /**
    * Sends a message to the client when the game was cancelled.
-   * */
+   */
   public void sendGameCancel(List<User> userList) {
     try {
       for (User user : userList) {
@@ -615,7 +638,7 @@ public class ServerNetworkConnection {
 
   /**
    * Sends a message to the client when the game was restarted.
-   * */
+   */
   public void sendGameRestart(List<User> userList) {
     try {
       for (User user : userList) {
@@ -658,6 +681,7 @@ public class ServerNetworkConnection {
         JSONObject message = JsonMessage.gameCancelRequest(nickname);
         user.getWriter().write(message + System.lineSeparator());
         user.getWriter().flush();
+        stop();
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -789,10 +813,18 @@ public class ServerNetworkConnection {
 
   /**
    * Stop the network-connection.
-   * Unused in this implementation.
    */
   public void stop() {
-    // stop connection
+    System.out.println("shuting down remote");
+    users.clear();
+    games.clear();
+    System.out.println("all names are free");
+    executorService.shutdownNow();
+    try {
+      serverSocket.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 

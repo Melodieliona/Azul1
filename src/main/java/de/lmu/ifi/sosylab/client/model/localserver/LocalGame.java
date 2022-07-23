@@ -229,20 +229,37 @@ public class LocalGame {
     }
   }
 
-
+  /**
+   * Remembers the amount of players that want the game to be cancelled.
+   * Sends the corresponding message if all players.
+   *
+   * @param nick the nick of the player that made the request.
+   */
   public void handleGameCancelRequest(String nick) {
     sendGameCancel();
   }
 
+  /**
+   * Remembers the amount of players that want the game to be restarted.
+   * Sends the corresponding message if all players.
+   *
+   * @param nick the nick of the player that made the request.
+   */
   public void handleGameRestartRequest(String nick) {
     userList.clear();
     sendGameRestart();
   }
 
+  /**
+   * Sends game restart message.
+   */
   private void sendGameRestart() {
     connection.sendGameRestart();
   }
 
+  /**
+   * Sends game cancel message.
+   */
   private void sendGameCancel() {
     connection.sendGameCancel();
     connection.stop();
@@ -378,6 +395,11 @@ public class LocalGame {
     connection.sendTilePlacement(currentPlayer, color, amount, layingRow);
   }
 
+  /**
+   * Sends that tiles have been placed on the minus points line.
+   *
+   * @param leftOverTiles the tiles placed/
+   */
   private void sendFloorLinePlacement(TileCollection leftOverTiles) {
     LocalUser currentPlayer = userList.get(this.currentPlayer);
     connection.sendFloorLineUpdate(currentPlayer, leftOverTiles);
@@ -507,7 +529,6 @@ public class LocalGame {
     currentSelectionSource = -1;
     startsAtNextRound = null;
   }
-
 
 
 }

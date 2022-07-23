@@ -1,5 +1,7 @@
 package de.lmu.ifi.sosylab.server;
 
+import java.io.IOException;
+
 /**
  * Starts the remote Azul server.
  */
@@ -8,7 +10,7 @@ public class GameServer {
   /**
    * Launch the game server.
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     final ServerNetworkConnection connection = new ServerNetworkConnection();
     connection.start();
 

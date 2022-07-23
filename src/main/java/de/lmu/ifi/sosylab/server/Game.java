@@ -3,6 +3,7 @@ package de.lmu.ifi.sosylab.server;
 import de.lmu.ifi.sosylab.shared.GameBoard;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +54,7 @@ public class Game {
    * Initializes all necessary data for a game with a given amount of users.
    */
   public Game(int gameNumber, List<User> userList, ServerNetworkConnection connection) {
-    this.userList = List.copyOf(userList);
+    this.userList = new ArrayList<>(userList);
     this.gameNumber = gameNumber;
     this.connection = connection;
     cancelRequests = 0;
@@ -102,6 +103,8 @@ public class Game {
    * Put start marker in the middle.
    */
   private void fillPlates() {
+    tilePlates[0].add(Tile.STARTING_MARKER);
+
     for (int i = 1; i < tilePlates.length; ++i) {
       tilePlates[i] = bag.drawTiles(4);
       // Check if all plates are full.
@@ -116,7 +119,6 @@ public class Game {
         }
       }
     }
-    tilePlates[0].add(Tile.STARTING_MARKER);
   }
 
   /**
@@ -126,7 +128,7 @@ public class Game {
   protected void handleTileSelection(String playerName, int source, Tile color) {
 
     int amount = tilePlates[source].getAmountTilesOfColor(color);
-    if (amount > 0 && !currentSelection.isEmpty()) {
+    if (amount > 0 && currentSelection.isEmpty()) {
 
       // Add starting marker to selection if it's the first pick out of the middle.
       if (source == 0 && tilePlates[0].contains(Tile.STARTING_MARKER)) {
@@ -212,29 +214,33 @@ public class Game {
       //for debugging
       //connection.sendBoardUpdate(userList ,gameBoards);
 
-      // If at lease one tile is left on plates or the middle, let the next player make a move.
-      boolean everythingEmpty = true;
-      for (TileCollection tilePlate : tilePlates) {
-        if (!tilePlate.isEmpty()) {
-          everythingEmpty = false;
-          setAndSendNextPlayer();
-          break;
-        }
-      }
-
-      if (everythingEmpty) {
-        endRound();
-      }
 
     } else {
       sendInvalidPlacement(userList.get(currentPlayer).getName());
+      return;
+    }
+
+    // If at lease one tile is left on plates or the middle, let the next player make a move.
+    boolean everythingEmpty = true;
+    for (TileCollection tilePlate : tilePlates) {
+      if (!tilePlate.isEmpty()) {
+        everythingEmpty = false;
+        setAndSendNextPlayer();
+        break;
+      }
+    }
+
+    if (everythingEmpty) {
+      endRound();
     }
   }
 
   /**
    * Remembers the amount of players that want the game to be cancelled.
    * Sends the corresponding message if all players.
-   * */
+   *
+   * @param nick the nick of the player that made the request.
+   */
   public void handleGameCancelRequest(String nick) {
     if (!usersWantCancel.contains(nick)) {
       usersWantCancel.add(nick);
@@ -251,6 +257,8 @@ public class Game {
   /**
    * Remembers the amount of players that want the game to be restarted.
    * Sends the corresponding message if all players.
+   *
+   * @param nick the nick of the player that made the request.
    */
 
   public void handleGameRestartRequest(String nick) {
@@ -260,7 +268,7 @@ public class Game {
       connection.sendGameRestartRequest(userList, nick);
     }
 
-    if (cancelRequests == userList.size() - 1) {
+    if (restartRequests == userList.size() - 1) {
       sendGameRestart();
     }
   }
@@ -286,9 +294,10 @@ public class Game {
    * Calculates the score of every player,
    * starts a new round, fills all plates and the center,
    * notifies the next player (who had the start marker).
-   * */
+   */
   private void endRound() {
     cancelRequests = 0;
+    restartRequests = 0;
     usersWantCancel.clear();
     usersWantRestart.clear();
     // Laying tiles on wall, clearing layingRows accordingly and put left over tiles in the trash
@@ -348,7 +357,7 @@ public class Game {
 
   /**
    * Refills tile plates with tiles from the bag and lets the next player make a move.
-   * */
+   */
   private void startNewRound() {
 
     fillPlates();
@@ -370,21 +379,21 @@ public class Game {
 
   /**
    * Sends an Error message to a user if the made selection was invalid.
-   * */
+   */
   private void sendInvalidSelection(String user) {
     connection.sendInvalidSelectionMessage(getUser(user));
   }
 
   /**
    * Sends an Error message to a user if the made placement was invalid.
-   * */
+   */
   private void sendInvalidPlacement(String user) {
     connection.sendInvalidPlacementMessage(getUser(user));
   }
 
   /**
    * Informs all players of a successfully made tile selection.
-   * */
+   */
   private void sendSuccessfulSelection(int tilePlate, Tile color, int amount) {
     String currentPlayer = userList.get(this.currentPlayer).getName();
 
@@ -393,15 +402,26 @@ public class Game {
 
   /**
    * Informs all players of a successfully made tile placement.
-   * */
+   */
   private void sendSuccessfulPlacement(TileCollection tileSelection, int layingRow) {
     String currentPlayer = userList.get(this.currentPlayer).getName();
-    Tile color = tileSelection.get(0);
+    Tile color;
     int amount = tileSelection.size();
+
+    if (amount > 0) {
+      color = tileSelection.get(0);
+    } else {
+      color = Tile.STARTING_MARKER;
+    }
 
     connection.sendTilePlacement(userList, currentPlayer, color, amount, layingRow);
   }
 
+  /**
+   * Sends that tiles have been placed on the minus points line.
+   *
+   * @param leftOverTiles the tiles placed/
+   */
   private void sendFloorLinePlacement(TileCollection leftOverTiles) {
     User currentPlayer = userList.get(this.currentPlayer);
     connection.sendFloorLineUpdate(userList, currentPlayer, leftOverTiles);
@@ -412,7 +432,7 @@ public class Game {
    * next.
    */
   private void setAndSendNextPlayer() {
-    if (currentPlayer == userList.size()) {
+    if (currentPlayer == userList.size() - 1) {
       currentPlayer = 0;
     } else {
       currentPlayer++;
@@ -430,19 +450,19 @@ public class Game {
 
   /**
    * Moves tiles, that are left on a plate after a selection was made, to the middle.
-   * */
+   */
   private void moveTilesToMiddle() {
     if (currentSelectionSource != 0) {
       int amountOfLeftTiles = tilePlates[currentSelectionSource].size();
       for (int i = 0; i < amountOfLeftTiles; i++) {
-        tilePlates[0].add(tilePlates[currentSelectionSource].remove(i));
+        tilePlates[0].add(tilePlates[currentSelectionSource].remove(0));
       }
     }
   }
 
   /**
    * Determines if at least one player has completed a wall row.
-   * */
+   */
   private boolean hasCompletedWallRow() {
     boolean playerHasFullWallRow = false;
     for (GameBoard gameBoard : gameBoards) {
@@ -465,7 +485,7 @@ public class Game {
 
   /**
    * Returns all laying row indices that can be clicked on a player's board for a selected color.
-   * */
+   */
   private int[] getClickableRows(User user, Tile color) {
     List<Integer> rowList = new ArrayList<>();
     GameBoard gameBoard = getPlayersGameBoard(user.getName());
@@ -489,7 +509,7 @@ public class Game {
 
   /**
    * Returns the user for a given name.
-   * */
+   */
   private User getUser(String userAsString) {
     User userAsUser = null;
     for (User user : userList) {
@@ -522,5 +542,29 @@ public class Game {
     return gameNumber;
   }
 
+  /**
+   * Clears collections in the class.
+   */
+  private void clear() {
+    for (TileCollection tiles :
+        tilePlates) {
+      tiles.clear();
+    }
+    userList.clear();
+    usersWantCancel.clear();
+    bag.clear();
+    trash.clear();
+    currentSelection.clear();
+  }
+
+  /**
+   * Disposes the model.
+   */
+  void dispose() {
+    clear();
+    cancelRequests = 0;
+    currentSelectionSource = -1;
+    startsAtNextRound = null;
+  }
 
 }

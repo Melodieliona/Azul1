@@ -5,6 +5,7 @@ import de.lmu.ifi.sosylab.shared.JsonMessage;
 import de.lmu.ifi.sosylab.shared.LayingRow;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,12 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Network Layer of the game server.
- * */
+ */
 public class LocalServerConnection {
   private static final int port = 9090;
 
@@ -75,7 +77,7 @@ public class LocalServerConnection {
    * Listens to incoming messages from the client.
    *
    * @param socket Provides the connection to a new client
-   * */
+   */
   private void startHandler(Socket socket) {
 
     Thread newConnectionThread = new Thread() {
@@ -117,18 +119,18 @@ public class LocalServerConnection {
                 try {
                   clientNick = (String) jsonObject.get("nick");
 
-                    if (!(users.contains(new LocalUser(clientNick)))) {
-                      users.add(new LocalUser(clientNick));
+                  if (!(users.contains(new LocalUser(clientNick)))) {
+                    users.add(new LocalUser(clientNick));
 
-                      // Acknowledge successful login
-                      sendLoginSuccess();
-                      sendUserJoined(clientNick);
+                    // Acknowledge successful login
+                    sendLoginSuccess();
+                    sendUserJoined(clientNick);
 
-                    } else {
-                      sendLoginFailed();
+                  } else {
+                    sendLoginFailed();
                   }
 
-                  // Start the game immediately if 4 players are logged in.
+                  // Start the game immediately if expected players are logged in.
                   if (users.size() == amountOfExpectedUsers) {
                     startGame();
                   }
@@ -189,7 +191,7 @@ public class LocalServerConnection {
 
   /**
    * Tells client that it sent an invalid json message.
-   * */
+   */
   private void sendInvalidJsonError() {
     try {
       JSONObject sendLoginSuccessJson = new JSONObject();
@@ -251,7 +253,7 @@ public class LocalServerConnection {
 
   /**
    * Acknowledges that a player has successfully joined the game.
-   * */
+   */
   private void sendUserJoined(String nickname) {
     try {
       JSONObject sendUserJoined = new JSONObject();
@@ -338,10 +340,11 @@ public class LocalServerConnection {
   }
 
   // TODO Integrate Floorline update into board update
+
   /**
    * Sends a message with all tiles that have been added to the floor line
    * to all other players of that game.
-   * */
+   */
   public void sendFloorLineUpdate(LocalUser currentUser, TileCollection newFloorLineTiles) {
     try {
       JSONObject sendNewFloorLineTiles = new JSONObject();
@@ -375,7 +378,7 @@ public class LocalServerConnection {
    * - "row": Empty laying rows
    * - "color": Colors of the laid wall tiles
    * - "score": The current score of the player
-   * */
+   */
   public void sendBoardUpdate(GameBoard[] gameBoards) {
     for (GameBoard gameBoard : gameBoards) {
       try {
@@ -428,7 +431,7 @@ public class LocalServerConnection {
   /**
    * Sends filled tile plates to all players at the very beginning of a round.
    * Contains all tiles on plates and the middle.
-   * */
+   */
   public void sendFilledPlates(TileCollection[] tilePlates) {
     StringBuilder tileColors = new StringBuilder();
     StringBuilder tileAmounts = new StringBuilder();
@@ -475,7 +478,7 @@ public class LocalServerConnection {
   /**
    * Gets send after a tile selection was made successfully.
    * Tells the player whose turn it is, which rows he can place selected tile(s) on.
-   * */
+   */
   public void sendClickableRows(int[] rows) {
     try {
       StringBuilder clickableRows = new StringBuilder();
@@ -516,7 +519,7 @@ public class LocalServerConnection {
 
   /**
    * Announces the winner(s) of the game to all players and sends the final scores.
-   * */
+   */
   public void announceWinner(int[] endScores, ArrayList<String> winners,
                              ArrayList<String> usernames) {
     try {
@@ -531,14 +534,13 @@ public class LocalServerConnection {
 
   /**
    * Starts the game.
-   * */
+   */
   private void startGame() {
     game = new LocalGame(new ArrayList<>(users), connection);
   }
 
   /**
    * Stop the network-connection.
-   * Unused in this implementation.
    */
   public void stop() {
     System.out.println("clearing local game");
@@ -556,7 +558,7 @@ public class LocalServerConnection {
 
   /**
    * Sends a message to the client when the game was cancelled.
-   * */
+   */
   public void sendGameCancel() {
     try {
       JSONObject message = JsonMessage.gameCancel();
