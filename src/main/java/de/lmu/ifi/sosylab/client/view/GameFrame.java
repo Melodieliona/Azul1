@@ -71,7 +71,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private JButton hotSeat;
   private JButton multiPlayer;
   private JComboBox<String> songs;
-  private transient List<User> playerList;
+
   private transient Game gamesettings = null;
   private int amountOfSelectedTiles;
   private String tile_color;
@@ -358,7 +358,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   }
 
   /**
-   * Creates Card to enter nichnames in Hot Seat Mode.
+   * Creates Card to enter nicknames in Hot Seat Mode.
    */
 
   public void setPlayerNicknamesHS(int numberOfPlayers) {
@@ -928,12 +928,10 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         }
 
         int numberOfPlayers = controller.getPlayers().size() - 1;
-        System.out.println("LogeddInEvent, numer of current players are: " + numberOfPlayers);
 
         String player = controller.getNickname();
         playerNames.add(player);
         this.setTitle(player);
-        System.out.println(player + "has been added Login Event (this is the main playor of this client instance)");
 
         if (numberOfPlayers > 0) {
           ArrayList<Player> players = controller.getPlayers();
@@ -942,7 +940,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
             if (!player.equals(otherPlayer) && !player.equals("  ")) {
               playerNames.add(otherPlayer);
-              System.out.println("LoginEvent adding player: " + otherPlayer);
             }
           }
 
@@ -962,7 +959,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         ArrayList<Player> players = controller.getPlayers();
         String playerName = players.get(numberOfPlayers).getPlayerName();
         playerNames.add(playerName);
-        System.out.println("UserJoinedEvent in Frame adding " + playerName);
 
       }
 

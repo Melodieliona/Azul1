@@ -358,6 +358,8 @@ public class GameModel {
    * To be executed when it has been received from server that the game was restarted.
    */
   public void restartGame() {
+    tilePlates = new TileCollection[]{};
+    resetValidRows();
     selectedTiles.clear();
     for (Player player : players) {
       player.setScore(0);

@@ -639,6 +639,7 @@ public class ServerNetworkConnection {
         user.getWriter().flush();
       }
       int gameNumber = userList.get(0).getGameNumber();
+      games.get(gameNumber).dispose();
       games.remove(gameNumber - 1);
       users.removeAll(userList);
     } catch (IOException e) {

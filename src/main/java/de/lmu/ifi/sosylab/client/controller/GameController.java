@@ -64,10 +64,6 @@ public class GameController {
     model.setGameMode(gameMode);
   }
 
-  public List<User> getUserList() {
-    //TODO get User List through Connection, is there a method getUsers in Server?
-    return null;
-  }
 
   public void selectAllTiles(int source, String color) {
     model.selectTilesRequest(source, color);
