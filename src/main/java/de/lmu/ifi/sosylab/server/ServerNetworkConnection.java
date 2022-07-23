@@ -794,8 +794,7 @@ public class ServerNetworkConnection {
     sendStartTimer();
     Thread timerThread = new Thread(() -> {
       try {
-        //TODO: change timer to 60
-        Thread.sleep(1000 * 30);
+        Thread.sleep(1000 * 60);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
