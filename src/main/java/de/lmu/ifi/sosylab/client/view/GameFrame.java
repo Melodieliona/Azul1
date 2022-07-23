@@ -38,6 +38,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private static final long serialVersionUID = 1L;
   private static final String LOGIN_M_CARD = "loginMultiplayer";
   private static final String LOGIN_H_CARD = "loginHotseat";
+  private static final String MULTIPLAYER = "Multiplayer";
 
   private static final String GAME_CARD = "game";
   private static final String GAMEMODE_CARD = "gameMode";
@@ -76,8 +77,8 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   private transient Images images;
   private JPanel gameField;
   private String currentPlayer;
-  private int frameWidth;
-  private int frameHeight;
+  private int frameWidth = 300;
+  private int frameHeight = 400;
   private String currentCard;
   private Font standardFont;
   private DecimalFormat dFormat;
@@ -95,26 +96,25 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   private JButton restart;
 
-
   /**
    * Create a new graphical view that contains all necessary elements for playing the game.
    *
    * @param model      The {@link GameModel} that handles the logic of the game.
    * @param controller The {@link GameController} that validates and forwards any user input.
    */
-  public GameFrame(GameController controller, GameModel model) {
+  public GameFrame(GameController controller, GameModel model) throws IOException {
     super("~ Azul ~");
 
     this.controller = requireNonNull(controller);
     this.model = requireNonNull(model);
 
 
-    images = new Images();
     //Creates Game icon.
+    images = new Images();
     BufferedImage icon = images.getIcon();
     this.setIconImage(icon);
 
-    setPreferredSize(new Dimension(310, 450));
+    setPreferredSize(new Dimension(frameWidth, frameHeight));
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     initializeWidgets();
@@ -300,15 +300,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterMinute = 1;
     counterSecond = 60;
 
-    timer = new Timer(1000, e -> {
+    timer = new Timer(1000, new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-      counterMinute = 0;
-      counterSecond--;
-      formatedCounterSecond = dFormat.format(counterSecond);
-      formatedCounterMinute = dFormat.format(counterMinute);
-      counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
+        counterMinute = 0;
+        counterSecond--;
+        formatedCounterSecond = dFormat.format(counterSecond);
+        formatedCounterMinute = dFormat.format(counterMinute);
+        counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
 
-      counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
+        counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
+
+      }
 
     });
 
@@ -333,15 +337,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     counterSecond = 60;
 
     timer.stop();
-    timer = new Timer(1000, e -> {
+    timer = new Timer(1000, new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-      counterMinute = 0;
-      counterSecond--;
-      formatedCounterSecond = dFormat.format(counterSecond);
-      formatedCounterMinute = dFormat.format(counterMinute);
-      counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
+        counterMinute = 0;
+        counterSecond--;
+        formatedCounterSecond = dFormat.format(counterSecond);
+        formatedCounterMinute = dFormat.format(counterMinute);
+        counter.setText(formatedCounterMinute + ":" + formatedCounterSecond);
 
-      counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
+        counter.setText(formatedCounterMinute + " : " + formatedCounterSecond);
+
+      }
 
     });
 
@@ -406,32 +414,43 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
 
     switch (numberOfPlayers) {
-      case 2 -> {
+      case 2:
         center.add(playerOne);
         center.add(firstNicknameHS);
+
         center.add(playerTwo);
         center.add(secondNicknameHS);
-      }
-      case 3 -> {
+
+        break;
+
+      case 3:
         center.add(playerOne);
         center.add(firstNicknameHS);
+
         center.add(playerTwo);
         center.add(secondNicknameHS);
+
         center.add(playerThree);
         center.add(thirdNicknameHS);
-      }
-      case 4 -> {
+
+        break;
+
+      case 4:
         center.add(playerOne);
         center.add(firstNicknameHS);
+
         center.add(playerTwo);
         center.add(secondNicknameHS);
+
         center.add(playerThree);
         center.add(thirdNicknameHS);
+
         center.add(playerFour);
         center.add(fourthNicknameHS);
-      }
-      default -> {
-      }
+
+        break;
+      default:
+        break;
     }
 
     loginNames.add(center, BorderLayout.CENTER);
@@ -443,7 +462,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
   /**
    * Set up the view in a way that is finally shown to the user.
    */
-  private void createView() {
+  private void createView() throws IOException {
     setContentPane(cardDeck);
     createSetGameModeView();
     createMultiplayerLoginView();
@@ -455,77 +474,107 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Add event listeners to all widgets wherever needed and let them execute the respective action.
    */
   private void addEventListeners() {
-    multiPlayer.addActionListener(e -> {
-      showCard(LOGIN_M_CARD);
-      try {
-        controller.setGameMode("Multiplayer");
-      } catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-    });
-
-
-    hotSeat.addActionListener(e -> {
-      showCard(LOGIN_H_CARD);
-      try {
-        controller.setGameMode("Hot Seat");
-      } catch (IOException ex) {
-        throw new RuntimeException(ex);
-      }
-    });
-
-    songs.addActionListener(e -> {
-      String selectedSong = songs.getSelectedItem().toString();
-      switch (selectedSong) {
-        case "CHILL BEAT" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
-        case "MELODIC RHYTHM" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
-        case "RETRO CITY" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
-        default -> {
+    multiPlayer.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        showCard(LOGIN_M_CARD);
+        try {
+          controller.setGameMode(MULTIPLAYER);
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
         }
       }
-      songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
-    });
-
-    playerNumberSelection.addActionListener(e -> {
-      numberOfPayersHS = (int) playerNumberSelection.getSelectedItem();
-      setPlayerNicknamesHS(numberOfPayersHS);
     });
 
 
-    play.addActionListener(e -> {
-
-      if (model.getGameMode().equals("Multiplayer")) {
-        if (model.getPlayers().size() == 0) {
-          firstPlayerWait();
-          showCard(WAIT_CARD);
+    hotSeat.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        showCard(LOGIN_H_CARD);
+        try {
+          controller.setGameMode("Hot Seat");
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
         }
-        controller.logInMultiplayer(nickName.getText());
-      } else if (model.getGameMode().equals("Hot seat")) {
-
-        if (numberOfPayersHS == 2) {
-          playerNames.add(firstNicknameHS.getText());
-          playerNames.add(secondNicknameHS.getText());
-
-        } else if (numberOfPayersHS == 3) {
-          playerNames.add(firstNicknameHS.getText());
-          playerNames.add(secondNicknameHS.getText());
-          playerNames.add(thirdNicknameHS.getText());
-
-        } else if (numberOfPayersHS == 4) {
-          playerNames.add(firstNicknameHS.getText());
-          playerNames.add(secondNicknameHS.getText());
-          playerNames.add(thirdNicknameHS.getText());
-          playerNames.add(fourthNicknameHS.getText());
-        }
-        controller.logInHotSeat(playerNames);
       }
     });
 
-    back.addActionListener(e -> goBackToFirstCard());
+    songs.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        String selectedSong = songs.getSelectedItem().toString();
+        switch (selectedSong) {
+          case "CHILL BEAT" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/chillbeat.wav");
+          case "MELODIC RHYTHM" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/melodicrhythm.wav");
+          case "RETRO CITY" -> playMusic("src/main/java/de/lmu/ifi/sosylab/client/view/songs/retrocity.wav");
+          default -> {
+          }
+        }
+        songs.setEnabled(false); //TODO: entfernen wenn songWechseln(...) inplementiert wurde
+      }
+    });
 
-    cancel.addActionListener(e -> controller.cancelGameRequest());
+    playerNumberSelection.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        numberOfPayersHS = (int) playerNumberSelection.getSelectedItem();
+        setPlayerNicknamesHS(numberOfPayersHS);
+      }
+    });
 
-    restart.addActionListener(e -> controller.restartGameRequest());
+
+    play.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        if (controller.getGameMode().equals(MULTIPLAYER)) {
+          if (controller.getPlayers().size() == 0) {
+            firstPlayerWait();
+            showCard(WAIT_CARD);
+          }
+          controller.logInMultiplayer(nickName.getText());
+        } else if (controller.getGameMode().equals("Hot seat")) {
+
+          if (numberOfPayersHS == 2) {
+            playerNames.add(firstNicknameHS.getText());
+            playerNames.add(secondNicknameHS.getText());
+
+          } else if (numberOfPayersHS == 3) {
+            playerNames.add(firstNicknameHS.getText());
+            playerNames.add(secondNicknameHS.getText());
+            playerNames.add(thirdNicknameHS.getText());
+
+          } else if (numberOfPayersHS == 4) {
+            playerNames.add(firstNicknameHS.getText());
+            playerNames.add(secondNicknameHS.getText());
+            playerNames.add(thirdNicknameHS.getText());
+            playerNames.add(fourthNicknameHS.getText());
+          }
+          controller.logInHotSeat(playerNames);
+        }
+      }
+    });
+
+    back.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        goBackToFirstCard();
+      }
+    });
+
+    cancel.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        controller.cancelGameRequest();
+      }
+    });
+
+    restart.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        controller.restartGameRequest();
+      }
+    });
   }
 
   /**
@@ -618,50 +667,59 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     radioPanel.add(winSize);
     JRadioButton small = new JRadioButton("small");
     small.setBounds(0, 0, 100, 25);
-    small.addItemListener(e -> {
-      prozent = 0.8;
+    small.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        prozent = 0.8;
 
-      images.setProzent(prozent);
-      tileSize = (int) (prozent * 25);
-      images.resize();
+        images.setProzent(prozent);
+        tileSize = (int) (prozent * 25);
+        images.resize();
 
-      showGame();
-      gameField.removeAll();
-      createGameView();
-      repaint();
+        showGame();
+        gameField.removeAll();
+        createGameView();
+        repaint();
+      }
     });
     radioPanel.add(small);
 
     JRadioButton medium = new JRadioButton("medium");
     medium.setBounds(50, 0, 100, 25);
-    medium.addItemListener(e -> {
-      prozent = 1;
+    medium.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        prozent = 1;
 
-      images.setProzent(prozent);
-      tileSize = (int) (prozent * 25);
-      images.resize();
+        images.setProzent(prozent);
+        tileSize = (int) (prozent * 25);
+        images.resize();
 
-      showGame();
-      gameField.removeAll();
-      createGameView();
-      repaint();
+        showGame();
+        gameField.removeAll();
+        createGameView();
+        repaint();
 
+      }
     });
     radioPanel.add(medium);
 
     JRadioButton big = new JRadioButton("big");
     big.setBounds(100, 0, 100, 25);
-    big.addItemListener(e -> {
-      prozent = 1.2;
+    big.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        prozent = 1.2;
 
-      images.setProzent(prozent);
-      tileSize = (int) (prozent * 25);
-      images.resize();
+        images.setProzent(prozent);
+        tileSize = (int) (prozent * 25);
+        images.resize();
 
-      showGame();
-      gameField.removeAll();
-      createGameView();
-      repaint();
+        showGame();
+        gameField.removeAll();
+        createGameView();
+        repaint();
+      }
     });
     radioPanel.add(big);
 
@@ -736,18 +794,28 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         middle.add(plate);
       }
     } catch (NullPointerException e) {
-      //do nothing
+      System.out.println("collection ist noch leer! (createPlates)");
     }
 
   }
-
   private boolean confirmTileSelection(int plateNumber, String tile, int amount, String playerName) {
 
+    if (controller.getGameMode().equals(MULTIPLAYER)){
+      if(!controller.getCurrentPlayer().equals(controller.getNickname())){
+
+        JOptionPane.showMessageDialog(this,
+                String.format("Selection Failed. It is not your turn, wait for your turn!"));
+        return false;
+      }
+    }
     int selection = JOptionPane.showConfirmDialog(null,
         playerName + ": Are you sure you want to select the " + amount + " " + tile + " tile(s) from plate " + plateNumber,
         "Tile Selection", JOptionPane.YES_NO_OPTION);
 
-    return selection == 0;
+    if (selection == 0) {
+      return true;
+    }
+    return false;
 
   }
 
@@ -784,16 +852,19 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
           Point checkMouseTip = e.getPoint();
           tile_color = pile.getComponentAt(checkMouseTip).getName();
           if (tile_color != null) {
+            System.out.println("Tile " + tile_color + " was clicked on Plate 0");
             amountOfSelectedTiles = collection[0].getAmountTilesOfColor(Tile.getTile(tile_color));
             boolean confirmation = confirmTileSelection(0, tile_color, amountOfSelectedTiles, currentPlayer);
             if (confirmation) {
               controller.selectAllTiles(0, tile_color);
             }
+
+
           }
         }
       });
     } catch (NullPointerException e) {
-      //do nothing
+      System.out.println("Collection ist noch leer! (createPile)");
     }
     return pile;
   }
@@ -870,7 +941,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
   @Override
   public void propertyChange(PropertyChangeEvent event) {
-    SwingUtilities.invokeLater(() -> handleModelUpdate(event));
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        handleModelUpdate(event);
+      }
+    });
   }
 
   /**
@@ -884,22 +960,22 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     if (newValue instanceof LoggedInEvent) {
 
-      if (model.getGameMode().equals("Multiplayer")) {
-        for (Player player : model.getPlayers()) {
+      if (controller.getGameMode().equals("Multiplayer")) {
+        for (Player player : controller.getPlayers()) {
           playersInLobby.setText(playersInLobby.getText() + "\n " + player.getPlayerName());
         }
 
-        int numberOfPlayers = model.getPlayers().size() - 1;
+        int numberOfPlayers = controller.getPlayers().size() - 1;
         System.out.println("LogeddInEvent, numer of current players are: " + numberOfPlayers);
 
-        String player = model.getNickname();
+        String player = controller.getNickname();
         playerNames.add(player);
         this.setTitle(player);
         System.out.println(player + "has been added Login Event (this is the main playor of this client instance)");
 
         if (numberOfPlayers > 0) {
-          ArrayList<Player> players = model.getPlayers();
-          for (int i = 0; i < model.getPlayers().size(); i++) {
+          ArrayList<Player> players = controller.getPlayers();
+          for (int i = 0; i < controller.getPlayers().size(); i++) {
             String otherPlayer = players.get(i).getPlayerName();
 
             if (!player.equals(otherPlayer) && !player.equals("  ")) {
@@ -911,17 +987,17 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         }
 
 
-      } else if (model.getGameMode().equals("Hot Seat")) {
+      } else if (controller.getGameMode().equals("Hot Seat")) {
         showGame();
       }
     } else if (newValue instanceof UserJoinedEvent) {
-      if (model.getGameMode().equals("Hot seat")) {
+      if (controller.getGameMode().equals("Hot seat")) {
         //TODO: was soll hier genau passieren?
 
-      } else if (model.getGameMode().equals("Multiplayer")) {
+      } else if (controller.getGameMode().equals("Multiplayer")) {
         playersInLobby.setText(playersInLobby.getText() + "\n " + ((UserJoinedEvent) newValue).getUsername());
-        int numberOfPlayers = model.getPlayers().size() - 1;
-        ArrayList<Player> players = model.getPlayers();
+        int numberOfPlayers = controller.getPlayers().size() - 1;
+        ArrayList<Player> players = controller.getPlayers();
         String playerName = players.get(numberOfPlayers).getPlayerName();
         playerNames.add(playerName);
         System.out.println("UserJoinedEvent in Frame adding " + playerName);
@@ -986,11 +1062,11 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     } else if (newValue instanceof TilePlacementFailedEvent) {
 
-      JOptionPane.showMessageDialog(this, "You can't place your tiles here!", "Error!", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, "Tile placement not allowed!", "Error!", JOptionPane.ERROR_MESSAGE);
 
     } else if (newValue instanceof TileSelectionFailedEvent) {
 
-      JOptionPane.showMessageDialog(this, "You can't select these tiles!", "Error!", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, "Tile selection not allowed!", "Error!", JOptionPane.ERROR_MESSAGE);
 
     } else if (newValue instanceof BoardUpdatedEvent) {
       gameField.removeAll();
@@ -1028,13 +1104,16 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TimerEvent) {
-
+      System.out.println("Frame TimerEvent");
       if (timerEventCounter > 0) {
         timerEventCounter++;
+        System.out.println("Timers active (else if): " + timerEventCounter);
+
         timerRestart();
         showCard(TIMERUPDATE_CARD);
       } else if (timerEventCounter == 0) {
         timerEventCounter++;
+        System.out.println("Timers active: " + timerEventCounter);
         timerStart();
         showCard(TIMER_CARD);
       }
