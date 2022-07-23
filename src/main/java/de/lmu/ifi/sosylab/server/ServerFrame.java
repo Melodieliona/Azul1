@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
- * TODO Add JavaDoc
+ * Creates the exit button to stop the Azul server.
  * */
 public class ServerFrame extends JFrame {
   @Serial
