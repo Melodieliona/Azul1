@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="songs">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/src/main/java/de/lmu/ifi/sosylab/client/view/songs" />
+    </SOURCES>
+  </library>
+</component>
