@@ -439,7 +439,7 @@ public class Game {
   private int[] getClickableRows(User user, Tile color) {
     List<Integer> rowList = new ArrayList<>();
     GameBoard gameBoard = getPlayersGameBoard(user.getName());
-    for (int i = 1; i < 5; i++) {
+    for (int i = 0; i < 5; i++) {
       if (gameBoard.getLayingRow(i).canAddTilesToLayingRow(color)) {
         rowList.add(i);
       }
