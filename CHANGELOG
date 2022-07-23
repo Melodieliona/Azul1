@@ -27,3 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Log in screens for both modes.
 - Game screen that includes game pieces and boards.
 
+## [0.2.0] - 2022-07-23
+### Added
+- Implementation of game logic for Hot Seat and online.
+- Waiting room for players in online version.
+- Optional Background music.
+- Optional "Winter" theme
+- Winner is announced at the end.
+- Player returns to home screen after: game ends, game is canceled, game is restarted.
+
