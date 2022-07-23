@@ -82,7 +82,6 @@ public class LocalServerConnection {
 
       private boolean keepReading = true;
 
-      //TODO: Get rid of sout's
       @Override
       public void run() {
 
@@ -336,8 +335,6 @@ public class LocalServerConnection {
       e.printStackTrace();
     }
   }
-
-  // TODO Integrate Floorline update into board update
 
   /**
    * Sends a message with all tiles that have been added to the floor line

@@ -61,8 +61,6 @@ public class LayingRow {
     return trashedTiles;
   }
 
-  // TODO Maybe delete later if unused
-
   /**
    * Returns all tiles that are currently laid on this row.
    */
@@ -100,7 +98,6 @@ public class LayingRow {
 
   /**
    * Returns the column, the given tile color lays in.
-   * TODO testing
    */
   public int columnOfColor(Tile color) {
     return ((row + color.ordinal()) % 5);
@@ -112,9 +109,6 @@ public class LayingRow {
   public Tile getColor() {
     return color;
   }
-
-
-  // TODO Maybe delete later if unused
 
   /**
    * Returns the number of this row.

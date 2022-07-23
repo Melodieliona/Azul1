@@ -39,8 +39,6 @@ public class GameController {
 
   }
 
-  //TODO: pass in string array with players names
-
   /**
    * Todo JavaDoc
    */

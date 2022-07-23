@@ -149,7 +149,6 @@ public class GameBoard {
    * Returns this game board's tile wall.
    */
   public Tile[][] getTileWall() {
-    //TODO Test if copy is correct
     return tileWall;
   }
 

@@ -88,7 +88,6 @@ public class ServerNetworkConnection {
 
       private boolean keepReading = true;
 
-      //TODO: Get rid of sout's
       @Override
       public void run() {
 
