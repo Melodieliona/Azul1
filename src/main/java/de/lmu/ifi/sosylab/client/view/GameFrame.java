@@ -876,22 +876,22 @@ private class itemListener implements ItemListener{
         if (playerNames.get(boardNumber).equals(controller.getCurrentPlayer())) {
 
           if (mousePointX == 5 && mousePointY == 2) {
-            controller.placeTiles(amountOfSelectedTiles, 0);
+            controller.placeTiles(0);
           }
           if (mousePointX > 3 && mousePointX < 6 && mousePointY == 3) {
-            controller.placeTiles(amountOfSelectedTiles, 1);
+            controller.placeTiles(1);
           }
           if (mousePointX > 2 && mousePointX < 6 && mousePointY == 4) {
-            controller.placeTiles(amountOfSelectedTiles, 2);
+            controller.placeTiles(2);
           }
           if (mousePointX > 1 && mousePointX < 6 && mousePointY == 5) {
-            controller.placeTiles(amountOfSelectedTiles, 3);
+            controller.placeTiles(3);
           }
           if (mousePointX > 0 && mousePointX < 6 && mousePointY == 6) {
-            controller.placeTiles(amountOfSelectedTiles, 4);
+            controller.placeTiles(4);
           }
           if (mousePointX > 0 && mousePointX < 8 && mousePointY == 8) {
-            controller.placeTiles(amountOfSelectedTiles, 5);
+            controller.placeTiles(5);
           }
         }
       }

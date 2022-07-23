@@ -40,6 +40,9 @@ public class GameClientNetworkConnection {
     thread.start();
   }
 
+  /**
+   * Tries to establish connection.
+   */
   private void doConnectLoop() {
     try {
       while (!Thread.interrupted()) {
@@ -68,6 +71,12 @@ public class GameClientNetworkConnection {
     }
   }
 
+  /**
+   * Sets up connection.
+   *
+   * @param socket of the established connection
+   * @throws IOException
+   */
   private synchronized void setupConnection(Socket socket) throws IOException {
     this.socket = socket;
     writer = new BufferedWriter(
@@ -77,7 +86,10 @@ public class GameClientNetworkConnection {
             new InputStreamReader(this.socket.getInputStream(), StandardCharsets.UTF_8));
   }
 
-
+  /**
+   * Tries to read input from server.
+   *
+   */
   private void doInputLoop() {
     while (!Thread.currentThread().isInterrupted()) {
       try {
@@ -99,7 +111,6 @@ public class GameClientNetworkConnection {
     }
   }
 
-  //TODO: Get rid of sout's
 
   /**
    * Decides methods to be executed based on type of message received.
@@ -107,7 +118,6 @@ public class GameClientNetworkConnection {
    * @param object JsonMessage received
    */
   public void handleGameEvent(JSONObject object) {
-    System.out.println(JsonMessage.typeOf(object));
     switch (JsonMessage.typeOf(object)) {
       case LOGIN_SUCCESS -> handleLogin(object);
       case LOGIN_FAILED -> model.loginFailed();
@@ -325,11 +335,17 @@ public class GameClientNetworkConnection {
     model.updateFloorLine(nick, colors);
   }
 
+  /**
+   * Handles receiving that the logIn was successful and calls the pertinent model method.
+   */
   public void handleLogin(JSONObject object) {
     String[] nicknames = JsonMessage.getNickname(object).trim().split(",");
     model.loggedIn(nicknames);
   }
 
+  /**
+   * Handles receiving that the timer has ended and calls the pertinent model method.
+   */
   public void handleTimerEnd() {
     model.endTimer();
   }
@@ -410,25 +426,31 @@ public class GameClientNetworkConnection {
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
-  public void sendTilePlacement(int numberOfTiles, int line) {
+   * Handles sending a desired tile placement.
+   *
+   * @param line the line in which the tiles should be placed
+   */
+  public void sendTilePlacement(int line) {
     JSONObject tilePlacement = JsonMessage.placeTiles(
         model.getSelectedTiles().getContainedColors().get(0).getColor(), line);
     send(tilePlacement);
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * Handles sending a game restart request.
+   *
+   * @param nick the nickname of the user
+   */
   public void sendGameRestartRequest(String nick) {
     JSONObject request = JsonMessage.gameRestartRequest(nick);
     send(request);
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * Handles sending a game cancel request.
+   *
+   * @param nickname the nickname of the user
+   */
   public void sendGameCancelRequest(String nickname) {
     JSONObject request = JsonMessage.gameCancelRequest(nickname);
     send(request);

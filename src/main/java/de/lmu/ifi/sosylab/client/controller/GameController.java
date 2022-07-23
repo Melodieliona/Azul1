@@ -99,8 +99,8 @@ public class GameController {
     model.dispose();
   }
 
-  public void placeTiles(int numberOfSelectedTiles, int line) {
-    model.placeTilesRequest(numberOfSelectedTiles, line);
+  public void placeTiles(int line) {
+    model.placeTilesRequest(line);
   }
 
   public Player getPlayer(int player) {

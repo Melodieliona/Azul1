@@ -6,6 +6,7 @@ import de.lmu.ifi.sosylab.client.model.events.*;
 import de.lmu.ifi.sosylab.client.model.localserver.LocalGameServer;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -88,6 +89,8 @@ public class GameModel {
 
   /**
    * Tries to send a log in request for online.
+   *
+   * @param name nickname for the request
    */
   public void logInMultiplayer(String name) {
     connection.sendLogin(name);
@@ -97,6 +100,8 @@ public class GameModel {
 
   /**
    * Tries to send a log in request for hot seat.
+   *
+   * @param playersName nicknames for the request
    */
   public void logInHotSeat(String[] playersName) {
     connection.sendPlayers(playersName.length);
@@ -133,14 +138,13 @@ public class GameModel {
   /**
    * Sends a request to the server to place tiles.
    *
-   * @param numberOfTiles of tile
    * @param line          desired row/line to place tiles
    */
-  public void placeTilesRequest(int numberOfTiles, int line) {
+  public void placeTilesRequest(int line) {
     if (selectedTiles.isEmpty()) {
       //do nothing
     } else {
-      connection.sendTilePlacement(numberOfTiles, line);
+      connection.sendTilePlacement(line);
     }
   }
 
@@ -296,8 +300,8 @@ public class GameModel {
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * Tries to send a game restart request.
+   */
   public void requestGameRestart() {
     String nickname;
     if (gameMode.equalsIgnoreCase("Hot seat")) {
@@ -309,7 +313,7 @@ public class GameModel {
   }
 
   /**
-   * TODO Add JavaDoc
+   * Tries to send a game cancel request.
    */
   public void requestGameCancel() {
     String nickname;
@@ -322,8 +326,8 @@ public class GameModel {
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * To be executed when it has been received from server that the game was canceled.
+   */
   public void cancelGame() {
     players.clear();
     System.out.println("Players size " + players.size());
@@ -331,8 +335,8 @@ public class GameModel {
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * To be executed when it has been received from server that the game was restarted.
+   */
   public void restartGame() {
     selectedTiles.clear();
     for (Player player : players) {
@@ -354,7 +358,9 @@ public class GameModel {
   }
 
   /**
-   * TODO Add JavaDoc
+   * To be executed when it was received that the logIn was successful.
+   *
+   * @param nicknames nicknames of the players in the lobby
    */
   public void loggedIn(String[] nicknames) {
     if (gameMode.equalsIgnoreCase("Multiplayer")) {
@@ -380,6 +386,8 @@ public class GameModel {
 
   /**
    * Notifies the subscribed view that a new player joined the game.
+   *
+   * @param name nickname of the user that just joined
    */
   public void userJoined(String name) {
     if (players.contains(new Player(name))) {
@@ -393,6 +401,8 @@ public class GameModel {
 
   /**
    * Notifies the subscribed view that a player left the game.
+   *
+   * @param name nickname of the user that just joined
    */
   public void userLeft(String name) {
     notifyListeners(new UserLeftEvent(name));
@@ -412,6 +422,8 @@ public class GameModel {
 
   /**
    * Notifies the subscribed view that a player has request to restart.
+   *
+   * @param nickname the nickname of the player that made the request
    */
   public void receivedRestartRequest(String nickname) {
     notifyListeners(new GameRestartRequestEvent(nickname));
@@ -419,6 +431,8 @@ public class GameModel {
 
   /**
    * Notifies the subscribed view that a player has request to cancel.
+   *
+   * @param nickname the nickname of the player that made the request
    */
   public void receivedCancelRequest(String nickname) {
     notifyListeners(new GameCancelRequestEvent(nickname));
@@ -472,7 +486,10 @@ public class GameModel {
   }
 
   /**
-   * Updates the floorline according to data sent by the server.
+   * Updates the floorline of a user according to data sent by the server.
+   *
+   * @param nick   nickname of the user
+   * @param colors of the tiles to be added to floorline
    */
   public void updateFloorLine(String nick, String[] colors) {
     TileCollection tiles = new TileCollection();
@@ -509,16 +526,8 @@ public class GameModel {
     support.removePropertyChangeListener(listener);
   }
 
-  public boolean isLoggedIn() {
-    return isLoggedin;
-  }
-
-  private synchronized GameClientNetworkConnection getConnection() {
-    return connection;
-  }
-
   /**
-   * TODO Add JavaDoc
+   * Disposes the model.
    */
   public void dispose() {
     if (!(connection == null)) {
@@ -526,16 +535,29 @@ public class GameModel {
     }
   }
 
+  /**
+   * Gets the tiles plates.
+   *
+   * @return an array of tile collections, index 0 is the floor of the factory, other indexes are the factory plates.
+   */
   public TileCollection[] getTilePlates() {
     return tilePlates;
   }
 
+  /**
+   * Gets the valid rows for a placement.
+   *
+   * @return an array of ints containing the valid rows
+   */
   public int[] getValidRows() {
     return validRows.clone();
   }
 
   /**
    * Sets the clickable rows for the view to display.
+   *
+   * @param numberOfValidRows amount of rows
+   * @param rows              the rows
    */
   public void setValidRows(int numberOfValidRows, String[] rows) {
     validRows = new int[numberOfValidRows];
@@ -548,12 +570,19 @@ public class GameModel {
     validRows = new int [0];
   }
 
+  /**
+   * Gets the valid plates for a selection.
+   *
+   * @return an array of ints containing the valid plates
+   */
   public int[] getValidPlates() {
     return validPlates.clone();
   }
 
   /**
    * Sets the clickable plates for the view to display.
+   *
+   * @param plates the plates
    */
   public void setValidPlates(String[] plates) {
     validPlates = new int[plates.length];
@@ -562,38 +591,63 @@ public class GameModel {
     }
   }
 
+  /**
+   * Gets the nickname of the user of this client.
+   *
+   * @return nickname
+   */
   public String getNickname() {
     return nickname;
   }
 
+  /**
+   * Sets the nickname of the user of this client.
+   *
+   * @param nickname the nickname
+   */
   public void setNickname(String nickname) {
     this.nickname = nickname;
   }
 
+  /**
+   * Gets the nickname of the user that must now select and place tiles.
+   *
+   * @return nickname
+   */
   public String getCurrentPlayer() {
     return currentPlayer;
   }
 
-  public int[] getScore() {
-    int[] points;
-    return null;
-  }
-
+  /**
+   * Gets the players that participate in the game.
+   *
+   * @return ArrayList of players
+   */
   public ArrayList<Player> getPlayers() {
     return new ArrayList<>(players);
   }
 
+  /**
+   * Gets the tiles that are currently selected.
+   *
+   * @return TileCollection of selected Tiles
+   */
   public TileCollection getSelectedTiles() {
     return (TileCollection) selectedTiles.clone();
   }
 
+  /**
+   * Gets the tiles that are currently selected.
+   *
+   * @return ArrayList of winners' nicknames
+   */
   public ArrayList<String> getNicksFromWinners() {
     return nicksFromWinners;
   }
 
   /**
-   * TODO Add JavaDoc
-   * */
+   * Clears some collections of the model.
+   */
   public void clear() {
     gameMode = null;
     players.clear();

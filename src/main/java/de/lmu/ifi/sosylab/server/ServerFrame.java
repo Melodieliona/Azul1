@@ -33,7 +33,11 @@ public class ServerFrame extends JFrame {
     stopServerButton.setSize(50, 50);
     stopServerButton.setMaximumSize(getSize());
 
-    stopServerButton.addActionListener(e -> connection.sendGameCancelledServerShutDown());
+    stopServerButton.addActionListener(e ->{
+      connection.sendGameCancelledServerShutDown();
+      connection.stop();
+        }
+    );
 
     panel.setBackground(Color.GRAY);
     panel.add(stopServerButton);
@@ -44,5 +48,9 @@ public class ServerFrame extends JFrame {
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     pack();
+  }
+  @Override
+  public void dispose() {
+    super.dispose();
   }
 }
