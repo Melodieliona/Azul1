@@ -47,8 +47,6 @@ public class GameModel {
 
   private TileCollection[] tilePlates;
 
-  private boolean isLoggedin = false;
-
   private String currentPlayer;
 
   private int[] validRows = {};
@@ -161,9 +159,7 @@ public class GameModel {
    * @param line desired row/line to place tiles
    */
   public void placeTilesRequest(int line) {
-    if (selectedTiles.isEmpty()) {
-      //do nothing
-    } else {
+    if (!selectedTiles.isEmpty()) {
       connection.sendTilePlacement(line);
     }
   }
@@ -190,7 +186,6 @@ public class GameModel {
     }
     notifyListeners(new TilesSelectedEvent(source, color, selectedTiles.size()));
   }
-
 
   /**
    * Places the selected tiles into the selected pattern line.
@@ -288,7 +283,7 @@ public class GameModel {
         player.placeTiles(row, actualColor, amount);
       }
     }
-    notifyListeners(new OtherPlayerPlacedTilesEvent(currentPlayer, actualColor, amount, row, 0));
+    notifyListeners(new OtherPlayerPlacedTilesEvent(actualColor, row));
     // I think the amount of points are always sent with the minus points calculated so I just put
     // 0 in the parameter for minuspoints
   }
@@ -300,7 +295,7 @@ public class GameModel {
    * @param colors  array, a single index has all colors for a given plate
    * @param amounts array, a single index has all amounts for a given color
    */
-  public void fillTiles(String[] colors, String[] amounts) { //array of tilecollection as parameters
+  public void fillTiles(String[] colors, String[] amounts) {
     tilePlates = new TileCollection[colors.length];
     for (int n = 0; n < tilePlates.length; n++) {
       tilePlates[n] = new TileCollection();
@@ -395,7 +390,6 @@ public class GameModel {
       }
     }
     notifyListeners(new LoggedInEvent());
-    isLoggedin = true;
   }
 
   /**

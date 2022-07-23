@@ -18,8 +18,6 @@ public class LocalGame {
 
   private final ArrayList<LocalUser> userList;
 
-  private int cancelRequests;
-
   private final ArrayList<LocalUser> usersWantCancel;
 
   private int currentPlayer;
@@ -50,7 +48,6 @@ public class LocalGame {
   public LocalGame(ArrayList<LocalUser> users, LocalServerConnection connection) {
     this.userList = new ArrayList<>(users);
     this.connection = connection;
-    cancelRequests = 0;
     usersWantCancel = new ArrayList<>();
 
     bag = new TileCollection();
@@ -530,7 +527,6 @@ public class LocalGame {
    */
   void dispose() {
     clear();
-    cancelRequests = 0;
     currentSelectionSource = -1;
     startsAtNextRound = null;
   }
