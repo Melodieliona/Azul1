@@ -285,7 +285,6 @@ public class Game {
    */
   private void sendGameRestart() {
     connection.sendGameRestart(userList);
-    System.out.println("connection stopped");
   }
 
   /**

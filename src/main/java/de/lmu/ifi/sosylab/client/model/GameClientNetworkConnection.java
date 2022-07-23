@@ -411,7 +411,6 @@ public class GameClientNetworkConnection {
   public void sendTileSelection(int source, String color, int numberOfTiles) {
     JSONObject tileSelection = JsonMessage.selectTile(color, source);
     send(tileSelection);
-    System.out.println("Selection: Plate: " + source + ", Color: " + color + " made.");
   }
 
   /**

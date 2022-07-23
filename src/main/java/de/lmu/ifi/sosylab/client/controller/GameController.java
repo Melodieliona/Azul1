@@ -67,13 +67,7 @@ public class GameController {
     model.selectTilesRequest(source, color);
   }
 
-  public void restartGame() {
-    System.out.println("restart request controller");
-    model.requestGameRestart();
-  }
-
   public void cancelGameRequest() {
-    System.out.println("cancel request controller");
     model.requestGameCancel();
   }
 

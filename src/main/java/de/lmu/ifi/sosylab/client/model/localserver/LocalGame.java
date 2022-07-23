@@ -263,7 +263,6 @@ public class LocalGame {
   private void sendGameCancel() {
     connection.sendGameCancel();
     connection.stop();
-    System.out.println("connection stopped");
   }
 
   /**

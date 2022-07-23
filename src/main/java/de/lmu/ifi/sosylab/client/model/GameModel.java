@@ -350,7 +350,6 @@ public class GameModel {
    */
   public void cancelGame() {
     players.clear();
-    System.out.println("Players size " + players.size());
     notifyListeners(new GameCanceledEvent());
   }
 

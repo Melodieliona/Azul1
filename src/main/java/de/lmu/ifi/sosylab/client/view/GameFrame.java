@@ -4,11 +4,8 @@ import de.lmu.ifi.sosylab.client.controller.GameController;
 import de.lmu.ifi.sosylab.client.model.GameModel;
 import de.lmu.ifi.sosylab.client.model.Player;
 import de.lmu.ifi.sosylab.client.model.events.*;
-import de.lmu.ifi.sosylab.server.Game;
-import de.lmu.ifi.sosylab.server.User;
 import de.lmu.ifi.sosylab.shared.Tile;
 import de.lmu.ifi.sosylab.shared.TileCollection;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -18,9 +15,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serial;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -159,13 +154,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     this.currentCard = cardName;
 
   }
-  /**
-   * Sets what cars is visible at the moment.
-   * @return currentCard
-   */
-  public String getCurrentCard() {
-    return this.currentCard;
-  }
 
   /**
    * Instantiate all Swing widgets and specify config options where appropriate.
@@ -200,7 +188,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     playersInLobby.setFont(standardFont);
     numberOfPayersHS = 0;
 
-
     //Game
     playerNames = new ArrayList<>();
 
@@ -229,19 +216,16 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     setGameMode.add(background);
     showCard(GAMEMODE_CARD);
-
   }
 
   /**
    * Creates Card for Game View.
    */
   public void createGameView() {
-
     JPanel game = new JPanel();
 
     BufferedImage img = images.getBackground();
     JLabel background = new JLabel(new ImageIcon(img));
-
 
     game.setPreferredSize(createGameField().getPreferredSize());
     background.setLayout(new FlowLayout());
@@ -249,18 +233,15 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     gameField = new JPanel(new BorderLayout());
     gameField.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
 
-
     background.add(gameField);
     game.add(background);
     cardDeck.add(game, GAME_CARD);
-
   }
 
   /**
    * Creates Card for Multiplayer Login.
    */
   public void createMultiplayerLoginView() {
-
     JPanel login = new JPanel();
     login.setBackground(Color.CYAN);
     login.add(loginLabel);
@@ -286,7 +267,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Creates Timer for first Multiplayer.
    */
   private void timerStart() {
-
     JPanel waitMultiPlayer = new JPanel();
 
     JLabel counter = new JLabel();
@@ -315,8 +295,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     timer.start();
     cardDeck.add(waitMultiPlayer, TIMER_CARD);
-
-
   }
 
   /**
@@ -351,14 +329,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     timer.start();
     cardDeck.add(waitMultiPlayer, TIMERUPDATE_CARD);
-
   }
 
   /**
    * Creates Card for Hot Seat Login.
    */
   public void createHotSeatLoginView() {
-
     JPanel login = new JPanel();
     login.setBackground(Color.CYAN);
     //login.setPreferredSize(new Dimension(100, 100));
@@ -371,8 +347,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     login.add(playerNumberSelection);
     login.add(back);
     login.setBackground(Color.CYAN);
-
-
   }
 
   /**
@@ -380,7 +354,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    */
 
   public void setPlayerNicknamesHS(int numberOfPlayers) {
-
     JPanel loginNames = new JPanel();
     loginNames.setLayout(new BorderLayout());
     JPanel east = new JPanel();
@@ -406,7 +379,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     playerThree.setFont(standardFont);
     JLabel playerFour = new JLabel("Player " + "4" + ": Login with your nick name:");
     playerFour.setFont(standardFont);
-
 
     switch (numberOfPlayers) {
       case 2 -> {
@@ -439,8 +411,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
 
     loginNames.add(center, BorderLayout.CENTER);
     loginNames.add(south, BorderLayout.SOUTH);
-
-
   }
 
   /**
@@ -467,7 +437,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       }
     });
 
-
     hotSeat.addActionListener(e -> {
       showCard(LOGIN_H_CARD);
       try {
@@ -477,19 +446,16 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       }
     });
 
-    songs.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        String selectedSong = songs.getSelectedItem().toString();
-        switch (selectedSong) {
-          case "CHILL BEAT" -> playMusic("songs/chillbeat.wav");
-          case "MELODIC RHYTHM" -> playMusic("songs/melodicrhythm.wav");
-          case "RETRO CITY" -> playMusic("songs/retrocity.wav");
-          default -> {
-          }
+    songs.addActionListener(e -> {
+      String selectedSong = songs.getSelectedItem().toString();
+      switch (selectedSong) {
+        case "CHILL BEAT" -> playMusic("songs/chillbeat.wav");
+        case "MELODIC RHYTHM" -> playMusic("songs/melodicrhythm.wav");
+        case "RETRO CITY" -> playMusic("songs/retrocity.wav");
+        default -> {
         }
-        songs.setEnabled(false);
       }
+      songs.setEnabled(false);
     });
 
     playerNumberSelection.addActionListener(e -> {
@@ -500,7 +466,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
         n.printStackTrace();
       }
     });
-
 
     play.addActionListener(e -> {
 
@@ -587,7 +552,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * @return - middle.
    */
   private Component createMiddle() {
-
     middle = new JPanel(new FlowLayout());
     middle.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
     middle.setPreferredSize(new Dimension((int) (325 * prozent), (int) (300 * prozent)));
@@ -623,7 +587,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       @Override
       public void mouseClicked(MouseEvent e) {
         setWindow();
-
       }
     });
     return settings;
@@ -633,7 +596,6 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
    * Sets the version the Player has chosen to play the Game in (Standard or Winter) and the frame size.
    */
   private class itemListener implements ItemListener {
-
     @Override
     public void itemStateChanged(ItemEvent e) {
       String item = ((JRadioButton) e.getSource()).getName();
@@ -966,10 +928,7 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
               playerNames.add(otherPlayer);
             }
           }
-
         }
-
-
       } else if (controller.getGameMode().equals("Hot Seat")) {
         showGame();
       }
@@ -1097,16 +1056,12 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
       currentPlayer = controller.getCurrentPlayer();
 
     } else if (newValue instanceof TimerEvent) {
-      System.out.println("Frame TimerEvent");
       if (timerEventCounter > 0) {
         timerEventCounter++;
-        System.out.println("Timers active (else if): " + timerEventCounter);
-
         timerRestart();
         showCard(TIMERUPDATE_CARD);
       } else if (timerEventCounter == 0) {
         timerEventCounter++;
-        System.out.println("Timers active: " + timerEventCounter);
         timerStart();
         showCard(TIMER_CARD);
       }
@@ -1178,4 +1133,3 @@ public class GameFrame extends JFrame implements PropertyChangeListener {
     return message;
   }
 }
-

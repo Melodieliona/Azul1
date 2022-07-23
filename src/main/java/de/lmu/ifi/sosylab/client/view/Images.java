@@ -69,7 +69,7 @@ public class Images {
         background = new ImportImage("images/Background2.png").getImg();
         settings = new ImportImage("images/Settings2.png").getImg();
       }
-      default -> System.out.println("Image modus not found!");
+      default -> throw new RuntimeException("Gameboard style not found!");
     }
 
     pictures.add(board);

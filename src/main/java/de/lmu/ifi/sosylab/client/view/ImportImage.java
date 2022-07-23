@@ -33,7 +33,6 @@ public class ImportImage {
       img = ImageIO.read(Objects.requireNonNull(is));
 
     } catch (IOException e) {
-      System.out.println("Image could not be imported.");
       e.printStackTrace();
     }
   }
